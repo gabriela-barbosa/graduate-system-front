@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { Theme } from '../../utils/enums'
-import Image from 'next/image'
 
 const theme = {
   gray: {
@@ -14,11 +13,6 @@ const theme = {
 type AppProps = {
   themeName: Theme
 }
-
-export const ImageBackground = styled(Image)`
-  background-color: rgba(11, 105, 81, 0.7);
-  background-blend-mode: lighten;
-`
 
 export const Wrapper = styled.div<AppProps>`
   position: relative;

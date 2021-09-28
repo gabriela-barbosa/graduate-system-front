@@ -1,8 +1,6 @@
-import { Wrapper, Content, ImageBackground } from './index.style'
+import { Wrapper, Content } from './index.style'
 import React from 'react'
 import { Theme } from '../../utils/enums'
-import Image from 'next/image'
-import fotoIcUff from '../../../public/fotoicuff.jpg'
 import Head from 'next/head'
 
 type AppProps = {

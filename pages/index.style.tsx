@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import Image from 'next/image'
 
 export const Content = styled.div`
   width: 100%;
@@ -23,6 +22,8 @@ export const FormLogin = styled.div`
 
 export const FormInputGroup = styled.div`
   position: relative;
+  display: flex;
+  justify-content: center;
   width: 100%;
   height: 67px;
   margin-bottom: 11px;
@@ -42,14 +43,14 @@ export const Title = styled.h1`
 
 export const Label = styled.label`
   position: absolute;
-  top: 14px;
-  left: 16px;
+  top: 16px;
+  left: 20px;
   transition: all 0.3s ease;
   opacity: 0;
   color: #4b907e;
   font-family: Roboto;
   font-size: 12px;
-  line-height: 13px;
+  line-height: 14px;
 `
 
 export const Input = styled.input`
@@ -58,20 +59,20 @@ export const Input = styled.input`
   height: 48px;
   padding-left: 16px;
   transition: all 0.3s linear;
-  border: 1px solid #4b907e;
+  border: 3px solid #cbcbcb;
   border-radius: 8px;
   background-color: #fff;
   color: #4b907e;
   font-family: Roboto;
-  font-size: 16px;
-  line-height: 18px;
+  font-size: 20px;
+  line-height: 23px;
 
   &:focus {
     outline: 0;
   }
 
   &:not(:placeholder-shown) {
-    padding-top: 22.8px;
+    padding-top: 26px;
     padding-bottom: 14px;
     padding-left: 16px;
   }
@@ -98,4 +99,31 @@ export const Error = styled.p`
   color: #55c32d;
   font-size: 12px;
   line-height: lh(12px, 14px);
+`
+
+export const Button = styled.button`
+  width: 154px;
+  height: 46px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  background-color: #ffff;
+  opacity: 0.8;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 23px;
+  color: #4b907eff;
+  border: none;
+  &:hover {
+    opacity: 1;
+  }
+`
+
+export const Background = styled.div`
+  background: rgba(11, 105, 81, 0.7);
+  opacity: 0.99;
+  height: 100%;
+  width: 100%;
 `
