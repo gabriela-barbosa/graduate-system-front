@@ -42,9 +42,43 @@ export default createGlobalStyle`
     padding: 0;
   }
 
+  a{
+    text-decoration: none;
+  }
+
   ol,
   ul {
     list-style: none;
+  }
+
+  .table-header{
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+
+  table{
+    border-collapse: collapse;
+  }
+
+  .pendente{
+    color: #DCB552 !important;
+  }
+
+  .atualizado{
+    color: #5BAFC9 !important;
+  }
+
+  .user{
+    float: right;
+    display: block;
+    position: relative;
+  }
+
+  .cabecalho{
+    width: 100%;
+  }
+
+  .colunameio{
+    width: 80%;
   }
 
   #__next {

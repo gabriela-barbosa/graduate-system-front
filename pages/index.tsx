@@ -13,10 +13,11 @@ import {
   Input,
   Label,
   Title,
-} from './index.style'
+} from '../src/styles/index.style'
 import fotoIcUff from '../public/fotoicuff.jpg'
 import logo from '../public/logo-ic-uff-branca.png'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const Home: React.FC = () => {
   const {
@@ -33,7 +34,9 @@ const Home: React.FC = () => {
   return (
     <>
       <MainWrapper themeName={Theme.gray} hasContent={false}>
-        <Image src={fotoIcUff} layout="fill" objectFit="cover" />
+
+          <Image src={fotoIcUff} layout="fill" objectFit="cover" />
+
         <Background>
           <Content>
             <ImageLogo>
@@ -54,9 +57,13 @@ const Home: React.FC = () => {
                   />
                   <Label htmlFor="password">Senha</Label>
                 </FormInputGroup>
-                <FormInputGroup>
-                  <Button type="submit">Continuar</Button>
-                </FormInputGroup>
+                <Link href={'/listagem'} as="/listagem">
+                  <a>
+                    <FormInputGroup>
+                      <Button type="submit">Continuar</Button>
+                    </FormInputGroup>
+                  </a>
+                </Link>
               </form>
             </FormLogin>
           </Content>
