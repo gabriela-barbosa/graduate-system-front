@@ -1,27 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import MainWrapper from '../../src/components/MainWrapper'
 import { Theme } from '../../src/utils/enums'
 import { useForm } from 'react-hook-form'
-import {
-  Background,
-  Content,
-  Title,
-  Subtitle,
-  Fields,
-  Icon,
-  Editar
-} from './index.style'
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Background, Content, Title, Subtitle, Fields, Icon, Editar } from './index.style'
 
-//import { Content, Title } from '../../src/styles/index.style'
+// import { Content, Title } from '../../src/styles/index.style'
 import fotoIcUff from '../../public/fotoicuff.jpg'
 import logo from '../../public/logo-ic-uff-branca.png'
 import Image from 'next/image'
-import MainHeader from "../../src/components/MainHeader";
+import MainHeader from '../../src/components/MainHeader'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 
-
+const status = {
+  PENDING: 'Pendente',
+  UPDATED: 'Atualizado',
+  UPDATED_PARTIALlY: 'Atualizado parcialmente',
+  UNKNOWN: 'Desconhecido',
+}
 
 const Listagem: React.FC = () => {
   const [egressos, setEgressos] = useState([
@@ -55,6 +52,19 @@ const Listagem: React.FC = () => {
     },
   ])
 
+  const [graduates, setGraduates] = useState([])
+  useEffect(() => {
+    const getGraduates = async () => {
+      const response = await fetch('http://localhost:8080/api/v1/graduate', {
+        credentials: 'include',
+      })
+      const result = await response.json()
+      console.log('graduates', result)
+      setGraduates(result)
+    }
+    getGraduates()
+  }, [])
+
   const [pendentes, setPendentes] = useState([
     {
       id: '1',
@@ -71,7 +81,7 @@ const Listagem: React.FC = () => {
   ])
 
   const onSubmit = data => {
-    fetch('http://localhost:8080/')
+    // fetch('http://localhost:8080/')
   }
 
   return (
@@ -102,24 +112,46 @@ const Listagem: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {pendentes.map((pendente: any) => (
-                  <tr key={pendente.id}>
-                    <td><Subtitle>{pendente.nome}</Subtitle></td>
-                    <td><Subtitle className="pendente">Pendente</Subtitle></td>
-                    <td><Subtitle>-</Subtitle></td>
-                    <td><Subtitle>-</Subtitle></td>
-                    <td><Icon><FontAwesomeIcon icon={faPencilAlt} /></Icon></td>
-                  </tr>
-                ))}
-                {egressos.map((egresso: any) => (
-                  <tr key={egresso.id}>
-                    <td><Subtitle>{egresso.nome}</Subtitle></td>
-                    <td><Subtitle className="atualizado">Atualizado</Subtitle></td>
-                    <td><Subtitle>{egresso.localDeTrabalho}</Subtitle></td>
+                {/* {pendentes.map((pendente: any) => ( */}
+                {/*   <tr key={pendente.id}> */}
+                {/*     <td> */}
+                {/*       <Subtitle>{pendente.nome}</Subtitle> */}
+                {/*     </td> */}
+                {/*     <td> */}
+                {/*       <Subtitle className="pendente">Pendente</Subtitle> */}
+                {/*     </td> */}
+                {/*     <td> */}
+                {/*       <Subtitle>-</Subtitle> */}
+                {/*     </td> */}
+                {/*     <td> */}
+                {/*       <Subtitle>-</Subtitle> */}
+                {/*     </td> */}
+                {/*     <td> */}
+                {/*       <Icon> */}
+                {/*         <FontAwesomeIcon icon={faPencilAlt} /> */}
+                {/*       </Icon> */}
+                {/*     </td> */}
+                {/*   </tr> */}
+                {/* ))} */}
+                {graduates.map((graduate: any) => (
+                  <tr key={graduate.id}>
                     <td>
-                      <Subtitle>{egresso.cargo}</Subtitle>
+                      <Subtitle>{graduate.name}</Subtitle>
                     </td>
-                    <td><Icon><FontAwesomeIcon icon={faPencilAlt} /></Icon></td>
+                    <td>
+                      <Subtitle className="atualizado">{status[graduate.status]}</Subtitle>
+                    </td>
+                    <td>
+                      <Subtitle>{graduate.workPlace.name}</Subtitle>
+                    </td>
+                    <td>
+                      <Subtitle>{graduate.position}</Subtitle>
+                    </td>
+                    <td>
+                      <Icon>
+                        <FontAwesomeIcon icon={faPencilAlt} />
+                      </Icon>
+                    </td>
                   </tr>
                 ))}
               </tbody>
