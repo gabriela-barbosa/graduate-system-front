@@ -13,7 +13,7 @@ export const Cabecalho = styled.div`
   padding-left: 50px;
 `
 export const Title = styled.h1`
-  padding: 14px 0px 26px 30px;
+  padding: 14px 0 26px 30px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -24,9 +24,9 @@ export const Title = styled.h1`
 `
 
 export const Icon = styled.h1`
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-right: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -40,4 +40,4 @@ export const Texto = styled.h4`
   color: rgba(11, 105, 81, 0.7);
 `
 
-export default Header;
+export default Header

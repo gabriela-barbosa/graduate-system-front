@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Header, Cabecalho, Title, Icon, Texto } from './index.style'
 import logo from '../../../public/logo-ic-uff-verde.png'
-import { faPencilAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { useAuth } from '../../../pages/api/AuthProvider'
@@ -16,7 +16,6 @@ const MainHeader = () => {
           <tr>
             <td>
               <Link href="/listagem" passHref>
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                 <a>
                   <Image src={logo} alt="Logo IC-UFF" />
                 </a>

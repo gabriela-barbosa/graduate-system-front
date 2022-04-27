@@ -34,7 +34,6 @@ const Home: React.FC = () => {
   const { user } = useAuth()
 
   useEffect(() => {
-    console.warn(user)
     if (user) {
       router.push('/listagem')
     }
@@ -51,6 +50,8 @@ const Home: React.FC = () => {
       credentials: 'include',
       body: JSON.stringify(body),
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const result = await fetch('http://localhost:8080/api/v1/login', myInit)
     if (result.status === 200) {
       await router.push('/listagem')
