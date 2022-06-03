@@ -33,9 +33,14 @@ const Home: React.FC = () => {
   const router = useRouter()
   const { user } = useAuth()
 
+
   useEffect(() => {
     if (user) {
-      router.push('/listagem')
+      if (user?.role === 'GRADUATE') {
+        router.push('/editar')
+      } else {
+        router.push('/listagem')
+      }
     }
   }, [user])
 
@@ -52,10 +57,19 @@ const Home: React.FC = () => {
     }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const result = await fetch('http://localhost:8080/api/v1/login', myInit)
+    const result = await fetch('http://localhost:8081/api/v1/login', myInit)
     if (result.status === 200) {
-      await router.push('/listagem')
+        const response = await fetch('http://localhost:8081/api/v1/user', {
+          credentials: 'include',
+        })
+        const profile = await response.json()
+        if (profile?.role === 'GRADUATE') {
+        await router.push('/editar')
+      } else {
+        await router.push('/listagem')
+      }
     }
+
   }
 
   return (

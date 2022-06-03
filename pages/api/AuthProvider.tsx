@@ -6,12 +6,13 @@ export const AuthContext = createContext<AuthContextType | null>(null)
 
 const AuthProvider = ({ children }) => {
   const { pathname, events } = useRouter()
-  const [user, setUser] = useState()
+  const [user, setUser] = useState<any>()
   const router = useRouter()
+
 
   async function getUser() {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/user', {
+      const response = await fetch('http://localhost:8081/api/v1/user', {
         credentials: 'include',
       })
       const profile = await response.json()
@@ -20,7 +21,11 @@ const AuthProvider = ({ children }) => {
         setUser(null)
       } else {
         console.log('passei aqui sucesso', profile)
-        setUser(profile)
+        if (profile.message === 'Unauthenticated'){
+          setUser(null)
+        } else {
+          setUser(profile)
+        }
       }
     } catch (err) {
       console.error(err)
@@ -42,7 +47,11 @@ const AuthProvider = ({ children }) => {
         await router.push('/')
       } else if (url === '/' && user) {
         console.log('entrei aquiiiii2', url)
-        await router.push('/listagem')
+        if (user.role === 'GRADUATE') {
+          await router.push('/editar')
+        } else {
+          await router.push('/listagem')
+        }
       }
     }
 
@@ -59,7 +68,7 @@ const AuthProvider = ({ children }) => {
     }
   }, [user])
 
-  return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>
 }
 
 const useAuth: any = () => useContext(AuthContext)

@@ -3,5 +3,6 @@ export interface User {
   email: number
 }
 export type AuthContextType = {
-  user: User
+  user: User,
+  setUser: Function
 }

@@ -6,9 +6,28 @@ import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { useAuth } from '../../../pages/api/AuthProvider'
+import { useRouter } from 'next/router'
 
 const MainHeader = () => {
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
+  const router = useRouter()
+  const logout = async () => {
+    localStorage.clear()
+    sessionStorage.clear()
+    console.log('oi')
+    setUser(null)
+    router.push('/')
+    const myInit = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }
+    const result = await fetch('http://localhost:8081/api/v1/logout', myInit)
+  }
+
   return (
     <Header>
       <Cabecalho>
@@ -30,7 +49,7 @@ const MainHeader = () => {
               </Icon>
             </td>
             <td align="right">
-              <Texto>Olá, {user?.name}!</Texto>
+              <Texto>Olá, {user?.name}!</Texto> <button onClick={logout}> Sair</button>
             </td>
           </tr>
         </table>

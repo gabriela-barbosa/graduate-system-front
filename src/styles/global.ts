@@ -17,6 +17,25 @@ export default createGlobalStyle`
     height: 100%;
   }
 
+   label{
+     color: #4b907e;
+   }
+
+   select{
+     width: 300px;
+     border: 3px solid #cbcbcb;
+     border-radius: 8px;
+     height: 48px;
+     color: #4b907e;
+     font-family: Roboto;
+     font-size: 20px;
+   }
+
+   select:active{
+     border: 3px solid #cbcbcb !important;
+   }
+
+
   html {
     box-sizing: border-box;
     font-size: 100%;
@@ -26,6 +45,54 @@ export default createGlobalStyle`
   *::before,
   *::after {
     box-sizing: inherit;
+  }
+
+  .formEditar{
+    width: 800px;
+  }
+
+  .formSecretaria{
+    width: 1200px;
+  }
+
+  .radioInput{
+    margin-left: 30px;
+    margin-right: 5px;
+    margin-top: 12px;
+  }
+
+  .radioInput2{
+    margin-right: 5px;
+    margin-top: 12px;
+  }
+
+  .radioLabel{
+    margin-right: 20px;
+    margin-top: 10px;
+  }
+
+  .column {
+    float: left;
+    width: 50%;
+  }
+  .columnsecretaria {
+    float: left;
+    width: 33%;
+  }
+  input:invalid {
+    border: 3px solid #900;
+    border-color: #900;
+    background-color: #FDD;
+  }
+
+  /* This is the style of our error messages */
+
+
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
   }
 
   h1,

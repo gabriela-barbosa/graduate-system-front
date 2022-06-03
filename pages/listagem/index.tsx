@@ -3,7 +3,7 @@ import Head from 'next/head'
 import MainWrapper from '../../src/components/MainWrapper'
 import { Theme } from '../../src/utils/enums'
 import { useForm } from 'react-hook-form'
-import { Background, Content, Title, Subtitle, Fields, Icon, Editar } from './index.style'
+import { Background, Content, Title, Subtitle, Fields, Icon } from './index.style'
 
 // import { Content, Title } from '../../src/styles/index.style'
 import fotoIcUff from '../../public/fotoicuff.jpg'
@@ -12,6 +12,7 @@ import Image from 'next/image'
 import MainHeader from '../../src/components/MainHeader'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import {useRouter} from "next/router";
 
 const status = {
   PENDING: 'Pendente',
@@ -55,7 +56,7 @@ const Listagem: React.FC = () => {
   const [graduates, setGraduates] = useState([])
   useEffect(() => {
     const getGraduates = async () => {
-      const response = await fetch('http://localhost:8080/api/v1/graduate', {
+      const response = await fetch('http://localhost:8081/api/v1/graduate', {
         credentials: 'include',
       })
       const result = await response.json()
@@ -82,6 +83,12 @@ const Listagem: React.FC = () => {
 
   const onSubmit = data => {
     // fetch('http://localhost:8080/')
+  }
+
+  const router = useRouter()
+  const edit = () => {
+    console.log('oi')
+    router.push('/secretaria')
   }
 
   return (
@@ -149,7 +156,7 @@ const Listagem: React.FC = () => {
                     </td>
                     <td>
                       <Icon>
-                        <FontAwesomeIcon icon={faPencilAlt} />
+                        <FontAwesomeIcon onClick={edit} icon={faPencilAlt} />
                       </Icon>
                     </td>
                   </tr>
