@@ -8,7 +8,9 @@ import React from 'react'
 import { useAuth } from '../../../pages/api/AuthProvider'
 import { useRouter } from 'next/router'
 
-const MainHeader = () => {
+const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+
+const MainHeader: React.FC = () => {
   const { user, setUser } = useAuth()
   const router = useRouter()
   const logout = async () => {
@@ -16,7 +18,7 @@ const MainHeader = () => {
     sessionStorage.clear()
     console.log('oi')
     setUser(null)
-    router.push('/')
+    await router.push('/')
     const myInit = {
       method: 'POST',
       headers: {
@@ -25,7 +27,7 @@ const MainHeader = () => {
       },
       credentials: 'include',
     }
-    const result = await fetch('http://localhost:8081/api/v1/logout', myInit)
+    const result = await fetch(`${GRADUATE_API}/v1/logout`, myInit as RequestInit)
   }
 
   return (

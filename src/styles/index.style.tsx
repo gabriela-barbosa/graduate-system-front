@@ -13,11 +13,24 @@ export const ImageLogo = styled.div`
   padding-top: 112px;
 `
 
+export const Column = styled.div`
+  float: left;
+  width: 50%;
+`
+
+export const Section = styled.div`
+  padding-bottom: 30px;
+`
+
+export const CheckboxLabel = styled.label`
+  padding-left: 5px;
+`
+
 export const FormLogin = styled.div`
   width: 100%;
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: left;
 `
 
 export const FormInputGroup = styled.div`
@@ -126,4 +139,8 @@ export const Background = styled.div`
   opacity: 0.99;
   height: 100%;
   width: 100%;
+`
+
+export const Row = styled.div`
+  padding-top: 15px;
 `

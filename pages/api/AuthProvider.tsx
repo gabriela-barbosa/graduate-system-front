@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { AuthContextType } from '../context/authContext'
+import { Roles } from '../../src/utils/enums'
+const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 export const AuthContext = createContext<AuthContextType | null>(null)
 
@@ -9,10 +11,9 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState<any>()
   const router = useRouter()
 
-
   async function getUser() {
     try {
-      const response = await fetch('http://localhost:8081/api/v1/user', {
+      const response = await fetch(`${GRADUATE_API}/v1/user`, {
         credentials: 'include',
       })
       const profile = await response.json()
@@ -21,7 +22,7 @@ const AuthProvider = ({ children }) => {
         setUser(null)
       } else {
         console.log('passei aqui sucesso', profile)
-        if (profile.message === 'Unauthenticated'){
+        if (profile.message === 'Unauthenticated') {
           setUser(null)
         } else {
           setUser(profile)
@@ -47,7 +48,7 @@ const AuthProvider = ({ children }) => {
         await router.push('/')
       } else if (url === '/' && user) {
         console.log('entrei aquiiiii2', url)
-        if (user.role === 'GRADUATE') {
+        if (user.role === Roles.GRADUATE) {
           await router.push('/editar')
         } else {
           await router.push('/listagem')

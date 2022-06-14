@@ -71,10 +71,6 @@ export default createGlobalStyle`
     margin-top: 10px;
   }
 
-  .column {
-    float: left;
-    width: 50%;
-  }
   .columnsecretaria {
     float: left;
     width: 33%;

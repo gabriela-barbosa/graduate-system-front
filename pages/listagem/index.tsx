@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import Head from 'next/head'
 import MainWrapper from '../../src/components/MainWrapper'
-import { Theme } from '../../src/utils/enums'
-import { useForm } from 'react-hook-form'
+import { Roles, Theme } from '../../src/utils/enums'
 import { Background, Content, Title, Subtitle, Fields, Icon } from './index.style'
 
-// import { Content, Title } from '../../src/styles/index.style'
-import fotoIcUff from '../../public/fotoicuff.jpg'
-import logo from '../../public/logo-ic-uff-branca.png'
-import Image from 'next/image'
 import MainHeader from '../../src/components/MainHeader'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
-import {useRouter} from "next/router";
+import { useRouter } from 'next/router'
+import { useAuth } from '../api/AuthProvider'
+
+const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 const status = {
   PENDING: 'Pendente',
@@ -21,42 +18,13 @@ const status = {
   UNKNOWN: 'Desconhecido',
 }
 
-const Listagem: React.FC = () => {
-  const [egressos, setEgressos] = useState([
-    {
-      id: '1',
-      nome: 'Luiza',
-      status: 'Pendente',
-      localDeTrabalho: 'Itaú',
-      cargo: 'Analista',
-    },
-    {
-      id: '2',
-      nome: 'Bruno Henrique',
-      status: 'Pendente',
-      localDeTrabalho: 'Flamengo',
-      cargo: 'Jogador',
-    },
-    {
-      id: '3',
-      nome: 'Dan Lessa',
-      status: 'Atualizado',
-      localDeTrabalho: 'Kiritolandia',
-      cargo: 'Player',
-    },
-    {
-      id: '4',
-      nome: 'Gabizinha',
-      status: 'Atualizado',
-      localDeTrabalho: 'Flamengo',
-      cargo: 'Jogador',
-    },
-  ])
-
+const GraduateList: React.FC = () => {
   const [graduates, setGraduates] = useState([])
+  const { user } = useAuth()
+
   useEffect(() => {
     const getGraduates = async () => {
-      const response = await fetch('http://localhost:8081/api/v1/graduate', {
+      const response = await fetch(`${GRADUATE_API}/v1/graduate`, {
         credentials: 'include',
       })
       const result = await response.json()
@@ -66,29 +34,10 @@ const Listagem: React.FC = () => {
     getGraduates()
   }, [])
 
-  const [pendentes, setPendentes] = useState([
-    {
-      id: '1',
-      nome: 'Jazias Soares',
-    },
-    {
-      id: '2',
-      nome: 'Projota Benfica',
-    },
-    {
-      id: '3',
-      nome: 'Leonardo Dicaprio',
-    },
-  ])
-
-  const onSubmit = data => {
-    // fetch('http://localhost:8080/')
-  }
-
   const router = useRouter()
-  const edit = () => {
-    console.log('oi')
-    router.push('/secretaria')
+  const onClickEdit = () => {
+    if (user.role === Roles.ADMIN) router.push('/secretaria')
+    else router.push('/editar')
   }
 
   return (
@@ -156,7 +105,7 @@ const Listagem: React.FC = () => {
                     </td>
                     <td>
                       <Icon>
-                        <FontAwesomeIcon onClick={edit} icon={faPencilAlt} />
+                        <FontAwesomeIcon onClick={onClickEdit} icon={faPencilAlt} />
                       </Icon>
                     </td>
                   </tr>
@@ -170,4 +119,4 @@ const Listagem: React.FC = () => {
   )
 }
 
-export default Listagem
+export default GraduateList

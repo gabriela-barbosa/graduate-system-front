@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import MainWrapper from '../src/components/MainWrapper'
-import { Theme } from '../src/utils/enums'
+import { Roles, Theme } from '../src/utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { useNavigate } from 'react-router-dom'
@@ -22,6 +22,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useAuth } from './api/AuthProvider'
 
+const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+
 const Home: React.FC = () => {
   const {
     register,
@@ -32,16 +34,18 @@ const Home: React.FC = () => {
   // const navigate = useNavigate()
   const router = useRouter()
   const { user } = useAuth()
-
-
-  useEffect(() => {
+  const redirectAccordingRole = user => {
     if (user) {
-      if (user?.role === 'GRADUATE') {
+      if (user?.role === Roles.GRADUATE) {
         router.push('/editar')
       } else {
         router.push('/listagem')
       }
     }
+  }
+
+  useEffect(() => {
+    redirectAccordingRole(user)
   }, [user])
 
   const onSubmit = async body => {
@@ -57,19 +61,14 @@ const Home: React.FC = () => {
     }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const result = await fetch('http://localhost:8081/api/v1/login', myInit)
+    const result = await fetch(`${GRADUATE_API}/v1/login`, myInit)
     if (result.status === 200) {
-        const response = await fetch('http://localhost:8081/api/v1/user', {
-          credentials: 'include',
-        })
-        const profile = await response.json()
-        if (profile?.role === 'GRADUATE') {
-        await router.push('/editar')
-      } else {
-        await router.push('/listagem')
-      }
+      const response = await fetch(`${GRADUATE_API}/v1/user`, {
+        credentials: 'include',
+      })
+      const profile = await response.json()
+      redirectAccordingRole(profile)
     }
-
   }
 
   return (

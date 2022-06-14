@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 
-
-
 export const Background = styled.div`
   background: rgba(255, 255, 255);
   opacity: 0.99;
@@ -16,6 +14,8 @@ export const Content = styled.div`
   display: block;
   margin: 0 auto;
 `
+
+export const Checkbox = styled.input``
 
 export const Title = styled.h1`
   padding-top: 24px;
@@ -54,21 +54,6 @@ export const Fields = styled.h1`
 
   color: rgba(11, 105, 81, 0.7);
 `
-
-
-
-export const Label = styled.label`
-  position: absolute;
-  top: -20px;
-  left: 20px;
-  transition: all 0.3s ease;
-  opacity: 1;
-  color: #4b907e;
-  font-family: Roboto;
-  font-size: 14px;
-  line-height: 14px;
-`
-
 export const Label2 = styled.label`
   position: absolute;
   top: -20px;
@@ -81,52 +66,20 @@ export const Label2 = styled.label`
   line-height: 14px;
 `
 
-export const Input = styled.input`
-  display: block;
-  width: 300px;
-  height: 48px;
-  padding-left: 16px;
-  transition: all 0.3s linear;
-  border: 3px solid #cbcbcb;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #4b907e;
-  font-family: Roboto;
-  font-size: 20px;
-  line-height: 23px;
-
-  &:focus {
-    outline: 0;
-  }
-
-  &:not(:placeholder-shown) {
-    padding-top: 26px;
-    padding-bottom: 14px;
-    padding-left: 16px;
-  }
-
-  &:not(:placeholder-shown) + ${Label} {
-    transform: translateY(-10px);
-    opacity: 1;
-  }
-
-  &::placeholder {
-    top: 0;
-    color: #4b907e;
-    font-size: 16px;
-    font-style: normal;
-    font-family: Roboto;
-    letter-spacing: 0.48px;
-    line-height: 19px;
-  }
+export const LabelCheckbox = styled.label`
+  padding-bottom: 15px;
 `
 
-export const Error = styled.p`
-  height: 30px;
-  margin-top: 5px;
-  color: #55c32d;
-  font-size: 12px;
-  line-height: lh(12px, 14px);
+export const FormInputGroupEdit = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: left;
+  width: 100%;
+  height: 67px;
+`
+
+export const Select = styled.select`
+  margin-bottom: 15px;
 `
 
 export const Button = styled.button`
@@ -149,7 +102,7 @@ export const Button = styled.button`
   }
 `
 export const Button2 = styled.button`
-  margin-right: 5% ;
+  margin-right: 5%;
   width: 164px;
   height: 46px;
   border-radius: 25px;
@@ -174,15 +127,3 @@ export const FormEditar = styled.div`
   display: flex;
   justify-content: left;
 `
-
-export const FormInputGroup = styled.div`
-  position: relative;
-  display: flex;
-  margin-top: 30px;
-  justify-content: left;
-  width: 100%;
-  height: 67px;
-  margin-bottom: 11px;
-`
-
-
