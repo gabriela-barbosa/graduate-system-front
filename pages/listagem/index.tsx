@@ -68,40 +68,19 @@ const GraduateList: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* {pendentes.map((pendente: any) => ( */}
-                {/*   <tr key={pendente.id}> */}
-                {/*     <td> */}
-                {/*       <Subtitle>{pendente.nome}</Subtitle> */}
-                {/*     </td> */}
-                {/*     <td> */}
-                {/*       <Subtitle className="pendente">Pendente</Subtitle> */}
-                {/*     </td> */}
-                {/*     <td> */}
-                {/*       <Subtitle>-</Subtitle> */}
-                {/*     </td> */}
-                {/*     <td> */}
-                {/*       <Subtitle>-</Subtitle> */}
-                {/*     </td> */}
-                {/*     <td> */}
-                {/*       <Icon> */}
-                {/*         <FontAwesomeIcon icon={faPencilAlt} /> */}
-                {/*       </Icon> */}
-                {/*     </td> */}
-                {/*   </tr> */}
-                {/* ))} */}
                 {graduates.map((graduate: any) => (
                   <tr key={graduate.id}>
                     <td>
-                      <Subtitle>{graduate.name}</Subtitle>
+                      <Fields>{graduate.name}</Fields>
                     </td>
                     <td>
-                      <Subtitle className="atualizado">{status[graduate.status]}</Subtitle>
+                      <Fields status={graduate.status}>{status[graduate.status]}</Fields>
                     </td>
                     <td>
-                      <Subtitle>{graduate.workPlace.name}</Subtitle>
+                      <Fields>{graduate.workPlace.name}</Fields>
                     </td>
                     <td>
-                      <Subtitle>{graduate.position}</Subtitle>
+                      <Fields>{graduate.position}</Fields>
                     </td>
                     <td>
                       <Icon>

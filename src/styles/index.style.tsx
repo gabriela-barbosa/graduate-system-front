@@ -19,6 +19,9 @@ export const Column = styled.div`
 `
 
 export const Section = styled.div`
+  flex: 50%;
+  width: ${({ width }: { width?: string }) => width ?? 100}%;
+  padding-right: 10px;
   padding-bottom: 30px;
 `
 
@@ -26,11 +29,12 @@ export const CheckboxLabel = styled.label`
   padding-left: 5px;
 `
 
-export const FormLogin = styled.div`
+export const Form = styled.div`
   width: 100%;
   position: relative;
   display: flex;
-  justify-content: left;
+  justify-content: ${({ position }: { position?: string }) =>
+    position === 'left' ? 'left' : 'center'};
 `
 
 export const FormInputGroup = styled.div`
@@ -68,7 +72,8 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   display: block;
-  width: 300px;
+  width: 100%;
+  //width: 300px;
   height: 48px;
   padding-left: 16px;
   transition: all 0.3s linear;
@@ -129,6 +134,7 @@ export const Button = styled.button`
   line-height: 23px;
   color: #4b907eff;
   border: none;
+
   &:hover {
     opacity: 1;
   }

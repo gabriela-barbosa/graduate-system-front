@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Label } from '../../src/styles/index.style'
 
 export const Background = styled.div`
   background: rgba(255, 255, 255);
@@ -19,7 +20,7 @@ export const Checkbox = styled.input``
 
 export const Title = styled.h1`
   padding-top: 24px;
-  padding-bottom: 26px;
+  padding-bottom: 30px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -29,9 +30,9 @@ export const Title = styled.h1`
   color: rgba(11, 105, 81, 0.7);
 `
 
-export const Subtitle = styled.h1`
-  padding-top: 0px;
-  padding-bottom: 0px;
+export const Subtitle = styled.h2`
+  padding-top: 0;
+  padding-bottom: 20px;
   padding-right: 140px;
   font-family: Roboto;
   font-style: normal;
@@ -78,8 +79,52 @@ export const FormInputGroupEdit = styled.div`
   height: 67px;
 `
 
+export const LabelSelect = styled.label`
+  position: absolute;
+  top: 6px;
+  left: 20px;
+  transition: all 0.3s ease;
+  opacity: 1;
+  color: #4b907e;
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 14px;
+`
+
 export const Select = styled.select`
-  margin-bottom: 15px;
+  display: block;
+  width: 100%;
+  //width: 300px;
+  height: 48px;
+  padding-left: 12px;
+  padding-top: 12px;
+  transition: all 0.3s linear;
+  border: 3px solid #cbcbcb;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #4b907e;
+  font-family: Roboto;
+  font-size: 20px;
+  line-height: 23px;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:not(:placeholder-shown) + ${LabelSelect} {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+
+  &::placeholder {
+    top: 0;
+    color: #4b907e;
+    font-size: 16px;
+    font-style: normal;
+    font-family: Roboto;
+    letter-spacing: 0.48px;
+    line-height: 19px;
+  }
 `
 
 export const Button = styled.button`
@@ -101,26 +146,26 @@ export const Button = styled.button`
     opacity: 1;
   }
 `
-export const Button2 = styled.button`
-  margin-right: 5%;
-  width: 164px;
-  height: 46px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  background-color: #ffff;
-  opacity: 0.8;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 17px;
-  line-height: 23px;
-  color: #4b907eff;
-  border: solid 2px;
-  &:hover {
-    opacity: 1;
-  }
-`
+// export const Button2 = styled.button`
+//   margin-right: 5%;
+//   width: 164px;
+//   height: 46px;
+//   border-radius: 25px;
+//   cursor: pointer;
+//   transition: background-color 0.2s, color 0.2s;
+//   background-color: #ffff;
+//   opacity: 0.8;
+//   font-family: Roboto;
+//   font-style: normal;
+//   font-weight: normal;
+//   font-size: 17px;
+//   line-height: 23px;
+//   color: #4b907eff;
+//   border: solid 2px;
+//   &:hover {
+//     opacity: 1;
+//   }
+// `
 export const FormEditar = styled.div`
   width: 100%;
   position: relative;

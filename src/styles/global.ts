@@ -21,19 +21,19 @@ export default createGlobalStyle`
      color: #4b907e;
    }
 
-   select{
-     width: 300px;
-     border: 3px solid #cbcbcb;
-     border-radius: 8px;
-     height: 48px;
-     color: #4b907e;
-     font-family: Roboto;
-     font-size: 20px;
-   }
-
-   select:active{
-     border: 3px solid #cbcbcb !important;
-   }
+   //select{
+   //  width: 300px;
+   //  border: 3px solid #cbcbcb;
+   //  border-radius: 8px;
+   //  height: 48px;
+   //  color: #4b907e;
+   //  font-family: Roboto;
+   //  font-size: 20px;
+   //}
+   //
+   //select:active{
+   //  border: 3px solid #cbcbcb !important;
+   //}
 
 
   html {
@@ -85,11 +85,11 @@ export default createGlobalStyle`
 
 
   /* Clear floats after the columns */
-  .row:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
+  //.row:after {
+  //  content: "";
+  //  display: table;
+  //  clear: both;
+  //}
 
   h1,
   h2,
@@ -120,14 +120,6 @@ export default createGlobalStyle`
 
   table{
     border-collapse: collapse;
-  }
-
-  .pendente{
-    color: #DCB552 !important;
-  }
-
-  .atualizado{
-    color: #5BAFC9 !important;
   }
 
   .user{

@@ -23,6 +23,18 @@ export const Title = styled.h1`
   color: rgba(11, 105, 81, 0.7);
 `
 
+export const LogoutButton = styled.button`
+  cursor: pointer;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+  color: #0000004d;
+  border: none;
+  text-decoration: underline;
+`
+
 export const Icon = styled.h1`
   padding-top: 0;
   padding-bottom: 0;

@@ -1,7 +1,13 @@
 import styled from 'styled-components'
+const statusColor = {
+  PENDING: '#e11818',
+  UPDATED: '#5BAFC9',
+  UPDATED_PARTIALlY: '#DCB552',
+  UNKNOWN: '#808080D3',
+}
 
 export const Background = styled.div`
-  background: rgba(255, 255, 255);
+  background: #ffffffff;
   opacity: 0.99;
   height: 100%;
   width: 100%;
@@ -24,7 +30,7 @@ export const Title = styled.h1`
   font-size: 36px;
   line-height: 47px;
 
-  color: rgba(11, 105, 81, 0.7);
+  color: #0b6951b2;
 `
 
 export const Subtitle = styled.h1`
@@ -37,33 +43,27 @@ export const Subtitle = styled.h1`
   font-size: 22px;
   line-height: 47px;
 
-  color: rgba(11, 105, 81, 0.7);
+  color: #0b6951b2;
 `
 
-export const Icon = styled.h1`
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-right: 0px;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 22px;
-  line-height: 47px;
-
-  color: rgba(0, 0, 0, 0.4);
+export const Icon = styled.button`
+  font-size: 18px;
+  line-height: 24px;
+  cursor: pointer;
+  color: #00000066;
+  border: none;
+  background: transparent;
 `
 
 export const Fields = styled.h1`
-  padding-top: 0px;
+  padding-top: 5px;
   padding-bottom: 10px;
   padding-right: 140px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
-  font-size: 24px;
-  line-height: 47px;
+  font-size: 18px;
+  line-height: 24px;
 
-  color: rgba(11, 105, 81, 0.7);
+  color: ${({ status }: { status?: string }) => (status ? statusColor[status] : '#0B6951B2')};
 `
-
-

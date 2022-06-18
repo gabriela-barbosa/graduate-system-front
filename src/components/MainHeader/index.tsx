@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Header, Cabecalho, Title, Icon, Texto } from './index.style'
+import { Header, Cabecalho, Title, Icon, Texto, logoutButton, LogoutButton } from './index.style'
 import logo from '../../../public/logo-ic-uff-verde.png'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -34,26 +34,28 @@ const MainHeader: React.FC = () => {
     <Header>
       <Cabecalho>
         <table className="cabecalho">
-          <tr>
-            <td>
-              <Link href="/listagem" passHref>
-                <a>
-                  <Image src={logo} alt="Logo IC-UFF" />
-                </a>
-              </Link>
-            </td>
-            <td className="colunameio">
-              <Title> Sistema de Egressos </Title>
-            </td>
-            <td align="right">
-              <Icon>
-                <FontAwesomeIcon icon={faUserCircle} />
-              </Icon>
-            </td>
-            <td align="right">
-              <Texto>Olá, {user?.name}!</Texto> <button onClick={logout}> Sair</button>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td>
+                <Link href="/listagem" passHref>
+                  <a>
+                    <Image src={logo} alt="Logo IC-UFF" />
+                  </a>
+                </Link>
+              </td>
+              <td className="colunameio">
+                <Title> Sistema de Egressos </Title>
+              </td>
+              <td align="right">
+                <Icon>
+                  <FontAwesomeIcon icon={faUserCircle} />
+                </Icon>
+              </td>
+              <td align="right">
+                <Texto>Olá, {user?.name}!</Texto> <LogoutButton onClick={logout}>Sair</LogoutButton>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </Cabecalho>
     </Header>

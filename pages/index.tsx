@@ -3,14 +3,13 @@ import MainWrapper from '../src/components/MainWrapper'
 import { Roles, Theme } from '../src/utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { useNavigate } from 'react-router-dom'
 
 import {
   Background,
   Button,
   Content,
   FormInputGroup,
-  FormLogin,
+  Form,
   ImageLogo,
   Input,
   Label,
@@ -19,7 +18,6 @@ import {
 import fotoIcUff from '../public/fotoicuff.jpg'
 import logo from '../public/logo-ic-uff-branca.png'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useAuth } from './api/AuthProvider'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
@@ -81,7 +79,7 @@ const Home: React.FC = () => {
               <Image src={logo} width="370" height="265" layout="fixed" />
             </ImageLogo>
             <Title>Sistema de Egressos</Title>
-            <FormLogin>
+            <Form>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <FormInputGroup>
                   <Input placeholder="Email" {...register('email', { required: true })} />
@@ -103,7 +101,7 @@ const Home: React.FC = () => {
                 </a>
                 {/* </Link> */}
               </form>
-            </FormLogin>
+            </Form>
           </Content>
         </Background>
       </MainWrapper>

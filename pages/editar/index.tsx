@@ -10,38 +10,32 @@ import {
   Content,
   Button,
   Title,
-  FormEditar,
-  Label2,
   Checkbox,
   LabelCheckbox,
   FormInputGroupEdit,
   Select,
+  Subtitle,
+  LabelSelect,
 } from './index.style'
 import MainHeader from '../../src/components/MainHeader'
 import { useAuth } from '../api/AuthProvider'
 import { useRouter } from 'next/router'
 import {
-  Column,
   FormInputGroup,
-  FormLogin,
+  Form,
   Input,
-  Label,
   CheckboxLabel,
   Section,
   Row,
+  Label,
 } from '../../src/styles/index.style'
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 const Editar: React.FC = () => {
   const notify = () => toast.success('Alteração salva com sucesso!')
   const [hasInstitutionalLink, setHasInstitutionalLink] = useState(false)
-  const [possuiVinculo, setPossuiVinculo] = useState('')
-  const [bolsistaCNPQ, setBolsistaCNPQ] = useState('')
-  const [concluiuMestrado, setConcluiuMestrado] = useState('')
-  const [concluiuDoutorado, setConcluiuDoutorado] = useState('')
-  const [concluiuPosDoutorado, setConcluiuPosDoutorado] = useState('')
+  const [hasPostDoctorate, setHasPostDoctorate] = useState(false)
   const [institutionTypes, setInstitutionTypes] = useState([])
-  const ehDoutor = true
   const {
     register,
     handleSubmit,
@@ -72,12 +66,13 @@ const Editar: React.FC = () => {
         <Background>
           <MainHeader />
           <Content>
-            <Title>Edite seus Dados</Title>
-            <FormLogin>
+            <Title>Registro de Histórico do Egresso</Title>
+            <Form position="left">
               <form className="formEditar" onSubmit={handleSubmit(onSubmit)}>
-                <div className="row">
-                  <Column>
-                    <Section>
+                <div>
+                  <Subtitle>Informações pessoais</Subtitle>
+                  <Section width={50}>
+                    <FormInputGroup>
                       <Input
                         defaultValue={user?.email}
                         placeholder="E-mail"
@@ -88,23 +83,29 @@ const Editar: React.FC = () => {
                         {...register('email', { required: true })}
                       />
                       <Label htmlFor="email">E-mail</Label>
-                    </Section>
-                    <Section>
-                      <Checkbox
-                        type="checkbox"
-                        id="institutionalLink"
-                        checked={hasInstitutionalLink}
-                        onChange={() => setHasInstitutionalLink(!hasInstitutionalLink)}
-                      />
-                      <CheckboxLabel htmlFor="institutionalLink">
-                        Possui vínculo institucional
-                      </CheckboxLabel>
-                      {hasInstitutionalLink && (
-                        <Fragment>
-                          <Row>
-                            <LabelCheckbox htmlFor="institutionType">
-                              Tipo de Instituição
-                            </LabelCheckbox>
+                    </FormInputGroup>
+                  </Section>
+                </div>
+
+                <div>
+                  <Subtitle>Informações sobre vínculo institucional</Subtitle>
+                  <Section>
+                    <Checkbox
+                      type="checkbox"
+                      id="institutionalLink"
+                      checked={hasInstitutionalLink}
+                      onChange={() => setHasInstitutionalLink(!hasInstitutionalLink)}
+                    />
+                    <CheckboxLabel htmlFor="institutionalLink">
+                      Possui vínculo institucional
+                    </CheckboxLabel>
+                  </Section>
+                  {hasInstitutionalLink && (
+                    <Fragment>
+                      <div style={{ display: 'flex' }}>
+                        <Section>
+                          <FormInputGroup>
+                            <LabelSelect htmlFor="institutionType">Tipo de Instituição</LabelSelect>
                             <Select id="institutionType" name="institutionType">
                               {institutionTypes.map((institutionType: any) => (
                                 <option key={institutionType.id} value={institutionType.id}>
@@ -112,7 +113,9 @@ const Editar: React.FC = () => {
                                 </option>
                               ))}
                             </Select>
-                          </Row>
+                          </FormInputGroup>
+                        </Section>
+                        <Section>
                           <FormInputGroupEdit>
                             <Input
                               placeholder="Local de Trabalho"
@@ -122,6 +125,8 @@ const Editar: React.FC = () => {
                             />
                             <Label htmlFor="institutionName">Local de Trabalho</Label>
                           </FormInputGroupEdit>
+                        </Section>
+                        <Section>
                           <FormInputGroupEdit>
                             <Input
                               placeholder="Cargo"
@@ -133,89 +138,84 @@ const Editar: React.FC = () => {
                             />
                             <Label>Cargo</Label>
                           </FormInputGroupEdit>
-                        </Fragment>
-                      )}
-                    </Section>
-                  </Column>
-                  <Column>
-                    <Section>
-                      <Checkbox
-                        type="checkbox"
-                        id="hasCNPQScholarship"
-                        {...register('hasCNPQScholarship')}
-                      />
-                      <CheckboxLabel htmlFor="hasCNPQScholarship">Possui Bolsa CNPQ</CheckboxLabel>
-                    </Section>
-                    <Section>
-                      <Checkbox
-                        type="checkbox"
-                        id="hasCNPQScholarship"
-                        {...register('hasCNPQScholarship')}
-                      />
-                      <CheckboxLabel htmlFor="hasCNPQScholarship">
-                        Concluiu o doutorado da PGC/UFF?
-                      </CheckboxLabel>
-
-                      <input
-                        className="radioInput2"
-                        type="radio"
-                        id="concluiu"
-                        name="fav_language3"
-                        value="Concluiu doutorado"
-                        onChange={e => setConcluiuDoutorado(e.target.value)}
-                        required
-                      />
-                      <label className="radioLabel" htmlFor="concluiu">
-                        Sim
-                      </label>
-                      <input
-                        className="radioInput"
-                        type="radio"
-                        id="naoConcluiu"
-                        name="fav_language3"
-                        value="Nao concluiu doutorado"
-                        onChange={e => setConcluiuDoutorado(e.target.value)}
-                        required
-                      />
-                      <label className="radioLabel" htmlFor="naoConcluiu">
-                        Não{' '}
-                      </label>
-                      <Label2 style={!ehDoutor ? { display: 'block' } : { display: 'none' }}>
-                        Concluiu o doutorado da PGC/UFF ?
-                      </Label2>
-                      <Label2 style={ehDoutor ? { display: 'block' } : { display: 'none' }}>
-                        Concluiu o mestrado da PGC ou CAA - UFF ?
-                      </Label2>
-                    </Section>
-                    <FormInputGroup>
-                      <input
-                        className="radioInput2"
-                        type="radio"
-                        id="posdoc"
-                        name="fav_language4"
-                        value="Concluiu doutorado"
-                        onChange={e => setConcluiuPosDoutorado(e.target.value)}
-                        required
-                      />
-                      <label className="radioLabel" htmlFor="posdoc">
-                        Sim
-                      </label>
-                      <input
-                        className="radioInput"
-                        type="radio"
-                        id="naoposdoc"
-                        name="fav_language4"
-                        value="Nao concluiu doutorado"
-                        onChange={e => setConcluiuPosDoutorado(e.target.value)}
-                        required
-                      />
-                      <label className="radioLabel" htmlFor="naoposdoc">
-                        Não{' '}
-                      </label>
-                      <Label2>Tem pós-doutorado ?</Label2>
-                    </FormInputGroup>
-                  </Column>
+                        </Section>
+                      </div>
+                    </Fragment>
+                  )}
                 </div>
+                <Section>
+                  <Checkbox
+                    type="checkbox"
+                    id="hasCNPQScholarship"
+                    {...register('hasCNPQScholarship')}
+                  />
+                  <CheckboxLabel htmlFor="hasCNPQScholarship">Possui Bolsa CNPQ</CheckboxLabel>
+                </Section>
+                <Section>
+                  <Checkbox
+                    type="checkbox"
+                    id="hasFinishedDoctorateOnUFF"
+                    {...register('hasFinishedDoctorateOnUFF')}
+                  />
+                  <CheckboxLabel htmlFor="hasFinishedDoctorateOnUFF">
+                    Concluiu o doutorado da PGC/UFF?
+                  </CheckboxLabel>
+                </Section>
+                <Section>
+                  <Checkbox
+                    type="checkbox"
+                    id="hasFinishedMasterDegreeOnUFF"
+                    {...register('hasFinishedMasterDegreeOnUFF')}
+                  />
+                  <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
+                    Concluiu o mestrado da PGC ou CAA - UFF ?
+                  </CheckboxLabel>
+                </Section>
+                <Section>
+                  <Checkbox
+                    type="checkbox"
+                    id="hasFinishedMasterDegreeOnUFF"
+                    checked={hasPostDoctorate}
+                    onChange={() => setHasPostDoctorate(!hasPostDoctorate)}
+                  />
+                  <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
+                    Tem pós-doutorado?
+                  </CheckboxLabel>
+                  {hasPostDoctorate && (
+                    <Fragment>
+                      <Row>
+                        <LabelCheckbox htmlFor="institutionType">Tipo de Instituição</LabelCheckbox>
+                        <Select id="postDoctorate.type" name="postDoctorate.type">
+                          {institutionTypes.map((institutionType: any) => (
+                            <option key={institutionType.id} value={institutionType.id}>
+                              {institutionType.name}
+                            </option>
+                          ))}
+                        </Select>
+                      </Row>
+                      <FormInputGroupEdit>
+                        <Input
+                          placeholder="Local de Trabalho"
+                          defaultValue={user?.institution?.name}
+                          required
+                          {...register('postDoctorate.name', { required: true })}
+                        />
+                        <Label htmlFor="postDoctorate.name">Local de Trabalho</Label>
+                      </FormInputGroupEdit>
+                      <FormInputGroupEdit>
+                        <Input
+                          placeholder="Cargo"
+                          defaultValue={user?.position}
+                          pattern="[^0-9]*"
+                          title="O campo deve possuir apenas letras."
+                          required
+                          {...register('position', { required: true })}
+                        />
+                        <Label>Cargo</Label>
+                      </FormInputGroupEdit>
+                    </Fragment>
+                  )}
+                </Section>
                 <FormInputGroup>
                   <Button onClick={notify} type="submit">
                     Salvar Alterações
@@ -223,7 +223,7 @@ const Editar: React.FC = () => {
                   <ToastContainer position="top-center" />
                 </FormInputGroup>
               </form>
-            </FormLogin>
+            </Form>
           </Content>
         </Background>
       </MainWrapper>

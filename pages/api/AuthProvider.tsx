@@ -18,10 +18,8 @@ const AuthProvider = ({ children }) => {
       })
       const profile = await response.json()
       if (profile.error) {
-        console.log('passei aqui erro', profile)
         setUser(null)
       } else {
-        console.log('passei aqui sucesso', profile)
         if (profile.message === 'Unauthenticated') {
           setUser(null)
         } else {
@@ -41,13 +39,9 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check that a new route is OK
     const handleRouteChange = async url => {
-      console.log('url', url)
-      console.log('user', user)
       if (url !== '/' && !user) {
-        console.log('entrei aquiiiii1', url)
         await router.push('/')
       } else if (url === '/' && user) {
-        console.log('entrei aquiiiii2', url)
         if (user.role === Roles.GRADUATE) {
           await router.push('/editar')
         } else {
@@ -58,7 +52,6 @@ const AuthProvider = ({ children }) => {
 
     // Check that initial route is OK
     if (pathname !== '/' && user === null) {
-      console.log('entrei aquiiiii3', pathname)
       router.push('/')
     }
 
