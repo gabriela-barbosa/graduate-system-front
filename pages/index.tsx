@@ -19,8 +19,13 @@ import fotoIcUff from '../public/fotoicuff.jpg'
 import logo from '../public/logo-ic-uff-branca.png'
 import Image from 'next/image'
 import { useAuth } from './api/AuthProvider'
+import styled from 'styled-components'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+
+const FormInputGroupLoginFields = styled(FormInputGroup)`
+  width: 320px;
+`
 
 const Home: React.FC = () => {
   const {
@@ -71,7 +76,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <MainWrapper themeName={Theme.gray} hasContent={false}>
+      <MainWrapper hasHeader={false} themeName={Theme.gray} hasContent={false}>
         <Image src={fotoIcUff} layout="fill" objectFit="cover" />
         <Background>
           <Content>
@@ -79,29 +84,27 @@ const Home: React.FC = () => {
               <Image src={logo} width="370" height="265" layout="fixed" />
             </ImageLogo>
             <Title>Sistema de Egressos</Title>
-            <Form>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <FormInputGroup>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Form>
+                <FormInputGroupLoginFields>
                   <Input placeholder="Email" {...register('email', { required: true })} />
                   <Label htmlFor="email">Email</Label>
-                </FormInputGroup>
-                <FormInputGroup>
+                </FormInputGroupLoginFields>
+                <FormInputGroupLoginFields>
                   <Input
                     type="password"
                     placeholder="Senha"
                     {...register('password', { required: true })}
                   />
                   <Label htmlFor="password">Senha</Label>
-                </FormInputGroup>
-                {/* <Link href={'/listagem'} as="/listagem"> */}
+                </FormInputGroupLoginFields>
                 <a>
-                  <FormInputGroup>
+                  <FormInputGroupLoginFields>
                     <Button type="submit">Continuar</Button>
-                  </FormInputGroup>
+                  </FormInputGroupLoginFields>
                 </a>
-                {/* </Link> */}
-              </form>
-            </Form>
+              </Form>
+            </form>
           </Content>
         </Background>
       </MainWrapper>

@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
 export const Content = styled.div`
-  width: 100%;
+  //width: 100%;
   padding: 50px;
-  position: absolute;
+  //position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,7 +19,6 @@ export const Column = styled.div`
 `
 
 export const Section = styled.div`
-  flex: 50%;
   width: ${({ width }: { width?: string }) => width ?? 100}%;
   padding-right: 10px;
   padding-bottom: 30px;
@@ -29,12 +28,18 @@ export const CheckboxLabel = styled.label`
   padding-left: 5px;
 `
 
+const alignCenter = `
+align-content : center;
+  flex-direction: column;
+  flex-wrap: wrap;
+`
+
 export const Form = styled.div`
   width: 100%;
   position: relative;
   display: flex;
-  justify-content: ${({ position }: { position?: string }) =>
-    position === 'left' ? 'left' : 'center'};
+  ${({ position }: { position?: string }) =>
+    position === 'left' ? 'justify-content: left;' : alignCenter};
 `
 
 export const FormInputGroup = styled.div`
@@ -72,7 +77,7 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   display: block;
-  width: 100%;
+  width: ${({ width }: { width?: number }) => (width ? `${width}px` : '100%')};
   //width: 300px;
   height: 48px;
   padding-left: 16px;
@@ -90,13 +95,13 @@ export const Input = styled.input`
   }
 
   &:not(:placeholder-shown) {
-    padding-top: 26px;
-    padding-bottom: 14px;
+    //padding-top: 26px;
+    //padding-bottom: 14px;
     padding-left: 16px;
   }
 
   &:not(:placeholder-shown) + ${Label} {
-    transform: translateY(-10px);
+    transform: translateY(-12px);
     opacity: 1;
   }
 

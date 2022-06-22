@@ -8,12 +8,14 @@ export default createGlobalStyle`
   }
 
   body {
+    width: 100%;
+    display: table-cell;
     background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.text};
     font: 400 16px Roboto, sans-serif;
   }
    html,
-  body {
+   body {
     height: 100%;
   }
 
@@ -37,7 +39,9 @@ export default createGlobalStyle`
 
 
   html {
-    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    display: table;
     font-size: 100%;
   }
 
@@ -45,10 +49,6 @@ export default createGlobalStyle`
   *::before,
   *::after {
     box-sizing: inherit;
-  }
-
-  .formEditar{
-    width: 800px;
   }
 
   .formSecretaria{
@@ -120,6 +120,10 @@ export default createGlobalStyle`
 
   table{
     border-collapse: collapse;
+  }
+
+  form{
+    width: 100%;
   }
 
   .user{

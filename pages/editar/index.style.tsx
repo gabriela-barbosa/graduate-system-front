@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Label } from '../../src/styles/index.style'
+import React from 'react'
+import { Input, Label, Section } from '../../src/styles/index.style'
 
 export const Background = styled.div`
   background: rgba(255, 255, 255);
@@ -14,6 +15,11 @@ export const Content = styled.div`
   flex-direction: column;
   display: block;
   margin: 0 auto;
+`
+
+export const SectionEdit = styled(Section)`
+  display: flex;
+  flex-wrap: wrap;
 `
 
 export const Checkbox = styled.input``
@@ -72,6 +78,7 @@ export const LabelCheckbox = styled.label`
 `
 
 export const FormInputGroupEdit = styled.div`
+  flex: 0 1 50%;
   position: relative;
   display: flex;
   justify-content: left;
@@ -81,7 +88,7 @@ export const FormInputGroupEdit = styled.div`
 
 export const LabelSelect = styled.label`
   position: absolute;
-  top: 6px;
+  top: 4px;
   left: 20px;
   transition: all 0.3s ease;
   opacity: 1;
@@ -93,11 +100,9 @@ export const LabelSelect = styled.label`
 
 export const Select = styled.select`
   display: block;
-  width: 100%;
-  //width: 300px;
+  width: 550px;
   height: 48px;
   padding-left: 12px;
-  padding-top: 12px;
   transition: all 0.3s linear;
   border: 3px solid #cbcbcb;
   border-radius: 8px;
@@ -111,10 +116,10 @@ export const Select = styled.select`
     outline: 0;
   }
 
-  &:not(:placeholder-shown) + ${LabelSelect} {
-    transform: translateY(-10px);
-    opacity: 1;
-  }
+  // &:not(:placeholder-shown) + ${LabelSelect} {
+  //   transform: translateY(-12px);
+  //   opacity: 1;
+  // }
 
   &::placeholder {
     top: 0;
@@ -126,6 +131,8 @@ export const Select = styled.select`
     line-height: 19px;
   }
 `
+
+export const InputEditar = (props: any) => <Input width={550} {...props} />
 
 export const Button = styled.button`
   width: 164px;

@@ -8,7 +8,7 @@ export const Background = styled.div`
 `
 
 export const Content = styled.div`
-  width: 90%;
+  width: 100%;
   padding: 20px 50px 50px 50px;
   flex-direction: column;
   display: block;

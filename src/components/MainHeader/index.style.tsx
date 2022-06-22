@@ -31,6 +31,7 @@ export const LogoutButton = styled.button`
   font-size: 15px;
   line-height: 18px;
   color: #0000004d;
+  background-color: transparent;
   border: none;
   text-decoration: underline;
 `
