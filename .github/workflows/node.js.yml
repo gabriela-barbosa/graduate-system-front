@@ -23,7 +23,7 @@ jobs:
       - name: Install Yarn
         run: npm install yarn
       - name: Install packages
-        run: yarn ci
+        run: yarn
       - name: Build project
         run: yarn build
       - name: Export static files
