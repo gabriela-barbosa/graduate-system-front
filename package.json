@@ -10,7 +10,7 @@
     "test": "jest --env=jsdom",
     "lint": "eslint ./",
     "lint:style": "stylelint '**/*style.js'",
-    "predeploy": "yarn build",
+    "predeploy": "next build",
     "deploy": "gh-pages -d build"
   },
   "dependencies": {
