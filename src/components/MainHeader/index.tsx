@@ -1,11 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Header, Cabecalho, Title, Icon, Texto, logoutButton, LogoutButton } from './index.style'
+import { Header, Cabecalho, Title, Icon, Texto, LogoutButton } from './index.style'
 import logo from '../../../public/logo-ic-uff-verde.png'
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { useAuth } from '../../../pages/api/AuthProvider'
+import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
@@ -37,7 +36,7 @@ const MainHeader: React.FC = () => {
           <tbody>
             <tr>
               <td>
-                <Link href="/listagem" passHref>
+                <Link href="/egressos" passHref>
                   <a>
                     <Image src={logo} alt="Logo IC-UFF" />
                   </a>
@@ -48,7 +47,7 @@ const MainHeader: React.FC = () => {
               </td>
               <td align="right">
                 <Icon>
-                  <FontAwesomeIcon icon={faUserCircle} />
+                  <FontAwesomeIcon icon={'user-circle'} />
                 </Icon>
               </td>
               <td align="right">

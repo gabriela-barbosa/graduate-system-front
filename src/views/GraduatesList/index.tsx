@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import MainWrapper from '../../src/components/MainWrapper'
-import { Roles, Theme } from '../../src/utils/enums'
+import MainWrapper from '../../components/MainWrapper'
+import { Roles, Theme } from '../../utils/enums'
 import { Background, Content, Title, Subtitle, Fields, Icon } from './index.style'
 
-import MainHeader from '../../src/components/MainHeader'
+import MainHeader from '../../components/MainHeader'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
-import { useAuth } from '../api/AuthProvider'
+import { useAuth } from '../../api/AuthProvider'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -84,7 +84,7 @@ const GraduateList: React.FC = () => {
                     </td>
                     <td>
                       <Icon>
-                        <FontAwesomeIcon onClick={onClickEdit} icon={faPencilAlt} />
+                        <FontAwesomeIcon onClick={onClickEdit} icon={'pencil-alt'} />
                       </Icon>
                     </td>
                   </tr>

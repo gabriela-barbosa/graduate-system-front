@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { AuthContextType } from '../context/authContext'
-import { Roles } from '../../src/utils/enums'
+import { Roles } from '../utils/enums'
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 export const AuthContext = createContext<AuthContextType | null>(null)

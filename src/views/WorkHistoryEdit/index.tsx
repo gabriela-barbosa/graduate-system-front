@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import MainWrapper from '../../src/components/MainWrapper'
-import { Theme } from '../../src/utils/enums'
+import MainWrapper from '../../components/MainWrapper'
+import { Theme } from '../../utils/enums'
 import { useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -16,7 +16,7 @@ import {
   SectionEdit,
   InputEditar,
 } from './index.style'
-import { useAuth } from '../api/AuthProvider'
+import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
 import {
   FormInputGroup,
@@ -25,7 +25,7 @@ import {
   CheckboxLabel,
   Section,
   Label,
-} from '../../src/styles/index.style'
+} from '../../styles/index.style'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 

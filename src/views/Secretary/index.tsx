@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Head from 'next/head'
-import MainWrapper from '../../src/components/MainWrapper'
-import { Theme } from '../../src/utils/enums'
+import MainWrapper from '../../components/MainWrapper'
+import { Theme } from '../../utils/enums'
 import { useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -16,12 +16,9 @@ import {
   FormEditar,
   Label2,
 } from './index.style'
-import fotoIcUff from '../public/fotoicuff.jpg'
-import logo from '../public/logo-ic-uff-branca.png'
-import Image from 'next/image'
 import Link from 'next/link'
-import MainHeader from '../../src/components/MainHeader'
-import { FormInputGroup, Input, Label } from '../../src/styles/index.style'
+import MainHeader from '../../components/MainHeader'
+import { FormInputGroup, Input, Label } from '../../styles/index.style'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -307,7 +304,7 @@ const Secretaria: React.FC = () => {
                   </div>
                 </div>
                 <FormInputGroup>
-                  <Link href={'/listagem'} as="/listagem">
+                  <Link href={'/egressos'} as="/egressos">
                     <Button2 type="submit">Voltar</Button2>
                   </Link>
                   <Button type="submit">Salvar Alterações</Button>

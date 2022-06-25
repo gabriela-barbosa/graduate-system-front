@@ -18,7 +18,7 @@ import {
 import fotoIcUff from '../public/fotoicuff.jpg'
 import logo from '../public/logo-ic-uff-branca.png'
 import Image from 'next/image'
-import { useAuth } from './api/AuthProvider'
+import { useAuth } from '../src/api/AuthProvider'
 import styled from 'styled-components'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API

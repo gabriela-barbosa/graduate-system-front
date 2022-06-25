@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React from 'react'
-import { Input, Label, Section } from '../../src/styles/index.style'
+import { Input, Label, Section } from '../../styles/index.style'
 
 export const Background = styled.div`
   background: rgba(255, 255, 255);
