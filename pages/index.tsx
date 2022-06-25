@@ -1,5 +1,4 @@
 import React from 'react'
-import Head from 'next/head'
 import MainWrapper from '../src/components/MainWrapper'
 import { Theme } from '../src/utils/enums'
 import { useForm } from 'react-hook-form'
