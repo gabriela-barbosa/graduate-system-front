@@ -15,6 +15,7 @@ type AppProps = {
 }
 
 export const Wrapper = styled.div<AppProps>`
+  display: grid;
   position: relative;
   width: 100%;
   height: 100%;
@@ -33,10 +34,10 @@ export const Wrapper = styled.div<AppProps>`
 `
 
 export const Content = styled.div`
-  width: 100%;
+  //width: 100%;
+  flex-direction: column;
   height: 100%;
-  padding-right: 16px;
-  padding-left: 16px;
+  padding: 0 70px 0 50px;
 
   //@media (min-width: 360px) {
   //  width: 328px;

@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
 export const Content = styled.div`
-  width: 100%;
+  //width: 100%;
   padding: 50px;
-  position: absolute;
+  //position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,11 +13,33 @@ export const ImageLogo = styled.div`
   padding-top: 112px;
 `
 
-export const FormLogin = styled.div`
+export const Column = styled.div`
+  float: left;
+  width: 50%;
+`
+
+export const Section = styled.div`
+  width: ${({ width }: { width?: string }) => width ?? 100}%;
+  padding-right: 10px;
+  padding-bottom: 30px;
+`
+
+export const CheckboxLabel = styled.label`
+  padding-left: 5px;
+`
+
+const alignCenter = `
+align-content : center;
+  flex-direction: column;
+  flex-wrap: wrap;
+`
+
+export const Form = styled.div`
   width: 100%;
   position: relative;
   display: flex;
-  justify-content: center;
+  ${({ position }: { position?: string }) =>
+    position === 'left' ? 'justify-content: left;' : alignCenter};
 `
 
 export const FormInputGroup = styled.div`
@@ -55,7 +77,8 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   display: block;
-  width: 300px;
+  width: ${({ width }: { width?: number }) => (width ? `${width}px` : '100%')};
+  //width: 300px;
   height: 48px;
   padding-left: 16px;
   transition: all 0.3s linear;
@@ -72,13 +95,13 @@ export const Input = styled.input`
   }
 
   &:not(:placeholder-shown) {
-    padding-top: 26px;
-    padding-bottom: 14px;
+    //padding-top: 26px;
+    //padding-bottom: 14px;
     padding-left: 16px;
   }
 
   &:not(:placeholder-shown) + ${Label} {
-    transform: translateY(-10px);
+    transform: translateY(-12px);
     opacity: 1;
   }
 
@@ -116,6 +139,7 @@ export const Button = styled.button`
   line-height: 23px;
   color: #4b907eff;
   border: none;
+
   &:hover {
     opacity: 1;
   }
@@ -126,4 +150,8 @@ export const Background = styled.div`
   opacity: 0.99;
   height: 100%;
   width: 100%;
+`
+
+export const Row = styled.div`
+  padding-top: 15px;
 `
