@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import MainWrapper from '../../components/MainWrapper'
 import { Theme } from '../../utils/enums'
 import { useForm } from 'react-hook-form'
@@ -14,14 +14,13 @@ import {
   Subtitle,
   LabelSelect,
   SectionEdit,
-  InputEditar,
+  InputEditar, ButtonSecondary,
 } from './index.style'
 import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
 import {
   FormInputGroup,
   Form,
-  Input,
   CheckboxLabel,
   Section,
   Label,
@@ -29,8 +28,9 @@ import {
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
-const Editar: React.FC = () => {
-  const notify = () => toast.success('Alteração salva com sucesso!')
+const WorkHistory = () => {
+  const [graduateInfo, setGraduateInfo] = useState()
+  const notify = (event) => console.log('bora', event)
   const [hasInstitutionalLink, setHasInstitutionalLink] = useState(false)
   const [hasCNPQScholarship, setHasCNPQScholarship] = useState(false)
   const [hasPostDoctorate, setHasPostDoctorate] = useState(false)
@@ -38,10 +38,28 @@ const Editar: React.FC = () => {
   const [cnpqLevels, setCNPQLevels] = useState([])
   const {
     register,
+    setValue,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
-  } = useForm()
+  } = useForm({
+    defaultValues: useMemo(() => {
+      return graduateInfo;
+    }, [graduateInfo])
+  })
+
+  useEffect(() => {
+    console.log('Reset');
+    reset(graduateInfo);
+  }, [graduateInfo]);
+
+  const changeHasCNPQScholarship = () => {
+    setHasCNPQScholarship(!hasCNPQScholarship)
+    if (hasCNPQScholarship) {
+      setValue('cnpqLevelId', null)
+    }
+  }
 
   useEffect(() => {
     const getInstitutionTypes = async () => {
@@ -58,33 +76,121 @@ const Editar: React.FC = () => {
       const result = await response.json()
       setCNPQLevels(result)
     }
+    const getGraduateAndWorkHistoryInfo = async () => {
+      if (historyid) {
+        const response = await fetch(`${GRADUATE_API}/v1/workhistory/${historyid}`, {
+          credentials: 'include',
+        })
+        const result = await response.json()
+        setGraduateInfo(result)
+        const {
+          institution,
+          postDoctorate,
+          cnpqLevelId,
+        } = result
+        if (institution)
+          setHasInstitutionalLink(true)
+        if (postDoctorate)
+          setHasPostDoctorate(true)
+        if (cnpqLevelId)
+          setHasCNPQScholarship(true)
+      }
+    }
     getInstitutionTypes()
     getCNPQLevels()
+    getGraduateAndWorkHistoryInfo()
   }, [])
 
-  const onSubmit = data => {
-    fetch(`${GRADUATE_API}`)
+  const validate = (data) => {
+
+  }
+
+  const onSend = async (data) => {
+    const {
+      email,
+      institution,
+      position,
+      postDoctorate,
+      cnpqLevelId,
+      hasFinishedDoctorateOnUFF,
+      hasFinishedMasterDegreeOnUFF,
+    } = data
+
+
+    const body = {
+      email: graduateInfo?.email,
+      position,
+      hasFinishedDoctorateOnUFF,
+      hasFinishedMasterDegreeOnUFF,
+    }
+    if (hasInstitutionalLink)
+      body['institution'] = institution
+    if (hasPostDoctorate)
+      body['postDoctorate'] = postDoctorate
+    if (hasCNPQScholarship)
+      body['cnpqLevelId'] = cnpqLevelId
+    if (email !== graduateInfo.email) {
+      body['newEmail'] = email
+    }
+
+    const myInit = {
+      method: historyid ? 'PUT' : 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    }
+
+    const result = await fetch(`${GRADUATE_API}/v1/${historyid ? `workhistory/${historyid}` : 'graduate'}`, myInit)
+    if (result.status === 201 || result.status === 204) {
+      toast.success('Salvo com sucesso!', {
+        position: 'bottom-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error('Ocorreu algum problema.', {
+        position: 'bottom-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+  }
+  const onSaveDraft = data => {
+    console.log('boraaaaanakndskdnaksdnasa', data)
   }
   const { user } = useAuth()
   const router = useRouter()
+  const { userid, historyid } = router.query
+
 
   return (
     <>
       <MainWrapper themeName={Theme.white}>
         <Title>Registro de Histórico do Egresso</Title>
-        <Form position="left">
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSend)}>
+          <Form>
             <div>
               <Subtitle>Informações pessoais</Subtitle>
               <SectionEdit>
                 <FormInputGroupEdit>
                   <InputEditar
-                    defaultValue={user?.email}
+                    defaultValue={graduateInfo?.email}
                     placeholder="E-mail"
                     type="email"
                     title="Digite um e-mail válido."
                     pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}"
-                    required
                     {...register('email', { required: true })}
                   />
                   <Label htmlFor="email">E-mail</Label>
@@ -98,7 +204,8 @@ const Editar: React.FC = () => {
                 <Checkbox
                   type="checkbox"
                   id="institutionalLink"
-                  checked={hasInstitutionalLink}
+                  defaultChecked={!!(graduateInfo?.institution)}
+                  checked={!!(graduateInfo?.institution)}
                   onChange={() => setHasInstitutionalLink(!hasInstitutionalLink)}
                 />
                 <CheckboxLabel htmlFor="institutionalLink">
@@ -111,15 +218,17 @@ const Editar: React.FC = () => {
                     <FormInputGroupEdit>
                       <InputEditar
                         placeholder="Nome da instituição"
-                        defaultValue={user?.institution?.name}
-                        required
-                        {...register('institution.name', { required: true })}
+                        defaultValue={graduateInfo?.institution?.name}
+                        {...register('institution.name')}
                       />
                       <Label htmlFor="institution.name">Nome da instituição</Label>
                     </FormInputGroupEdit>
                     <FormInputGroupEdit>
                       <LabelSelect htmlFor="institutionType">Tipo de Instituição</LabelSelect>
-                      <Select {...register('institution.type')}>
+                      <Select
+                        name="institution.type"
+                        defaultValue={graduateInfo?.institution?.type}
+                        {...register('institution.type')}>
                         {institutionTypes.map((institutionType: any) => (
                           <option key={institutionType.id} value={institutionType.id}>
                             {institutionType.name}
@@ -129,12 +238,12 @@ const Editar: React.FC = () => {
                     </FormInputGroupEdit>
                     <FormInputGroupEdit>
                       <InputEditar
+                        name="position"
                         placeholder="Cargo"
-                        defaultValue={user?.position}
                         pattern="[^0-9]*"
+                        defaultValue={graduateInfo?.position}
                         title="O campo deve possuir apenas letras."
-                        required
-                        {...register('position', { required: true })}
+                        {...register('position')}
                       />
                       <Label>Cargo</Label>
                     </FormInputGroupEdit>
@@ -151,6 +260,7 @@ const Editar: React.FC = () => {
                 type="checkbox"
                 id="hasFinishedMasterDegreeOnUFF"
                 checked={hasPostDoctorate}
+                defaultChecked={!!(graduateInfo?.postDoctorate)}
                 onChange={() => setHasPostDoctorate(!hasPostDoctorate)}
               />
               <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
@@ -163,15 +273,18 @@ const Editar: React.FC = () => {
                   <FormInputGroupEdit>
                     <InputEditar
                       placeholder="Nome da instituição"
-                      defaultValue={null}
-                      required
-                      {...register('postDoctorate.name', { required: true })}
+                      defaultValue={graduateInfo?.postDoctorate?.name}
+                      name="postDoctorate.name"
+                      {...register('postDoctorate.name')}
                     />
                     <Label htmlFor="postDoctorate.name">Nome da instituição</Label>
                   </FormInputGroupEdit>
                   <FormInputGroupEdit>
                     <LabelSelect htmlFor="postDoctorate.type">Tipo de Instituição</LabelSelect>
-                    <Select {...register('postDoctorate.type')}>
+                    <Select
+                      name="postDoctorate.type"
+                      defaultValue={graduateInfo?.postDoctorate?.type}
+                      {...register('postDoctorate.type')}>
                       {institutionTypes.map((institutionType: any) => (
                         <option key={institutionType.id} value={institutionType.id}>
                           {institutionType.name}
@@ -186,6 +299,7 @@ const Editar: React.FC = () => {
               <Checkbox
                 type="checkbox"
                 id="hasCNPQScholarship"
+                defaultChecked={!!(graduateInfo?.cnpqLevelId)}
                 checked={hasCNPQScholarship}
                 onChange={() => setHasCNPQScholarship(!hasCNPQScholarship)}
               />
@@ -196,12 +310,15 @@ const Editar: React.FC = () => {
                 <SectionEdit>
                   <FormInputGroupEdit>
                     <LabelSelect htmlFor="cnpqLevelId">Bolsa CNPQ</LabelSelect>
-                    <Select {...register('cnpqLevelId')}>
-                      {cnpqLevels.map((level: any) => (
+                    <Select
+                      name="cnpqLevelId"
+                      defaultValue={graduateInfo?.cnpqLevelId}
+                      {...register('cnpqLevelId')}>
+                      {cnpqLevels.map((level: any) =>
                         <option key={level.id} value={level.id}>
                           {level.level}
                         </option>
-                      ))}
+                      )}
                     </Select>
                   </FormInputGroupEdit>
                 </SectionEdit>
@@ -211,6 +328,8 @@ const Editar: React.FC = () => {
               <Checkbox
                 type="checkbox"
                 id="hasFinishedDoctorateOnUFF"
+                name="hasFinishedDoctorateOnUFF"
+                defaultChecked={!!(graduateInfo?.hasFinishedDoctorateOnUFF)}
                 {...register('hasFinishedDoctorateOnUFF')}
               />
               <CheckboxLabel htmlFor="hasFinishedDoctorateOnUFF">
@@ -221,6 +340,8 @@ const Editar: React.FC = () => {
               <Checkbox
                 type="checkbox"
                 id="hasFinishedMasterDegreeOnUFF"
+                name="hasFinishedMasterDegreeOnUFF"
+                defaultChecked={!!(graduateInfo?.hasFinishedMasterDegreeOnUFF)}
                 {...register('hasFinishedMasterDegreeOnUFF')}
               />
               <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
@@ -228,16 +349,19 @@ const Editar: React.FC = () => {
               </CheckboxLabel>
             </Section>
             <FormInputGroup>
-              <Button onClick={notify} type="submit">
-                Salvar Alterações
+              <ButtonSecondary onClick={handleSubmit(onSaveDraft)}>
+                Salvar Rascunho
+              </ButtonSecondary>
+              <Button type="submit">
+                Enviar
               </Button>
-              <ToastContainer position="top-center" />
+              <ToastContainer position="bottom-center"/>
             </FormInputGroup>
-          </form>
-        </Form>
+          </Form>
+        </form>
       </MainWrapper>
     </>
   )
 }
 
-export default Editar
+export default WorkHistory

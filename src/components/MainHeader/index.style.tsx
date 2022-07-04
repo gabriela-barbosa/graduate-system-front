@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { rem } from 'polished'
 
 export const Header = styled.header`
+  height: 114px;
   width: 100%;
   padding-top: ${rem('24px')};
   border-bottom: 3px solid rgba(11, 105, 81, 0.7);

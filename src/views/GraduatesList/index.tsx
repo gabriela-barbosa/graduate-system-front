@@ -14,7 +14,7 @@ const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 const status = {
   PENDING: 'Pendente',
   UPDATED: 'Atualizado',
-  UPDATED_PARTIALlY: 'Atualizado parcialmente',
+  UPDATED_PARTIALLY: 'Atualizado parcialmente',
   UNKNOWN: 'Desconhecido',
 }
 
@@ -35,64 +35,64 @@ const GraduateList: React.FC = () => {
   }, [])
 
   const router = useRouter()
-  const onClickEdit = () => {
+  const onClickEdit = (graduate: any) => {
     if (user.role === Roles.ADMIN) router.push('/secretaria')
-    else router.push('/editar')
+    else router.push(`/historico/${graduate.id}${graduate.workPlace ? '/' + graduate.workPlace.id : ''}`)
   }
 
   return (
     <>
-      <MainWrapper themeName={Theme.gray} hasContent={false}>
-        <Background>
-          <MainHeader />
-          <Content>
+      <MainWrapper themeName={Theme.white} hasContent={true}>
+        {/*<Background>*/}
+        {/*  <MainHeader/>*/}
+        {/*  <Content>*/}
             <Title>Listagem de Egressos</Title>
             <table>
               <thead>
-                <tr className="table-header">
-                  <td>
-                    <Fields>Nome</Fields>
-                  </td>
-                  <td>
-                    <Fields>Status</Fields>
-                  </td>
-                  <td>
-                    <Fields>Local de Trabalho</Fields>
-                  </td>
-                  <td>
-                    <Fields>Cargo</Fields>
-                  </td>
-                  <td>
-                    <Fields>Editar</Fields>
-                  </td>
-                </tr>
+              <tr className="table-header">
+                <td>
+                  <Fields>Nome</Fields>
+                </td>
+                <td>
+                  <Fields>Status</Fields>
+                </td>
+                <td>
+                  <Fields>Local de Trabalho</Fields>
+                </td>
+                <td>
+                  <Fields>Cargo</Fields>
+                </td>
+                <td>
+                  <Fields>Editar</Fields>
+                </td>
+              </tr>
               </thead>
               <tbody>
-                {graduates.map((graduate: any) => (
-                  <tr key={graduate.id}>
-                    <td>
-                      <Fields>{graduate.name}</Fields>
-                    </td>
-                    <td>
-                      <Fields status={graduate.status}>{status[graduate.status]}</Fields>
-                    </td>
-                    <td>
-                      <Fields>{graduate.workPlace.name}</Fields>
-                    </td>
-                    <td>
-                      <Fields>{graduate.position}</Fields>
-                    </td>
-                    <td>
-                      <Icon>
-                        <FontAwesomeIcon onClick={onClickEdit} icon={'pencil-alt'} />
-                      </Icon>
-                    </td>
-                  </tr>
-                ))}
+              {graduates.map((graduate: any) => (
+                <tr key={graduate.id}>
+                  <td>
+                    <Fields>{graduate.name}</Fields>
+                  </td>
+                  <td>
+                    <Fields status={graduate.status}>{status[graduate.status]}</Fields>
+                  </td>
+                  <td>
+                    <Fields>{graduate.workPlace.name}</Fields>
+                  </td>
+                  <td>
+                    <Fields>{graduate.position}</Fields>
+                  </td>
+                  <td>
+                    <Icon>
+                      <FontAwesomeIcon onClick={() => onClickEdit(graduate)} icon={faPencilAlt}/>
+                    </Icon>
+                  </td>
+                </tr>
+              ))}
               </tbody>
             </table>
-          </Content>
-        </Background>
+        {/*  </Content>*/}
+        {/*</Background>*/}
       </MainWrapper>
     </>
   )

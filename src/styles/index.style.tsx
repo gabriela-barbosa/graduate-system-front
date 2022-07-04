@@ -77,7 +77,7 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   display: block;
-  width: ${({ width }: { width?: number }) => (width ? `${width}px` : '100%')};
+  width: 100%;
   //width: 300px;
   height: 48px;
   padding-left: 16px;

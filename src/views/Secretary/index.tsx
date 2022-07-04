@@ -304,7 +304,7 @@ const Secretaria: React.FC = () => {
                   </div>
                 </div>
                 <FormInputGroup>
-                  <Link href={'/egressos'} as="/egressos">
+                  <Link href={'/historico'} as="/egressos">
                     <Button2 type="submit">Voltar</Button2>
                   </Link>
                   <Button type="submit">Salvar Alterações</Button>

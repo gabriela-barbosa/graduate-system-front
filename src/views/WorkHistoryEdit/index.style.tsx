@@ -116,7 +116,7 @@ export const Select = styled.select`
     outline: 0;
   }
 
-  // &:not(:placeholder-shown) + ${LabelSelect} {
+    // &:not(:placeholder-shown) + ${LabelSelect} {
   //   transform: translateY(-12px);
   //   opacity: 1;
   // }
@@ -132,7 +132,9 @@ export const Select = styled.select`
   }
 `
 
-export const InputEditar = (props: any) => <Input width={550} {...props} />
+export const InputEditar = styled(Input)`
+  width: 550px;
+`
 
 export const Button = styled.button`
   width: 164px;
@@ -149,10 +151,34 @@ export const Button = styled.button`
   line-height: 23px;
   color: #ffff;
   border: none;
+
   &:hover {
     opacity: 1;
   }
 `
+
+export const ButtonSecondary = styled.button`
+  margin: 0 10px;
+  width: 164px;
+  height: 46px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  background-color: #ffff;
+  opacity: 0.8;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 17px;
+  line-height: 23px;
+  color: #4b907eff;
+  border: solid 2px #4b907eff;
+
+  &:hover {
+    opacity: 1;
+  }
+`
+
 // export const Button2 = styled.button`
 //   margin-right: 5%;
 //   width: 164px;

@@ -40,9 +40,9 @@ const Home: React.FC = () => {
   const redirectAccordingRole = user => {
     if (user) {
       if (user?.role === Roles.GRADUATE) {
-        router.push('/editar')
+        router.push('/historico')
       } else {
-        router.push('/listagem')
+        router.push('/egressos')
       }
     }
   }

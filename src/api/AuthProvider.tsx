@@ -38,28 +38,28 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check that a new route is OK
-    const handleRouteChange = async url => {
-      if (url !== '/' && !user) {
-        await router.push('/')
-      } else if (url === '/' && user) {
-        if (user.role === Roles.GRADUATE) {
-          await router.push('/editar')
-        } else {
-          await router.push('/listagem')
-        }
-      }
-    }
+    // const handleRouteChange = async url => {
+    //   if (url !== '/' && !user) {
+    //     await router.push('/')
+    //   } else if (url === '/' && user) {
+    //     if (user.role === Roles.GRADUATE) {
+    //       await router.push('/historico')
+    //     } else {
+    //       await router.push('/historico')
+    //     }
+    //   }
+    // }
 
     // Check that initial route is OK
-    if (pathname !== '/' && user === null) {
-      router.push('/')
-    }
+    // if (pathname !== '/' && user === null) {
+    //   router.push('/')
+    // }
 
     // Monitor routes
-    events.on('routeChangeStart', handleRouteChange)
-    return () => {
-      events.off('routeChangeStart', handleRouteChange)
-    }
+    // events.on('routeChangeStart', handleRouteChange)
+    // return () => {
+    //   events.off('routeChangeStart', handleRouteChange)
+    // }
   }, [user])
 
   return <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>
