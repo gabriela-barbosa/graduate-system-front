@@ -4,6 +4,7 @@ import GlobalStyle from '../src/styles/global'
 import { ThemeProvider } from 'styled-components'
 import theme from '../src/styles/theme'
 import { AuthProvider } from '../src/api/AuthProvider'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (

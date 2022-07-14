@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
 import { useAuth } from '../../api/AuthProvider'
+import {Button} from "../Secretary/index.style";
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -38,6 +39,10 @@ const GraduateList: React.FC = () => {
   const onClickEdit = (graduate: any) => {
     if (user.role === Roles.ADMIN) router.push('/secretaria')
     else router.push(`/historico/${graduate.id}${graduate.workPlace ? '/' + graduate.workPlace.id : ''}`)
+  }
+
+  const select = () => {
+    router.push('/select')
   }
 
   return (
@@ -91,6 +96,8 @@ const GraduateList: React.FC = () => {
               ))}
               </tbody>
             </table>
+        <br></br><br></br><br></br>
+        <Button type="text" onClick={select}>Gerenciar Opções</Button>
         {/*  </Content>*/}
         {/*</Background>*/}
       </MainWrapper>
