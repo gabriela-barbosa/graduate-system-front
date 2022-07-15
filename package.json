@@ -55,7 +55,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.4.0",
     "react-hook-form": "^7.15.4",
-    "react-toastify": "^9.0.4",
+    "react-toastify": "^9.0.5",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-property-sort-order-smacss": "^7.1.0",
     "stylelint-config-recommended": "^5.0.0",

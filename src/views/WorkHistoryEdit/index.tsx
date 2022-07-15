@@ -31,6 +31,8 @@ const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 const WorkHistory = () => {
   const [graduateInfo, setGraduateInfo] = useState()
   const notify = (event) => console.log('bora', event)
+  const salvoSucesso = () => toast("Salvo com sucesso!");
+  const enviadoSucesso = () => toast("Enviado com sucesso!");
   const [hasInstitutionalLink, setHasInstitutionalLink] = useState(false)
   const [hasCNPQScholarship, setHasCNPQScholarship] = useState(false)
   const [hasPostDoctorate, setHasPostDoctorate] = useState(false)
@@ -258,12 +260,12 @@ const WorkHistory = () => {
             <Section>
               <Checkbox
                 type="checkbox"
-                id="hasFinishedMasterDegreeOnUFF"
+                id="hasFinishedPosDoc"
                 checked={hasPostDoctorate}
                 defaultChecked={!!(graduateInfo?.postDoctorate)}
                 onChange={() => setHasPostDoctorate(!hasPostDoctorate)}
               />
-              <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
+              <CheckboxLabel htmlFor="hasFinishedPosDoc">
                 Tem pós-doutorado?
               </CheckboxLabel>
             </Section>

@@ -81,6 +81,10 @@ export default createGlobalStyle`
     background-color: #FDD;
   }
 
+  .contentSelect{
+    padding: 20px 0px 50px 50px;
+  }
+
   /* This is the style of our error messages */
 
 

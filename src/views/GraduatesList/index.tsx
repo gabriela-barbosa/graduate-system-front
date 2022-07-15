@@ -47,10 +47,10 @@ const GraduateList: React.FC = () => {
 
   return (
     <>
-      <MainWrapper themeName={Theme.white} hasContent={true}>
-        {/*<Background>*/}
-        {/*  <MainHeader/>*/}
-        {/*  <Content>*/}
+      <MainWrapper themeName={Theme.gray} hasContent={false} hasHeader={false}>
+        <Background>
+          <MainHeader />
+          <div className="contentSelect">
             <Title>Listagem de Egressos</Title>
             <table>
               <thead>
@@ -98,8 +98,9 @@ const GraduateList: React.FC = () => {
             </table>
         <br></br><br></br><br></br>
         <Button type="text" onClick={select}>Gerenciar Opções</Button>
-        {/*  </Content>*/}
-        {/*</Background>*/}
+          </div>
+
+        </Background>
       </MainWrapper>
     </>
   )
