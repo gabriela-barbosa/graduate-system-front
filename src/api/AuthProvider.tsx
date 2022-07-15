@@ -32,8 +32,8 @@ const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    console.log('passei aqui')
-    getUser()
+    console.log('passei aqui', pathname)
+    if (pathname !== '/') getUser()
   }, [pathname])
 
   useEffect(() => {
@@ -49,12 +49,10 @@ const AuthProvider = ({ children }) => {
     //     }
     //   }
     // }
-
     // Check that initial route is OK
     // if (pathname !== '/' && user === null) {
     //   router.push('/')
     // }
-
     // Monitor routes
     // events.on('routeChangeStart', handleRouteChange)
     // return () => {

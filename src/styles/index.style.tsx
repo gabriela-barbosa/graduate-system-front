@@ -90,6 +90,16 @@ export const Input = styled.input`
   font-size: 20px;
   line-height: 23px;
 
+  &:disabled {
+    border: 3px solid #cbcbcb7c;
+    background-color: #ffffff7f;
+    color: #4b907e82;
+  }
+
+  &:disabled::placeholder {
+    color: #4b907e82;
+  }
+
   &:focus {
     outline: 0;
   }

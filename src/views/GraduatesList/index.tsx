@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import MainWrapper from '../../components/MainWrapper'
 import { Roles, Theme } from '../../utils/enums'
-import { Background, Content, Title, Subtitle, Fields, Icon } from './index.style'
+import { Title, Fields, Icon } from './index.style'
 
-import MainHeader from '../../components/MainHeader'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
@@ -37,64 +36,60 @@ const GraduateList: React.FC = () => {
   const router = useRouter()
   const onClickEdit = (graduate: any) => {
     if (user.role === Roles.ADMIN) router.push('/secretaria')
-    else router.push(`/historico/${graduate.id}${graduate.workPlace ? '/' + graduate.workPlace.id : ''}`)
+    else
+      router.push(
+        `/historico/${graduate.id}${graduate.workPlace ? '/' + graduate.workPlace.id : ''}`
+      )
   }
 
   return (
-    <>
-      <MainWrapper themeName={Theme.white} hasContent={true}>
-        {/*<Background>*/}
-        {/*  <MainHeader/>*/}
-        {/*  <Content>*/}
-            <Title>Listagem de Egressos</Title>
-            <table>
-              <thead>
-              <tr className="table-header">
-                <td>
-                  <Fields>Nome</Fields>
-                </td>
-                <td>
-                  <Fields>Status</Fields>
-                </td>
-                <td>
-                  <Fields>Local de Trabalho</Fields>
-                </td>
-                <td>
-                  <Fields>Cargo</Fields>
-                </td>
-                <td>
-                  <Fields>Editar</Fields>
-                </td>
-              </tr>
-              </thead>
-              <tbody>
-              {graduates.map((graduate: any) => (
-                <tr key={graduate.id}>
-                  <td>
-                    <Fields>{graduate.name}</Fields>
-                  </td>
-                  <td>
-                    <Fields status={graduate.status}>{status[graduate.status]}</Fields>
-                  </td>
-                  <td>
-                    <Fields>{graduate.workPlace.name}</Fields>
-                  </td>
-                  <td>
-                    <Fields>{graduate.position}</Fields>
-                  </td>
-                  <td>
-                    <Icon>
-                      <FontAwesomeIcon onClick={() => onClickEdit(graduate)} icon={faPencilAlt}/>
-                    </Icon>
-                  </td>
-                </tr>
-              ))}
-              </tbody>
-            </table>
-        {/*  </Content>*/}
-        {/*</Background>*/}
-      </MainWrapper>
-    </>
+    <MainWrapper themeName={Theme.white} hasContent={true}>
+      <Title>Listagem de Egressos</Title>
+      <table>
+        <thead>
+          <tr className="table-header">
+            <td>
+              <Fields>Nome</Fields>
+            </td>
+            <td>
+              <Fields>Status</Fields>
+            </td>
+            <td>
+              <Fields>Local de Trabalho</Fields>
+            </td>
+            <td>
+              <Fields>Cargo</Fields>
+            </td>
+            <td>
+              <Fields>Editar</Fields>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          {graduates.map((graduate: any) => (
+            <tr key={graduate.id}>
+              <td>
+                <Fields>{graduate.name}</Fields>
+              </td>
+              <td>
+                <Fields status={graduate.status}>{status[graduate.status]}</Fields>
+              </td>
+              <td>
+                <Fields>{graduate.workPlace.name}</Fields>
+              </td>
+              <td>
+                <Fields>{graduate.position}</Fields>
+              </td>
+              <td>
+                <Icon>
+                  <FontAwesomeIcon onClick={() => onClickEdit(graduate)} icon={faPencilAlt} />
+                </Icon>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </MainWrapper>
   )
 }
 
