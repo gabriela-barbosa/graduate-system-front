@@ -81,6 +81,10 @@ export default createGlobalStyle`
     background-color: #FDD;
   }
 
+  .contentSelect{
+    padding: 20px 0px 50px 50px;
+  }
+
   /* This is the style of our error messages */
 
 
@@ -143,4 +147,39 @@ export default createGlobalStyle`
   #__next {
     height: 100%;
   }
+
+  .trash-icon{
+    margin-left: 20px;
+    cursor: pointer;
+  }
+
+  .tables{
+    width: 700px;
+  }
+
+  .abrir-modal{
+    margin-right: 5% ;
+    width: 204px;
+    padding: 10px;
+    height: 46px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    background-color: #ffff;
+    opacity: 0.8;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 17px;
+    line-height: 23px;
+    color: #4b907eff;
+    border: solid 2px;
+    &:hover {
+      opacity: 1;
+    }
+
+    .modal{
+      color: red;
+    }
+
   `

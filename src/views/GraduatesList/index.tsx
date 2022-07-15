@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
 import { useAuth } from '../../api/AuthProvider'
+import { Button } from '../Secretary/index.style'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -42,53 +43,65 @@ const GraduateList: React.FC = () => {
       )
   }
 
+  const select = () => {
+    router.push('/select')
+  }
+
   return (
     <MainWrapper themeName={Theme.white} hasContent={true}>
-      <Title>Listagem de Egressos</Title>
-      <table>
-        <thead>
-          <tr className="table-header">
-            <td>
-              <Fields>Nome</Fields>
-            </td>
-            <td>
-              <Fields>Status</Fields>
-            </td>
-            <td>
-              <Fields>Local de Trabalho</Fields>
-            </td>
-            <td>
-              <Fields>Cargo</Fields>
-            </td>
-            <td>
-              <Fields>Editar</Fields>
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          {graduates.map((graduate: any) => (
-            <tr key={graduate.id}>
+      <div className="contentSelect">
+        <Title>Listagem de Egressos</Title>
+        <table>
+          <thead>
+            <tr className="table-header">
               <td>
-                <Fields>{graduate.name}</Fields>
+                <Fields>Nome</Fields>
               </td>
               <td>
-                <Fields status={graduate.status}>{status[graduate.status]}</Fields>
+                <Fields>Status</Fields>
               </td>
               <td>
-                <Fields>{graduate.workPlace.name}</Fields>
+                <Fields>Local de Trabalho</Fields>
               </td>
               <td>
-                <Fields>{graduate.position}</Fields>
+                <Fields>Cargo</Fields>
               </td>
               <td>
-                <Icon>
-                  <FontAwesomeIcon onClick={() => onClickEdit(graduate)} icon={faPencilAlt} />
-                </Icon>
+                <Fields>Editar</Fields>
               </td>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {graduates.map((graduate: any) => (
+              <tr key={graduate.id}>
+                <td>
+                  <Fields>{graduate.name}</Fields>
+                </td>
+                <td>
+                  <Fields status={graduate.status}>{status[graduate.status]}</Fields>
+                </td>
+                <td>
+                  <Fields>{graduate.workPlace.name}</Fields>
+                </td>
+                <td>
+                  <Fields>{graduate.position}</Fields>
+                </td>
+                <td>
+                  <Icon>
+                    <FontAwesomeIcon onClick={() => onClickEdit(graduate)} icon={faPencilAlt} />
+                  </Icon>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <br></br>
+        <br></br>
+        <br></br>
+        <Button type="text" onClick={select}>
+          Gerenciar Opções
+        </Button>
+      </div>
     </MainWrapper>
   )
 }

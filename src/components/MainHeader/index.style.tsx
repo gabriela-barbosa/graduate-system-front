@@ -50,7 +50,7 @@ export const Icon = styled.h1`
   color: rgba(11, 105, 81, 0.7);
 `
 
-export const Texto = styled.h4`
+export const Texto = styled.h6`
   color: rgba(11, 105, 81, 0.7);
 `
 
