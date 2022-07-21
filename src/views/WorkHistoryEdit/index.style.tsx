@@ -2,13 +2,6 @@ import styled from 'styled-components'
 import React from 'react'
 import { Input, Label, Section } from '../../styles/index.style'
 
-export const Background = styled.div`
-  background: rgba(255, 255, 255);
-  opacity: 0.99;
-  height: 100%;
-  width: 100%;
-`
-
 export const Content = styled.div`
   width: 90%;
   padding: 20px 50px 50px 50px;
@@ -47,34 +40,6 @@ export const Subtitle = styled.h2`
   line-height: 47px;
 
   color: rgba(11, 105, 81, 0.7);
-`
-
-export const Fields = styled.h1`
-  padding-top: 0px;
-  padding-bottom: 10px;
-  padding-right: 140px;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 24px;
-  line-height: 47px;
-
-  color: rgba(11, 105, 81, 0.7);
-`
-export const Label2 = styled.label`
-  position: absolute;
-  top: -20px;
-  left: 20px;
-  transition: all 0.3s ease;
-  opacity: 1;
-  color: #4b907e;
-  font-family: Roboto;
-  font-size: 14px;
-  line-height: 14px;
-`
-
-export const LabelCheckbox = styled.label`
-  padding-bottom: 15px;
 `
 
 export const FormInputGroupEdit = styled.div`
@@ -116,7 +81,13 @@ export const Select = styled.select`
     outline: 0;
   }
 
-    // &:not(:placeholder-shown) + ${LabelSelect} {
+  &:disabled {
+    border: 3px solid #cbcbcb7c;
+    background-color: #ffffff7f;
+    color: #4b907e82;
+  }
+
+  // &:not(:placeholder-shown) + ${LabelSelect} {
   //   transform: translateY(-12px);
   //   opacity: 1;
   // }
@@ -133,7 +104,7 @@ export const Select = styled.select`
 `
 
 export const InputEditar = styled(Input)`
-  width: 550px;
+  width: 450px;
 `
 
 export const Button = styled.button`

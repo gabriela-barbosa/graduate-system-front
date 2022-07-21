@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
