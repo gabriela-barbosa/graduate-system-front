@@ -100,7 +100,7 @@ const Select: React.FC = () => {
 
   const handleUpdateCnpq = async () => {
     const myInit = {
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ const Select: React.FC = () => {
       credentials: 'include',
       body: JSON.stringify({level: newCnpqLevel})
     }
-    const result = await fetch(`${GRADUATE_API}/v1/cnpqlevels/${currentEditId}`, myInit as RequestInit)
+    const result = await fetch(`${GRADUATE_API}/v1/cnpqlevel/${currentEditId}`, myInit as RequestInit)
     if (result){
       setCurrentEditId('')
       await getCnpqLevels()
@@ -163,7 +163,7 @@ const Select: React.FC = () => {
 
   const handleUpdateInstitution = async () => {
     const myInit = {
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -225,8 +225,9 @@ const Select: React.FC = () => {
   }
 
   const handleUpdateProgram = async () => {
+    console.log('olaaar')
     const myInit = {
-      method: 'PATCH',
+      method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -236,6 +237,7 @@ const Select: React.FC = () => {
     }
     const result = await fetch(`${GRADUATE_API}/v1/ciprogram/${currentEditId}`, myInit as RequestInit)
     if (result){
+      console.log(result)
       setCurrentEditId('')
       await getPrograms()
       salvoSucesso()
@@ -361,7 +363,7 @@ const Select: React.FC = () => {
                   </tr>
                   </thead>
                   <tbody>
-                  {cnpqLevels.map((level) => (
+                  {cnpqLevels?.map((level) => (
                     <tr key={level.id}>
                       <td>
                         <Subtitle>{level.level}</Subtitle>

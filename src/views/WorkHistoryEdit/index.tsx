@@ -305,7 +305,7 @@ const WorkHistory = () => {
                 checked={hasCNPQScholarship}
                 onChange={() => setHasCNPQScholarship(!hasCNPQScholarship)}
               />
-              <CheckboxLabel htmlFor="hasCNPQScholarship">Possui Bolsa CNPQ</CheckboxLabel>
+              <CheckboxLabel htmlFor="hasCNPQScholarship">Possui Bolsa CNPQ?</CheckboxLabel>
             </Section>
             {hasCNPQScholarship && (
               <Fragment>
@@ -335,7 +335,7 @@ const WorkHistory = () => {
                 {...register('hasFinishedDoctorateOnUFF')}
               />
               <CheckboxLabel htmlFor="hasFinishedDoctorateOnUFF">
-                Concluiu o doutorado da PGC/UFF?
+                Concluiu o doutorado no PGC/UFF?
               </CheckboxLabel>
             </Section>
             <Section>
@@ -347,7 +347,7 @@ const WorkHistory = () => {
                 {...register('hasFinishedMasterDegreeOnUFF')}
               />
               <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
-                Concluiu o mestrado da PGC ou CAA - UFF ?
+                Concluiu o mestrado no PGC ou CAA - UFF ?
               </CheckboxLabel>
             </Section>
             <FormInputGroup>
