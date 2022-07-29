@@ -1,25 +1,25 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import MainWrapper from '../../components/MainWrapper'
-import { Theme } from '../../utils/enums'
+import { Roles, Theme } from '../../utils/enums'
 import { useForm } from 'react-hook-form'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import {
   Button,
-  Title,
+  ButtonSecondary,
   Checkbox,
   FormInputGroupEdit,
-  Select,
-  Subtitle,
+  InputEditar,
   LabelSelect,
   SectionEdit,
-  InputEditar,
-  ButtonSecondary,
+  Select,
+  Subtitle,
+  Title,
 } from './index.style'
 import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
-import { FormInputGroup, Form, CheckboxLabel, Section, Label } from '../../styles/index.style'
+import { CheckboxLabel, Form, FormInputGroup, Label, Section } from '../../styles/index.style'
 import { FormType } from './types'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
@@ -36,7 +36,7 @@ const WorkHistory = () => {
   const { user } = useAuth()
   const router = useRouter()
 
-  const { userid, historyid } = router.query
+  const { graduateid, historyid } = router.query
 
   useEffect(() => {
     console.warn('graduateInfo', graduateInfo)
@@ -87,21 +87,23 @@ const WorkHistory = () => {
         const response = await fetch(`${GRADUATE_API}/v1/workhistory/${historyid}`, {
           credentials: 'include',
         })
-        const result = await response.json()
-        setGraduateInfo(result)
-        const { institution, postDoctorate, cnpqLevelId } = result
-        if (institution) setHasInstitutionalLink(true)
-        if (postDoctorate) setHasPostDoctorate(true)
-        if (cnpqLevelId) setHasCNPQScholarship(true)
+        if (response.status === 200) {
+          const result = await response.json()
+          setGraduateInfo(result)
+          const { institution, postDoctorate, cnpqLevelId } = result
+          if (institution) setHasInstitutionalLink(true)
+          if (postDoctorate) setHasPostDoctorate(true)
+          if (cnpqLevelId) setHasCNPQScholarship(true)
+        }
       } else {
         try {
-          console.warn(userid)
-          const response = await fetch(`${GRADUATE_API}/v1/workhistory/graduate/${userid}`, {
+          console.warn(graduateid)
+          const response = await fetch(`${GRADUATE_API}/v1/workhistory/graduate/${graduateid}`, {
             credentials: 'include',
           })
           console.warn(response)
 
-          if (response) {
+          if (response.status === 200) {
             const result = await response.json()
             console.log(result)
 
@@ -110,6 +112,15 @@ const WorkHistory = () => {
             if (institution) setHasInstitutionalLink(true)
             if (postDoctorate) setHasPostDoctorate(true)
             if (cnpqLevelId) setHasCNPQScholarship(true)
+          } else if (response.status === 404) {
+            const response = await fetch(`${GRADUATE_API}/v1/graduate/${graduateid}`, {
+              credentials: 'include',
+            })
+            if (response.status === 200) {
+              const result = await response.json()
+
+              setGraduateInfo({ email: result.user.email })
+            }
           }
         } catch (e) {
           console.error(e)
@@ -275,7 +286,7 @@ const WorkHistory = () => {
                 checked={hasPostDoctorate}
                 onChange={() => setHasPostDoctorate(!hasPostDoctorate)}
               />
-              <CheckboxLabel htmlFor="hasPostDoctorate">Tem pós-doutorado?</CheckboxLabel>
+              <CheckboxLabel htmlFor="hasPostDoctorate">Possui pós-doutorado?</CheckboxLabel>
             </Section>
             <Fragment>
               <SectionEdit>
@@ -311,7 +322,7 @@ const WorkHistory = () => {
                 checked={hasCNPQScholarship}
                 onChange={() => setHasCNPQScholarship(!hasCNPQScholarship)}
               />
-              <CheckboxLabel htmlFor="hasCNPQScholarship">Possui Bolsa CNPQ</CheckboxLabel>
+              <CheckboxLabel htmlFor="hasCNPQScholarship">Possui Bolsa CNPQ?</CheckboxLabel>
             </Section>
             <Fragment>
               <SectionEdit>
@@ -331,28 +342,33 @@ const WorkHistory = () => {
                 </FormInputGroupEdit>
               </SectionEdit>
             </Fragment>
-            <Section>
-              <Checkbox
-                type="checkbox"
-                id="hasFinishedDoctorateOnUFF"
-                name="hasFinishedDoctorateOnUFF"
-                {...register('hasFinishedDoctorateOnUFF')}
-              />
-              <CheckboxLabel htmlFor="hasFinishedDoctorateOnUFF">
-                Concluiu o doutorado da PGC/UFF?
-              </CheckboxLabel>
-            </Section>
-            <Section>
-              <Checkbox
-                type="checkbox"
-                id="hasFinishedMasterDegreeOnUFF"
-                name="hasFinishedMasterDegreeOnUFF"
-                {...register('hasFinishedMasterDegreeOnUFF')}
-              />
-              <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
-                Concluiu o mestrado da PGC ou CAA - UFF ?
-              </CheckboxLabel>
-            </Section>
+            {user.role === Roles.ADMIN && (
+              <Fragment>
+                <Section>
+                  <Checkbox
+                    type="checkbox"
+                    id="hasFinishedDoctorateOnUFF"
+                    name="hasFinishedDoctorateOnUFF"
+                    {...register('hasFinishedDoctorateOnUFF')}
+                  />
+                  <CheckboxLabel htmlFor="hasFinishedDoctorateOnUFF">
+                    Concluiu o doutorado no PGC/UFF?
+                  </CheckboxLabel>
+                </Section>
+                <Section>
+                  <Checkbox
+                    type="checkbox"
+                    id="hasFinishedMasterDegreeOnUFF"
+                    name="hasFinishedMasterDegreeOnUFF"
+                    {...register('hasFinishedMasterDegreeOnUFF')}
+                  />
+                  <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
+                    Concluiu o mestrado no PGC ou CAA - UFF ?
+                  </CheckboxLabel>
+                </Section>
+              </Fragment>
+            )}
+
             <FormInputGroup>
               <ButtonSecondary onClick={handleSubmit(onSaveDraft)}>Salvar Rascunho</ButtonSecondary>
               <Button type="submit">Enviar</Button>

@@ -36,7 +36,7 @@ const Home: React.FC = () => {
   } = useForm()
   // const navigate = useNavigate()
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
   const redirectAccordingRole = user => {
     if (user) {
       if (user?.role === Roles.GRADUATE) {
@@ -53,7 +53,7 @@ const Home: React.FC = () => {
 
   const onSubmit = async body => {
     console.warn(body)
-    const myInit = {
+    const myInit: RequestInit = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -62,14 +62,13 @@ const Home: React.FC = () => {
       credentials: 'include',
       body: JSON.stringify(body),
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const result = await fetch(`${GRADUATE_API}/v1/login`, myInit)
     if (result.status === 200) {
       const response = await fetch(`${GRADUATE_API}/v1/user`, {
         credentials: 'include',
       })
       const profile = await response.json()
+      setUser(profile)
       redirectAccordingRole(profile)
     }
   }

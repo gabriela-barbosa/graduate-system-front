@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import MainWrapper from '../../components/MainWrapper'
 import { Roles, Theme } from '../../utils/enums'
-import { Title, Fields, Icon } from './index.style'
+import { Fields, Icon, Title } from './index.style'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
@@ -22,25 +22,28 @@ const GraduateList: React.FC = () => {
   const [graduates, setGraduates] = useState([])
   const { user } = useAuth()
 
+  const getUrlPerRole = (role: Roles) => {
+    if (role === Roles.ADMIN) return 'allgraduates'
+    else if (role === Roles.PROFESSOR) return 'graduates'
+    else console.error('Aluno não pode acessar')
+  }
+
   useEffect(() => {
     const getGraduates = async () => {
-      const response = await fetch(`${GRADUATE_API}/v1/graduate`, {
+      const response = await fetch(`${GRADUATE_API}/v1/${getUrlPerRole(user.role)}`, {
         credentials: 'include',
       })
-      const result = await response.json()
-      console.log('graduates', result)
-      setGraduates(result)
+      if (response.status === 200) {
+        const result = await response.json()
+        setGraduates(result)
+      }
     }
     getGraduates()
   }, [])
 
   const router = useRouter()
   const onClickEdit = (graduate: any) => {
-    if (user.role === Roles.ADMIN) router.push('/secretaria')
-    else
-      router.push(
-        `/historico/${graduate.id}${graduate.workPlace ? '/' + graduate.workPlace.id : ''}`
-      )
+    router.push(`/historico/${graduate.id}${graduate.workPlace ? '/' + graduate.workPlace.id : ''}`)
   }
 
   const select = () => {
@@ -72,7 +75,7 @@ const GraduateList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {graduates.map((graduate: any) => (
+            {graduates?.map((graduate: any) => (
               <tr key={graduate.id}>
                 <td>
                   <Fields>{graduate.name}</Fields>
@@ -81,10 +84,10 @@ const GraduateList: React.FC = () => {
                   <Fields status={graduate.status}>{status[graduate.status]}</Fields>
                 </td>
                 <td>
-                  <Fields>{graduate.workPlace.name}</Fields>
+                  <Fields>{graduate.workPlace ? graduate.workPlace.name : '-'}</Fields>
                 </td>
                 <td>
-                  <Fields>{graduate.position}</Fields>
+                  <Fields>{graduate.position ?? '-'}</Fields>
                 </td>
                 <td>
                   <Icon>
@@ -98,9 +101,7 @@ const GraduateList: React.FC = () => {
         <br></br>
         <br></br>
         <br></br>
-        <Button type="text" onClick={select}>
-          Gerenciar Opções
-        </Button>
+        <Button onClick={select}>Gerenciar Opções</Button>
       </div>
     </MainWrapper>
   )
