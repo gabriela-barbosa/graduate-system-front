@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
 import { useAuth } from '../../api/AuthProvider'
-import { Button } from '../Secretary/index.style'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -95,12 +94,6 @@ const GraduateList: React.FC = () => {
             ))}
           </tbody>
         </table>
-        <br></br>
-        <br></br>
-        <br></br>
-        <Button type="text" onClick={select}>
-          Gerenciar Opções
-        </Button>
       </div>
     </MainWrapper>
   )

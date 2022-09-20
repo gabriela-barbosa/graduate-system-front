@@ -41,8 +41,11 @@ const Home: React.FC = () => {
     if (user) {
       if (user?.role === Roles.GRADUATE) {
         router.push(`/historico/${user.id}`)
-      } else {
-        router.push('/egressos')
+      } if (user?.role === Roles.PROFESSOR) {
+        router.push(`/egressos`)
+      }
+      if (user?.role === Roles.ADMIN) {
+        router.push(`/secretaria`)
       }
     }
   }

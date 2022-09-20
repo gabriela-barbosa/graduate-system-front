@@ -109,12 +109,59 @@ export const FormEditar = styled.div`
   display: flex;
   justify-content: left;
 `
-
-export const Icon = styled.button`
-  font-size: 18px;
-  line-height: 24px;
+export const Button3 = styled.button`
+  margin-right: 2% ;
+  width: 184px;
+  height: 46px;
+  border-radius: 25px;
   cursor: pointer;
-  color: #00000066;
-  border: none;
-  background: transparent;
+  transition: background-color 0.2s, color 0.2s;
+  background-color: #4b907eff;
+  opacity: 0.8;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 17px;
+  line-height: 23px;
+  color: #ffff;
+  border: solid 2px;
+  &:hover {
+    opacity: 1;
+  }
+`
+
+export const Input2 = styled.input`
+  display: block;
+  width: 440px;
+  //width: 300px;
+  height: 48px;
+  padding-left: 16px;
+  transition: all 0.3s linear;
+  border: 3px solid #cbcbcb;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #4b907e;
+  font-family: Roboto;
+  font-size: 20px;
+  line-height: 23px;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:not(:placeholder-shown) {
+    //padding-top: 26px;
+    //padding-bottom: 14px;
+    padding-left: 16px;
+  }
+
+  &::placeholder {
+    top: 0;
+    color: #4b907e;
+    font-size: 16px;
+    font-style: normal;
+    font-family: Roboto;
+    letter-spacing: 0.48px;
+    line-height: 19px;
+  }
 `
