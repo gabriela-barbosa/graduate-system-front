@@ -1,1 +1,1 @@
-export { default } from '../src/views/Secretary'
+export { default } from '../src/views/GraduatesList'
