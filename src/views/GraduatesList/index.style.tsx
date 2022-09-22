@@ -1,10 +1,15 @@
 import styled from 'styled-components'
+import { Grid } from '@mui/material'
 const statusColor = {
   PENDING: '#e11818',
   UPDATED: '#5BAFC9',
   UPDATED_PARTIALLY: '#DCB552',
   UNKNOWN: '#808080D3',
 }
+
+export const PageWrapper = styled(Grid)`
+  padding: 20px 0 50px 50px;
+`
 
 export const Background = styled.div`
   background: #ffffffff;
