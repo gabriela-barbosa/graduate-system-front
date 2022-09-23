@@ -32,9 +32,9 @@ const WorkHistory = () => {
   const [hasPostDoctorate, setHasPostDoctorate] = useState(false)
   const [institutionTypes, setInstitutionTypes] = useState([])
   const [cnpqLevels, setCNPQLevels] = useState([])
-  const [graduate, setGraduate] = useState()
-  const { user } = useAuth()
   const router = useRouter()
+
+  const { user } = useAuth()
 
   const { graduateid, historyid } = router.query
 
@@ -178,7 +178,7 @@ const WorkHistory = () => {
     }
 
     const result = await fetch(
-      `${GRADUATE_API}/v1/${historyid ? `workhistory/${historyid}` : 'graduate'}`,
+      `${GRADUATE_API}/v1/workhistory${historyid ? `/${historyid}` : ''}`,
       myInit as RequestInit
     )
     if (result.status === 201 || result.status === 204) {
@@ -369,9 +369,8 @@ const WorkHistory = () => {
               </Fragment>
             )}
 
-
             <FormInputGroup>
-              <ButtonSecondary onClick={handleSubmit(onSaveDraft)}>Salvar Rascunho</ButtonSecondary>
+              <ButtonSecondary onClick={() => router.push(`/egressos`)}>Voltar</ButtonSecondary>
               <Button type="submit">Enviar</Button>
               <ToastContainer position="bottom-center" />
             </FormInputGroup>
