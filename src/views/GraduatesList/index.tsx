@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import MainWrapper from '../../components/MainWrapper'
 import { Theme } from '../../utils/enums'
-import { Fields, Icon, PageWrapper, Title } from './index.style'
+import { Icon, Table, TableHeader, TBody, TD, TR } from './index.style'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
-import { Grid, Pagination } from '@mui/material'
+import { FormControl, Grid, Pagination } from '@mui/material'
 import { ListGraduatesFilters, PaginationType } from './types'
-import {
-  Button,
-  FormInputGroupEdit,
-  InputEditar,
-  LabelSelect,
-  Select,
-} from '../WorkHistoryEdit/index.style'
-import { Label } from '../../styles/index.style'
+import { Button } from '../WorkHistoryEdit/index.style'
+import { Fields, PageWrapper, Title } from '../../styles/index.style'
+import { FormContainer } from 'react-hook-form-mui'
+import { Input } from '../../components/Input'
 import { useForm } from 'react-hook-form'
+import { Select } from '../../components/Select'
+import { toast } from 'react-toastify'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -33,36 +31,29 @@ const GraduateList: React.FC = () => {
   const [graduates, setGraduates] = useState([])
   const [pagination, setPagination] = useState<PaginationType>()
   const [institutionTypes, setInstitutionTypes] = useState([])
-
+  const defaultInstitutionType = { id: 0, label: 'Nenhum tipo de instituição selecionado' }
   const router = useRouter()
-  const {
-    register,
-    setValue,
-    handleSubmit,
-    watch,
-    reset,
-    getValues,
-    formState: { errors },
-  } = useForm()
 
-  const isValid = (value?: string) => value !== ''
+  const formContext = useForm()
+  const { getValues } = formContext
+
+  const isValid = (value?: string) => value && value !== ''
 
   const getFilledFilters = (filters?: ListGraduatesFilters) => {
     const { name, institutionType, institutionName } = filters ?? {}
-    const filter = {}
-    if (isValid(name)) filter.name = name
-    if (institutionType && institutionType != 0) filter.institutionType = institutionType
-    if (isValid(institutionName)) filter.institutionName = institutionName
-    return filter
+    const arrayFilter = []
+    if (isValid(name)) arrayFilter.push(['name', name])
+    // eslint-disable-next-line eqeqeq
+    if (institutionType && institutionType !== '0')
+      arrayFilter.push(['institutionType', institutionType])
+    if (isValid(institutionName)) arrayFilter.push(['institutionName', institutionName])
+    return arrayFilter
   }
   const getGraduates = async (page: number, filters?: ListGraduatesFilters) => {
+    const filledFilters = getFilledFilters(filters)
+    filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])
     const response = await fetch(
-      `${GRADUATE_API}/v1/graduates?` +
-        new URLSearchParams({
-          page: `${page - 1}`,
-          pageSize: `${pageSize}`,
-          ...getFilledFilters(filters),
-        }),
+      `${GRADUATE_API}/v1/graduates?` + new URLSearchParams(filledFilters),
       {
         credentials: 'include',
       }
@@ -77,8 +68,14 @@ const GraduateList: React.FC = () => {
     const response = await fetch(`${GRADUATE_API}/v1/institution/type`, {
       credentials: 'include',
     })
+
+    if (response.status >= 400 && response.status < 600) {
+      toast.error('Erro ao buscar tipos de insituição')
+      return
+    }
     const result = await response.json()
-    setInstitutionTypes(result)
+
+    setInstitutionTypes(result.map(({ name, id }) => ({ id, label: name })))
   }
 
   const onSend = async (data: ListGraduatesFilters) => {
@@ -99,13 +96,8 @@ const GraduateList: React.FC = () => {
     getGraduates(value, filters)
   }
 
-  const select = () => {
-    router.push('/select')
-  }
-
   return (
     <MainWrapper themeName={Theme.white} hasContent={true}>
-      {/* <div className="contentSelect"> */}
       <PageWrapper
         spacing={2}
         container
@@ -114,94 +106,89 @@ const GraduateList: React.FC = () => {
         direction="column"
       >
         <Grid item>
-          <Title>Listagem de Egressos</Title>
+          <Grid container direction="column" spacing={3}>
+            <Grid item>
+              <Title>Listagem de Egressos</Title>
+            </Grid>
+            <Grid item>
+              <FormContainer formContext={formContext} onSuccess={onSend}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <Input label="Nome da instituição" name="institutionName" />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <Select
+                        name={'institutionType'}
+                        label={'Tipo da instituição'}
+                        options={[defaultInstitutionType, ...institutionTypes]}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <Input label="Nome do egresso" name="name" />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button type="submit">Buscar</Button>
+                  </Grid>
+                </Grid>
+              </FormContainer>
+            </Grid>
+            <Grid item height={510}>
+              <Table>
+                <TableHeader>
+                  <TR>
+                    <TD>
+                      <Fields>Nome</Fields>
+                    </TD>
+                    <TD>
+                      <Fields>Status</Fields>
+                    </TD>
+                    <TD>
+                      <Fields>Local de Trabalho</Fields>
+                    </TD>
+                    <TD>
+                      <Fields>Cargo</Fields>
+                    </TD>
+                    <TD>
+                      <Fields>Editar</Fields>
+                    </TD>
+                  </TR>
+                </TableHeader>
 
-          <div>
-            <form onSubmit={handleSubmit(onSend)}>
-              <Grid container>
-                <Grid item xs={4}>
-                  <FormInputGroupEdit>
-                    <InputEditar
-                      placeholder="Nome da instituição"
-                      {...register('institutionName')}
-                    />
-                    <Label htmlFor="institutionName">Nome da instituição</Label>
-                  </FormInputGroupEdit>
-                </Grid>
-                <Grid item xs={6}>
-                  <FormInputGroupEdit>
-                    <LabelSelect htmlFor="institutionType">Tipo de Instituição</LabelSelect>
-                    <Select {...register('institutionType')}>
-                      <option key={0} value={0}>
-                        Nenhum tipo de instituição selecionado
-                      </option>
-                      {institutionTypes.map((institutionType: any) => (
-                        <option key={institutionType.id} value={institutionType.id}>
-                          {institutionType.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </FormInputGroupEdit>
-                </Grid>
-                <Grid item xs={4}>
-                  <FormInputGroupEdit>
-                    <InputEditar placeholder="Nome do egresso" {...register('name')} />
-                    <Label htmlFor="name">Nome do egresso</Label>
-                  </FormInputGroupEdit>
-                </Grid>
-                <Grid item xs={2}>
-                  <Button type="submit">Buscar</Button>
-                </Grid>
-              </Grid>
-            </form>
-          </div>
-          <div style={{ height: 500 }}>
-            <table>
-              <thead>
-                <tr className="table-header">
-                  <td>
-                    <Fields>Nome</Fields>
-                  </td>
-                  <td>
-                    <Fields>Status</Fields>
-                  </td>
-                  <td>
-                    <Fields>Local de Trabalho</Fields>
-                  </td>
-                  <td>
-                    <Fields>Cargo</Fields>
-                  </td>
-                  <td>
-                    <Fields>Editar</Fields>
-                  </td>
-                </tr>
-              </thead>
-
-              <tbody>
-                {graduates?.map((graduate: any) => (
-                  <tr key={graduate.id}>
-                    <td>
-                      <Fields>{graduate.name}</Fields>
-                    </td>
-                    <td>
-                      <Fields status={graduate.status}>{status[graduate.status]}</Fields>
-                    </td>
-                    <td>
-                      <Fields>{graduate.workPlace ? graduate.workPlace.name : '-'}</Fields>
-                    </td>
-                    <td>
-                      <Fields>{graduate.position ?? '-'}</Fields>
-                    </td>
-                    <td>
-                      <Icon>
-                        <FontAwesomeIcon onClick={() => onClickEdit(graduate)} icon={faPencilAlt} />
-                      </Icon>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                <TBody>
+                  {graduates?.map((graduate: any) => (
+                    <TR key={graduate.id}>
+                      <TD>
+                        <Fields>{graduate.name}</Fields>
+                      </TD>
+                      <TD>
+                        <Fields status={graduate.status}>{status[graduate.status]}</Fields>
+                      </TD>
+                      <TD>
+                        <Fields>{graduate.workPlace ? graduate.workPlace.name : '-'}</Fields>
+                      </TD>
+                      <TD>
+                        <Fields>{graduate.position ?? '-'}</Fields>
+                      </TD>
+                      <TD>
+                        <Icon>
+                          <FontAwesomeIcon
+                            onClick={() => onClickEdit(graduate)}
+                            icon={faPencilAlt}
+                          />
+                        </Icon>
+                      </TD>
+                    </TR>
+                  ))}
+                </TBody>
+              </Table>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item>
           {pagination && (

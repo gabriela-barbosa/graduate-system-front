@@ -6,8 +6,6 @@ import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import {
-  Button,
-  ButtonSecondary,
   Checkbox,
   FormInputGroupEdit,
   InputEditar,
@@ -19,14 +17,21 @@ import {
 } from './index.style'
 import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
-import { CheckboxLabel, Form, FormInputGroup, Label, Section } from '../../styles/index.style'
+import {
+  Button,
+  ButtonSecondary,
+  CheckboxLabel,
+  Form,
+  FormInputGroup,
+  Label,
+  Section,
+} from '../../styles/index.style'
 import { FormType } from './types'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 const WorkHistory = () => {
   const [graduateInfo, setGraduateInfo] = useState<FormType>()
-  const notify = event => console.log('bora', event)
   const [hasInstitutionalLink, setHasInstitutionalLink] = useState(false)
   const [hasCNPQScholarship, setHasCNPQScholarship] = useState(false)
   const [hasPostDoctorate, setHasPostDoctorate] = useState(false)
@@ -42,14 +47,7 @@ const WorkHistory = () => {
     console.warn('graduateInfo', graduateInfo)
   }, [graduateInfo])
 
-  const {
-    register,
-    setValue,
-    handleSubmit,
-    watch,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: useMemo(() => {
       return graduateInfo
     }, [graduateInfo]),
@@ -59,13 +57,6 @@ const WorkHistory = () => {
     // console.log('Reset')
     reset(graduateInfo)
   }, [graduateInfo])
-
-  const changeHasCNPQScholarship = () => {
-    setHasCNPQScholarship(!hasCNPQScholarship)
-    if (hasCNPQScholarship) {
-      setValue('cnpqLevelId', null)
-    }
-  }
 
   useEffect(() => {
     const getInstitutionTypes = async () => {
@@ -202,9 +193,6 @@ const WorkHistory = () => {
         progress: undefined,
       })
     }
-  }
-  const onSaveDraft = data => {
-    console.log('boraaaaanakndskdnaksdnasa', data)
   }
   return (
     <>

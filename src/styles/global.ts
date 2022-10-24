@@ -81,10 +81,6 @@ export default createGlobalStyle`
     background-color: #FDD;
   }
 
-  .contentSelect{
-    padding: 20px 0px 50px 50px;
-  }
-
   .card {
     border-radius: 5px;
     box-shadow: 7px 7px 13px 0px rgba(50, 50, 50, 0.22);
@@ -130,13 +126,6 @@ export default createGlobalStyle`
   /* This is the style of our error messages */
 
 
-  /* Clear floats after the columns */
-  //.row:after {
-  //  content: "";
-  //  display: table;
-  //  clear: both;
-  //}
-
   h1,
   h2,
   h3,
@@ -181,10 +170,10 @@ export default createGlobalStyle`
   .cabecalho{
     width: 100%;
   }
-
-  .colunameio{
-    width: 80%;
-  }
+  //
+  //.colunameio{
+  //  width: 80%;
+  //}
 
   #__next {
     height: 100%;

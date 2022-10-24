@@ -1,6 +1,5 @@
 import styled from 'styled-components'
-import React from 'react'
-import { Input, Label, Section } from '../../styles/index.style'
+import { Input, Section } from '../../styles/index.style'
 
 export const Content = styled.div`
   width: 90%;
@@ -20,7 +19,6 @@ export const Checkbox = styled.input``
 export const Title = styled.h1`
   padding-top: 24px;
   padding-bottom: 30px;
-  font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 36px;
@@ -33,7 +31,6 @@ export const Subtitle = styled.h2`
   padding-top: 0;
   padding-bottom: 20px;
   padding-right: 140px;
-  font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 22px;
@@ -58,7 +55,6 @@ export const LabelSelect = styled.label`
   transition: all 0.3s ease;
   opacity: 1;
   color: #4b907e;
-  font-family: Roboto;
   font-size: 12px;
   line-height: 14px;
 `
@@ -73,7 +69,6 @@ export const Select = styled.select`
   border-radius: 8px;
   background-color: #fff;
   color: #4b907e;
-  font-family: Roboto;
   font-size: 20px;
   line-height: 23px;
 
@@ -97,7 +92,6 @@ export const Select = styled.select`
     color: #4b907e;
     font-size: 16px;
     font-style: normal;
-    font-family: Roboto;
     letter-spacing: 0.48px;
     line-height: 19px;
   }
@@ -115,35 +109,12 @@ export const Button = styled.button`
   transition: background-color 0.2s, color 0.2s;
   background-color: #4b907eff;
   opacity: 0.8;
-  font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 17px;
   line-height: 23px;
   color: #ffff;
   border: none;
-
-  &:hover {
-    opacity: 1;
-  }
-`
-
-export const ButtonSecondary = styled.button`
-  margin: 0 10px;
-  width: 164px;
-  height: 46px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  background-color: #ffff;
-  opacity: 0.8;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 17px;
-  line-height: 23px;
-  color: #4b907eff;
-  border: solid 2px #4b907eff;
 
   &:hover {
     opacity: 1;

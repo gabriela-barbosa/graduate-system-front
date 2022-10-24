@@ -1,54 +1,7 @@
 import styled from 'styled-components'
-import { Grid } from '@mui/material'
-const statusColor = {
-  PENDING: '#e11818',
-  UPDATED: '#5BAFC9',
-  UPDATED_PARTIALLY: '#DCB552',
-  UNKNOWN: '#808080D3',
-}
 
-export const PageWrapper = styled(Grid)`
-  padding: 20px 0 50px 50px;
-`
-
-export const Background = styled.div`
-  background: #ffffffff;
-  opacity: 0.99;
-  height: 100%;
-  width: 100%;
-`
-
-export const Content = styled.div`
-  width: 90%;
-  padding: 20px 50px 50px 50px;
-  flex-direction: column;
-  display: block;
-  margin: 0 auto;
-`
-
-export const Title = styled.h1`
-  padding-top: 24px;
-  padding-bottom: 26px;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 36px;
-  line-height: 47px;
-
-  color: #0b6951b2;
-`
-
-export const Subtitle = styled.h1`
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-right: 140px;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 22px;
-  line-height: 47px;
-
-  color: #0b6951b2;
+export const TableHeader = styled.thead`
+  border-bottom: 1px solid #00000019;
 `
 
 export const Icon = styled.button`
@@ -60,15 +13,13 @@ export const Icon = styled.button`
   background: transparent;
 `
 
-export const Fields = styled.h1`
-  padding-top: 5px;
-  padding-bottom: 10px;
-  padding-right: 140px;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
-  line-height: 24px;
-
-  color: ${({ status }: { status?: string }) => (status ? statusColor[status] : '#0B6951B2')};
+export const Table = styled.table`
+  padding-top: 50px;
 `
+
+export const TD = styled.td`
+  width: 300px;
+`
+export const TR = styled.tr``
+
+export const TBody = styled.tbody``

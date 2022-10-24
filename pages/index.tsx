@@ -6,14 +6,14 @@ import { useRouter } from 'next/router'
 
 import {
   Background,
-  Button,
+  ButtonLogin,
   Content,
-  FormInputGroup,
   Form,
+  FormInputGroup,
   ImageLogo,
   Input,
   Label,
-  Title,
+  TitleLogin,
 } from '../src/styles/index.style'
 import fotoIcUff from '../public/fotoicuff.jpg'
 import logo from '../public/logo-ic-uff-branca.png'
@@ -28,25 +28,22 @@ const FormInputGroupLoginFields = styled(FormInputGroup)`
 `
 
 const Home: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm()
-  // const navigate = useNavigate()
+  const { register, handleSubmit } = useForm()
   const router = useRouter()
   const { user, setUser } = useAuth()
   const redirectAccordingRole = user => {
-    if (user) {
-      if (user?.role === Roles.GRADUATE) {
+    switch (user?.role) {
+      case Roles.GRADUATE: {
         router.push(`/historico/${user.id}`)
+        break
       }
-      if (user?.role === Roles.PROFESSOR) {
+      case Roles.PROFESSOR: {
         router.push(`/egressos`)
+        break
       }
-      if (user?.role === Roles.ADMIN) {
-        router.push(`/secretaria`)
+      case Roles.ADMIN: {
+        router.push(`/egressos`)
+        break
       }
     }
   }
@@ -80,13 +77,26 @@ const Home: React.FC = () => {
   return (
     <>
       <MainWrapper hasHeader={false} themeName={Theme.gray} hasContent={false}>
-        <Image src={fotoIcUff} layout="fill" objectFit="cover" />
+        <Image
+          crossOrigin={'anonymous'}
+          src={fotoIcUff}
+          layout="fill"
+          objectFit="cover"
+          priority={true}
+        />
         <Background>
           <Content>
             <ImageLogo>
-              <Image src={logo} width="370" height="265" layout="fixed" />
+              <Image
+                crossOrigin={'anonymous'}
+                src={logo}
+                width="370"
+                height="265"
+                layout="fixed"
+                priority={true}
+              />
             </ImageLogo>
-            <Title>Sistema de Egressos</Title>
+            <TitleLogin>Sistema de Egressos</TitleLogin>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Form>
                 <FormInputGroupLoginFields>
@@ -103,7 +113,7 @@ const Home: React.FC = () => {
                 </FormInputGroupLoginFields>
                 <a>
                   <FormInputGroupLoginFields>
-                    <Button type="submit">Continuar</Button>
+                    <ButtonLogin type="submit">Continuar</ButtonLogin>
                   </FormInputGroupLoginFields>
                 </a>
               </Form>

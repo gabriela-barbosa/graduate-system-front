@@ -7,5 +7,5 @@ export interface PaginationType {
 export interface ListGraduatesFilters {
   name: string
   institutionName: string
-  institutionType: number
+  institutionType: string
 }
