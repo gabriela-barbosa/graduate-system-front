@@ -1,17 +1,12 @@
 import { createTheme } from '@mui/material'
+import { cyan, teal } from '@mui/material/colors'
 
-const theme = {
-  colors: {
-    background: '#121214',
-    text: '#e1e1e6',
-    primary: '#8257e6',
-    green: {
-      light: '#4b907e',
-    },
+export const theme = createTheme({
+  palette: {
+    primary: teal,
+    secondary: cyan,
+    background: { default: '#121214' },
+    text: {},
   },
-  ...createTheme({
-    components: {},
-  }),
-}
-
-export default theme
+  components: {},
+})

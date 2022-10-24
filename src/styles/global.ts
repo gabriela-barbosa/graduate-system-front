@@ -10,8 +10,6 @@ export default createGlobalStyle`
   body {
     width: 100%;
     display: table-cell;
-    background: ${props => props.theme.colors.background};
-    color: ${props => props.theme.colors.text};
     font: 400 16px Roboto, sans-serif;
   }
    html,
@@ -188,8 +186,8 @@ export default createGlobalStyle`
     width: 700px;
   }
 
-  .abrir-modal{
-    margin-right: 5% ;
+  .abrir-modal {
+    margin-right: 5%;
     width: 204px;
     padding: 10px;
     height: 46px;
@@ -205,12 +203,14 @@ export default createGlobalStyle`
     line-height: 23px;
     color: #4b907eff;
     border: solid 2px;
+
     &:hover {
       opacity: 1;
     }
 
-    .modal{
+    .modal {
       color: red;
     }
+  }
 
   `

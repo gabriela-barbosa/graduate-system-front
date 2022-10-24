@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Grid } from '@mui/material'
+import { theme } from './theme'
 
 const fontFamily = 'font-family: Roboto, sans-serif'
 
@@ -63,7 +64,7 @@ export const TitleLogin = styled.h1`
   font-size: 40px;
   line-height: 47px;
 
-  color: #ffffff;
+  color: ${theme.palette.primary.contrastText};
 `
 
 export const Title = styled.h1`
@@ -75,7 +76,7 @@ export const Title = styled.h1`
   font-size: 36px;
   line-height: 47px;
 
-  color: #0b6951b2;
+  color: ${theme.palette.primary.main};
 `
 
 export const PageWrapper = styled(Grid)`
@@ -88,7 +89,7 @@ export const Label = styled.label`
   left: 20px;
   transition: all 0.3s ease;
   opacity: 0;
-  color: #4b907e;
+  color: ${theme.palette.primary.main};
   font-family: ${fontFamily};
   font-size: 12px;
   line-height: 14px;
@@ -101,10 +102,10 @@ export const Input = styled.input`
   height: 48px;
   padding-left: 16px;
   transition: all 0.3s linear;
-  border: 3px solid #cbcbcb;
+  border: 3px solid ${theme.palette.grey['500']};
   border-radius: 8px;
-  background-color: #fff;
-  color: #4b907e;
+  background-color: ${theme.palette.primary.contrastText};
+  color: ${theme.palette.primary.main};
   font-family: ${fontFamily};
   font-size: 20px;
   line-height: 23px;
@@ -112,11 +113,11 @@ export const Input = styled.input`
   &:disabled {
     border: 3px solid #cbcbcb7c;
     background-color: #ffffff7f;
-    color: #4b907e82;
+    color: ${theme.palette.primary.main};
   }
 
   &:disabled::placeholder {
-    color: #4b907e82;
+    color: ${theme.palette.primary.main};
   }
 
   &:focus {
@@ -197,7 +198,7 @@ export const ButtonSecondary = styled.button`
 `
 
 export const Background = styled.div`
-  background: rgba(11, 105, 81, 0.7);
+  background: ${theme.palette.primary.main};
   opacity: 0.99;
   height: 100%;
   width: 100%;
@@ -223,7 +224,8 @@ export const Fields = styled.h1`
   font-size: 18px;
   line-height: 24px;
 
-  color: ${({ status }: { status?: string }) => (status ? statusColor[status] : '#0B6951B2')};
+  color: ${({ status }: { status?: string }) =>
+    status ? statusColor[status] : theme.palette.primary.main};
 `
 
 export const Subtitle = styled.h1`

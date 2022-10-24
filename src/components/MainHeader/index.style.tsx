@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 import { rem } from 'polished'
+import { theme } from '../../styles/theme'
 
 export const Header = styled.header`
   height: 90px;
   width: 100%;
   padding-top: ${rem('24px')};
-  border-bottom: 3px solid rgba(11, 105, 81, 0.7);
+  border-bottom: 3px solid ${theme.palette.primary.main};
 `
 export const Cabecalho = styled.div`
   width: 90%;
@@ -20,7 +21,7 @@ export const Title = styled.h1`
   font-size: 36px;
   line-height: 47px;
 
-  color: rgba(11, 105, 81, 0.7);
+  color: ${theme.palette.primary.main};
 `
 
 export const LogoutButton = styled.button`
@@ -29,7 +30,7 @@ export const LogoutButton = styled.button`
   font-weight: 500;
   font-size: 15px;
   line-height: 18px;
-  color: #0000004d;
+  color: ${theme.palette.grey['400']};
   background-color: transparent;
   border: none;
   text-decoration: underline;
@@ -44,7 +45,7 @@ export const ProfileIcon = styled.h1`
   font-size: 40px;
   line-height: 47px;
 
-  color: rgba(11, 105, 81, 0.7);
+  color: ${theme.palette.primary.main};
 `
 
 export const EditIcon = styled.h1`
@@ -54,11 +55,11 @@ export const EditIcon = styled.h1`
   padding-right: 0;
   font-style: normal;
   font-weight: normal;
-  color: #0000004d;
+  color: ${theme.palette.grey['400']};
 `
 
 export const Texto = styled.h6`
-  color: rgba(11, 105, 81, 0.7);
+  color: ${theme.palette.primary.main};
 `
 
 export default Header

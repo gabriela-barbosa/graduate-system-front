@@ -31,18 +31,18 @@ const Home: React.FC = () => {
   const { register, handleSubmit } = useForm()
   const router = useRouter()
   const { user, setUser } = useAuth()
-  const redirectAccordingRole = user => {
+  const redirectAccordingRole = async user => {
     switch (user?.role) {
       case Roles.GRADUATE: {
-        router.push(`/historico/${user.id}`)
+        await router.push(`/historico/${user.id}`)
         break
       }
       case Roles.PROFESSOR: {
-        router.push(`/egressos`)
+        await router.push(`/egressos`)
         break
       }
       case Roles.ADMIN: {
-        router.push(`/egressos`)
+        await router.push(`/egressos`)
         break
       }
     }
@@ -70,7 +70,7 @@ const Home: React.FC = () => {
       })
       const profile = await response.json()
       setUser(profile)
-      redirectAccordingRole(profile)
+      await redirectAccordingRole(profile)
     }
   }
 

@@ -3,18 +3,19 @@ import MainWrapper from '../../components/MainWrapper'
 import { Theme } from '../../utils/enums'
 import { Icon, Table, TableHeader, TBody, TD, TR } from './index.style'
 
+import { FormControl, Grid, Pagination } from '@mui/material'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
-import { FormControl, Grid, Pagination } from '@mui/material'
 import { ListGraduatesFilters, PaginationType } from './types'
-import { Button } from '../WorkHistoryEdit/index.style'
 import { Fields, PageWrapper, Title } from '../../styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
 import { Input } from '../../components/Input'
 import { useForm } from 'react-hook-form'
 import { Select } from '../../components/Select'
 import { toast } from 'react-toastify'
+import { Button } from '../../components/Button'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -35,7 +36,7 @@ const GraduateList: React.FC = () => {
   const router = useRouter()
 
   const formContext = useForm()
-  const { getValues } = formContext
+  const { getValues, reset } = formContext
 
   const isValid = (value?: string) => value && value !== ''
 
@@ -96,6 +97,11 @@ const GraduateList: React.FC = () => {
     getGraduates(value, filters)
   }
 
+  const onClickClean = async () => {
+    reset()
+    await getGraduates(1, null)
+  }
+
   return (
     <MainWrapper themeName={Theme.white} hasContent={true}>
       <PageWrapper
@@ -132,8 +138,15 @@ const GraduateList: React.FC = () => {
                       <Input label="Nome do egresso" name="name" />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={2}>
-                    <Button type="submit">Buscar</Button>
+                  <Grid item alignSelf={'center'}>
+                    <Button size={'large'} variant="contained" type="submit">
+                      Buscar
+                    </Button>
+                  </Grid>
+                  <Grid item alignSelf={'center'}>
+                    <Button size={'large'} variant="outlined" onClick={onClickClean}>
+                      Limpar
+                    </Button>
                   </Grid>
                 </Grid>
               </FormContainer>
