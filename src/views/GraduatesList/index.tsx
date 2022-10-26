@@ -15,7 +15,7 @@ import { Input } from '../../components/Input'
 import { useForm } from 'react-hook-form'
 import { Select } from '../../components/Select'
 import { toast } from 'react-toastify'
-import { Button } from '../../components/Button'
+import { Button } from '@components/Button'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -92,9 +92,9 @@ const GraduateList: React.FC = () => {
     router.push(`/historico/${graduate.id}${graduate.workPlace ? '/' + graduate.workPlace.id : ''}`)
   }
 
-  const onChangePagination = (event, value) => {
+  const onChangePagination = async (event, value) => {
     const filters = getValues() as ListGraduatesFilters
-    getGraduates(value, filters)
+    await getGraduates(value, filters)
   }
 
   const onClickClean = async () => {

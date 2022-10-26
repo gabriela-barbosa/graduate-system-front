@@ -3,8 +3,6 @@ import { TextFieldElement } from 'react-hook-form-mui'
 
 export const Input = styled(TextFieldElement)({
   '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderRadius: 15,
-    },
+    borderRadius: 15,
   },
 })

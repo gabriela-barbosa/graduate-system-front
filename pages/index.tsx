@@ -3,23 +3,25 @@ import MainWrapper from '../src/components/MainWrapper'
 import { Roles, Theme } from '../src/utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
+import { Button } from '@components/Button'
 
 import {
   Background,
   ButtonLogin,
   Content,
-  Form,
   FormInputGroup,
   ImageLogo,
-  Input,
-  Label,
   TitleLogin,
-} from '../src/styles/index.style'
+} from '@styles/index.style'
 import fotoIcUff from '../public/fotoicuff.jpg'
 import logo from '../public/logo-ic-uff-branca.png'
 import Image from 'next/image'
 import { useAuth } from '../src/api/AuthProvider'
 import styled from 'styled-components'
+import { FormContainer } from 'react-hook-form-mui'
+import { Box, Card, CardContent, FormControl } from '@mui/material'
+import { Input } from '@components/Input'
+import Grid from '@mui/material/Unstable_Grid2'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -28,7 +30,7 @@ const FormInputGroupLoginFields = styled(FormInputGroup)`
 `
 
 const Home: React.FC = () => {
-  const { register, handleSubmit } = useForm()
+  const formContext = useForm()
   const router = useRouter()
   const { user, setUser } = useAuth()
   const redirectAccordingRole = async user => {
@@ -97,27 +99,42 @@ const Home: React.FC = () => {
               />
             </ImageLogo>
             <TitleLogin>Sistema de Egressos</TitleLogin>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Form>
-                <FormInputGroupLoginFields>
-                  <Input placeholder="Email" {...register('email', { required: true })} />
-                  <Label htmlFor="email">Email</Label>
-                </FormInputGroupLoginFields>
-                <FormInputGroupLoginFields>
-                  <Input
-                    type="password"
-                    placeholder="Senha"
-                    {...register('password', { required: true })}
-                  />
-                  <Label htmlFor="password">Senha</Label>
-                </FormInputGroupLoginFields>
-                <a>
-                  <FormInputGroupLoginFields>
-                    <ButtonLogin type="submit">Continuar</ButtonLogin>
-                  </FormInputGroupLoginFields>
-                </a>
-              </Form>
-            </form>
+            <Box sx={{ width: '300px', backgroundColor: '#ffffffd6', borderRadius: 6, padding: 4 }}>
+              <FormContainer formContext={formContext} onSuccess={onSubmit}>
+                <Grid container direction={'column'} spacing={4} alignItems={'center'}>
+                  <Grid height={100} width={'100%'}>
+                    <FormControl fullWidth>
+                      <Input
+                        margin={'dense'}
+                        type={'email'}
+                        label={'Email'}
+                        name={'email'}
+                        helperText={'Digite o seu email.'}
+                        required
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid height={100} width={'100%'}>
+                    <FormControl fullWidth>
+                      <Input
+                        margin={'dense'}
+                        name={'password'}
+                        label={'Senha'}
+                        helperText={'Digite a senha.'}
+                        required
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid>
+                    <FormControl>
+                      <Button size={'large'} variant="contained" type="submit">
+                        Continuar
+                      </Button>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </FormContainer>
+            </Box>
           </Content>
         </Background>
       </MainWrapper>

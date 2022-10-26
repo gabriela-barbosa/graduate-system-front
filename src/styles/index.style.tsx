@@ -198,7 +198,7 @@ export const ButtonSecondary = styled.button`
 `
 
 export const Background = styled.div`
-  background: ${theme.palette.primary.main};
+  background: rgba(11, 105, 81, 0.7);
   opacity: 0.99;
   height: 100%;
   width: 100%;

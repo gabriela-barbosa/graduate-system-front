@@ -73,11 +73,6 @@ export default createGlobalStyle`
     float: left;
     width: 33%;
   }
-  input:invalid {
-    border: 3px solid #900;
-    border-color: #900;
-    background-color: #FDD;
-  }
 
   .card {
     border-radius: 5px;
