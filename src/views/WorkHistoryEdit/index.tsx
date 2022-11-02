@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import MainWrapper from '../../components/MainWrapper'
-import { Roles, Theme } from '../../utils/enums'
+import { MainWrapper } from '@components'
+import { Roles, Theme } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -25,7 +25,7 @@ import {
   FormInputGroup,
   Label,
   Section,
-} from '../../styles/index.style'
+} from '@styles/index.style'
 import { FormType } from './types'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
@@ -43,9 +43,9 @@ const WorkHistory = () => {
 
   const { graduateid, historyid } = router.query
 
-  useEffect(() => {
-    console.warn('graduateInfo', graduateInfo)
-  }, [graduateInfo])
+  // useEffect(() => {
+  //   console.warn('graduateInfo', graduateInfo)
+  // }, [graduateInfo])
 
   const { register, handleSubmit, reset } = useForm({
     defaultValues: useMemo(() => {
@@ -54,7 +54,6 @@ const WorkHistory = () => {
   })
 
   useEffect(() => {
-    // console.log('Reset')
     reset(graduateInfo)
   }, [graduateInfo])
 
@@ -88,15 +87,12 @@ const WorkHistory = () => {
         }
       } else {
         try {
-          console.warn(graduateid)
           const response = await fetch(`${GRADUATE_API}/v1/workhistory/graduate/${graduateid}`, {
             credentials: 'include',
           })
-          console.warn(response)
 
           if (response.status === 200) {
             const result = await response.json()
-            console.log(result)
 
             setGraduateInfo(result)
             const { institution, postDoctorate, cnpqLevelId } = result
@@ -144,7 +140,6 @@ const WorkHistory = () => {
       hasFinishedMasterDegreeOnUFF:
         hasFinishedMasterDegreeOnUFF ?? graduateInfo?.hasFinishedMasterDegreeOnUFF,
     }
-    console.warn('primeiro', body)
     if (hasInstitutionalLink)
       body.institution = {
         name: institution.name ?? graduateInfo?.institution?.name,
@@ -155,8 +150,6 @@ const WorkHistory = () => {
     if (email !== graduateInfo.email) {
       body.newEmail = email
     }
-    console.warn('segundo', body)
-    console.warn('data', data)
 
     const myInit = {
       method: historyid ? 'PUT' : 'POST',
@@ -242,7 +235,7 @@ const WorkHistory = () => {
                   <FormInputGroupEdit>
                     <LabelSelect htmlFor="institutionType">Tipo de Instituição</LabelSelect>
                     <Select {...register('institution.type')} disabled={!hasInstitutionalLink}>
-                      {institutionTypes.map((institutionType: any) => (
+                      {institutionTypes.map(institutionType => (
                         <option key={institutionType.id} value={institutionType.id}>
                           {institutionType.name}
                         </option>
@@ -294,7 +287,7 @@ const WorkHistory = () => {
                     disabled={!hasPostDoctorate}
                     {...register('postDoctorate.type')}
                   >
-                    {institutionTypes.map((institutionType: any) => (
+                    {institutionTypes.map(institutionType => (
                       <option key={institutionType.id} value={institutionType.id}>
                         {institutionType.name}
                       </option>
@@ -321,7 +314,7 @@ const WorkHistory = () => {
                     disabled={!hasCNPQScholarship}
                     {...register('cnpqLevelId')}
                   >
-                    {cnpqLevels.map((level: any) => (
+                    {cnpqLevels.map(level => (
                       <option key={level.id} value={level.id}>
                         {level.level}
                       </option>

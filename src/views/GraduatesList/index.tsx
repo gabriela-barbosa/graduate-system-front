@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import MainWrapper from '../../components/MainWrapper'
-import { Theme } from '../../utils/enums'
+import { MainWrapper, Input, Select, Button } from '@components'
+import { Theme } from '@utils/enums'
 import { Icon, Table, TableHeader, TBody, TD, TR } from './index.style'
 
 import { FormControl, Grid, Pagination } from '@mui/material'
@@ -9,13 +9,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
 import { ListGraduatesFilters, PaginationType } from './types'
-import { Fields, PageWrapper, Title } from '../../styles/index.style'
+import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
-import { Input } from '../../components/Input'
 import { useForm } from 'react-hook-form'
-import { Select } from '../../components/Select'
 import { toast } from 'react-toastify'
-import { Button } from '@components/Button'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -80,7 +77,6 @@ const GraduateList: React.FC = () => {
   }
 
   const onSend = async (data: ListGraduatesFilters) => {
-    console.warn(data)
     getGraduates(1, data)
   }
   useEffect(() => {
@@ -88,7 +84,7 @@ const GraduateList: React.FC = () => {
     getGraduates(1, null)
   }, [])
 
-  const onClickEdit = (graduate: any) => {
+  const onClickEdit = graduate => {
     router.push(`/historico/${graduate.id}${graduate.workPlace ? '/' + graduate.workPlace.id : ''}`)
   }
 
@@ -174,7 +170,7 @@ const GraduateList: React.FC = () => {
                 </TableHeader>
 
                 <TBody>
-                  {graduates?.map((graduate: any) => (
+                  {graduates?.map(graduate => (
                     <TR key={graduate.id}>
                       <TD>
                         <Fields>{graduate.name}</Fields>
