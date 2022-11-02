@@ -1,34 +1,23 @@
 import React, { useEffect } from 'react'
-import MainWrapper from '../src/components/MainWrapper'
-import { Roles, Theme } from '../src/utils/enums'
+import { Roles, Theme } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { Button } from '@components/Button'
+import { Button, MainWrapper, Input } from '@components'
 
-import {
-  Background,
-  ButtonLogin,
-  Content,
-  FormInputGroup,
-  ImageLogo,
-  TitleLogin,
-} from '@styles/index.style'
+import { Background, Content, FormInputGroup, ImageLogo, TitleLogin } from '@styles/index.style'
 import fotoIcUff from '../public/fotoicuff.jpg'
 import logo from '../public/logo-ic-uff-branca.png'
 import Image from 'next/image'
 import { useAuth } from '../src/api/AuthProvider'
 import styled from 'styled-components'
 import { FormContainer } from 'react-hook-form-mui'
-import { Box, Card, CardContent, FormControl } from '@mui/material'
-import { Input } from '@components/Input'
+import { Box, FormControl } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
-
-const FormInputGroupLoginFields = styled(FormInputGroup)`
+styled(FormInputGroup)`
   width: 320px;
 `
-
 const Home: React.FC = () => {
   const formContext = useForm()
   const router = useRouter()
@@ -55,7 +44,6 @@ const Home: React.FC = () => {
   }, [user])
 
   const onSubmit = async body => {
-    console.warn(body)
     const myInit: RequestInit = {
       method: 'POST',
       headers: {
@@ -73,6 +61,15 @@ const Home: React.FC = () => {
       const profile = await response.json()
       setUser(profile)
       await redirectAccordingRole(profile)
+    }
+  }
+
+  const getEmailErrorMessageByType = type => {
+    switch (type) {
+      case 'pattern':
+        return 'Insira um email válido.'
+      case 'required':
+        return 'Digite o email.'
     }
   }
 
@@ -105,11 +102,13 @@ const Home: React.FC = () => {
                   <Grid height={100} width={'100%'}>
                     <FormControl fullWidth>
                       <Input
+                        parseError={({ type }) => {
+                          return getEmailErrorMessageByType(type)
+                        }}
                         margin={'dense'}
                         type={'email'}
                         label={'Email'}
                         name={'email'}
-                        helperText={'Digite o seu email.'}
                         required
                       />
                     </FormControl>
@@ -117,10 +116,10 @@ const Home: React.FC = () => {
                   <Grid height={100} width={'100%'}>
                     <FormControl fullWidth>
                       <Input
+                        parseError={() => 'Digite a senha.'}
                         margin={'dense'}
                         name={'password'}
                         label={'Senha'}
-                        helperText={'Digite a senha.'}
                         required
                       />
                     </FormControl>
