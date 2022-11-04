@@ -99,7 +99,7 @@ const GraduateList: React.FC = () => {
   }
 
   return (
-    <MainWrapper themeName={Theme.white} hasContent={true}>
+    <MainWrapper themeName={Theme.white}>
       <PageWrapper
         spacing={2}
         container
@@ -161,6 +161,9 @@ const GraduateList: React.FC = () => {
                       <Fields>Local de Trabalho</Fields>
                     </TD>
                     <TD>
+                      <Fields>Tipo de Instituição</Fields>
+                    </TD>
+                    <TD>
                       <Fields>Cargo</Fields>
                     </TD>
                     <TD>
@@ -180,6 +183,14 @@ const GraduateList: React.FC = () => {
                       </TD>
                       <TD>
                         <Fields>{graduate.workPlace ? graduate.workPlace.name : '-'}</Fields>
+                      </TD>
+                      <TD>
+                        <Fields>
+                          -{/* {institutionTypes.find(item => { */}
+                          {/*  console.log(item, graduate) */}
+                          {/*  return item?.id === (graduate.workPlace ? graduate.workPlace.id : 0) */}
+                          {/* }) ?? '-'} */}
+                        </Fields>
                       </TD>
                       <TD>
                         <Fields>{graduate.position ?? '-'}</Fields>

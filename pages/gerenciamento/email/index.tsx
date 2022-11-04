@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Theme } from '../../utils/enums'
 import { toast, ToastContainer } from 'react-toastify'
-import { Icon } from '../GraduatesList/index.style'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { Modal } from 'react-bootstrap'
 import { useRouter } from 'next/router'
-import MainWrapper from '../../components/MainWrapper'
-import {
-  ButtonLogin,
-  Button,
-  Fields,
-  Input,
-  PageWrapper,
-  Subtitle,
-  Title,
-  ButtonSecondary,
-} from '../../styles/index.style'
+import { Button, Input, MainWrapper } from '@components'
+import { Theme } from '@utils/enums'
+import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
+import { Icon } from '@mui/material'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
-const Levels: React.FC = () => {
+const EmailConfig: React.FC = () => {
   const [cnpqLevels, setCnpqLevels] = React.useState([])
   const [newCnpqLevel, setNewCnpqLevel] = React.useState('')
   const [currentEditId, setCurrentEditId] = React.useState('')
@@ -115,7 +106,7 @@ const Levels: React.FC = () => {
 
   return (
     <>
-      <MainWrapper themeName={Theme.white} hasContent={true} hasHeader={true}>
+      <MainWrapper themeName={Theme.white}>
         <PageWrapper>
           <Title>Atualizar Níveis CNPQ</Title>
           <ToastContainer
@@ -165,7 +156,7 @@ const Levels: React.FC = () => {
             </tbody>
             <br></br>
             <Button onClick={handleShow3}>Adicionar Nível</Button>
-            <ButtonSecondary onClick={onClickBack}>Voltar</ButtonSecondary>
+            <Button onClick={onClickBack}>Voltar</Button>
           </table>
         </PageWrapper>
       </MainWrapper>
@@ -180,19 +171,17 @@ const Levels: React.FC = () => {
             onChange={event => setNewCnpqLevel(event.target.value)}
             placeholder="Novo Nível"
             required
+            name={''}
           />
         </Modal.Body>
         <Modal.Footer>
-          <ButtonLogin
-            type="submit"
-            onClick={currentEditId === '' ? handleSaveCnpq : handleUpdateCnpq}
-          >
+          <Button type="submit" onClick={currentEditId === '' ? handleSaveCnpq : handleUpdateCnpq}>
             Salvar
-          </ButtonLogin>
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
   )
 }
 
-export default Levels
+export default EmailConfig

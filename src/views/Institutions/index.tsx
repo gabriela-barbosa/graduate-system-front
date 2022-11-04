@@ -32,7 +32,7 @@ const Institutions: React.FC = () => {
   const deletedToast = () => toast('Deletado com sucesso!')
   const router = useRouter()
   const onClickBack = () => {
-    router.push('/select')
+    router.push('/gerenciamento')
   }
 
   const getInstitutionTypes = async () => {

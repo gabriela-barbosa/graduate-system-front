@@ -13,6 +13,7 @@ import styled from 'styled-components'
 import { FormContainer } from 'react-hook-form-mui'
 import { Box, FormControl } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
+import { Password } from '@components/Input'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 styled(FormInputGroup)`
@@ -115,7 +116,7 @@ const Home: React.FC = () => {
                   </Grid>
                   <Grid height={100} width={'100%'}>
                     <FormControl fullWidth>
-                      <Input
+                      <Password
                         parseError={() => 'Digite a senha.'}
                         margin={'dense'}
                         name={'password'}

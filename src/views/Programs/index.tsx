@@ -29,7 +29,7 @@ const Programs: React.FC = () => {
   const handleShow = () => setShow(true)
   const router = useRouter()
   const onClickBack = () => {
-    router.push('/select')
+    router.push('/gerenciamento')
   }
 
   const savedToast = () => toast('Salvo com sucesso!')

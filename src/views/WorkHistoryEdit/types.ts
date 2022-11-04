@@ -4,6 +4,11 @@ type InstitutionType = {
   type: number
 }
 
+interface Option {
+  id: number | string
+  label: string
+}
+
 type FormType = {
   email: string
   newEmail?: string
@@ -12,6 +17,6 @@ type FormType = {
   hasFinishedMasterDegreeOnUFF?: boolean
   institution?: InstitutionType
   postDoctorate?: InstitutionType
-  cnpqLevelId?: number
+  cnpqId?: number
 }
-export type { FormType, InstitutionType }
+export type { FormType, InstitutionType, Option }

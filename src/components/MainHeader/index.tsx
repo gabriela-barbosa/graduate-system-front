@@ -31,7 +31,7 @@ const MainHeader: React.FC = () => {
   }
 
   const onClickConfig = () => {
-    router.push('/select')
+    router.push('/gerenciamento')
   }
 
   return (

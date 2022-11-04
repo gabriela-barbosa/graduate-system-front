@@ -1,77 +1,48 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import { MainWrapper } from '@components'
-import { Roles, Theme } from '@utils/enums'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Button, MainWrapper, toast } from '@components'
+import { Theme } from '@utils/enums'
 import { useForm } from 'react-hook-form'
-import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-import {
-  Checkbox,
-  FormInputGroupEdit,
-  InputEditar,
-  LabelSelect,
-  SectionEdit,
-  Select,
-  Subtitle,
-  Title,
-} from './index.style'
+import { Title } from './index.style'
 import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
-import {
-  Button,
-  ButtonSecondary,
-  CheckboxLabel,
-  Form,
-  FormInputGroup,
-  Label,
-  Section,
-} from '@styles/index.style'
-import { FormType } from './types'
+import { PageWrapper } from '@styles/index.style'
+import { Grid } from '@mui/material'
+import { FormContainer } from 'react-hook-form-mui'
+import { PersonalInfo } from '@views/WorkHistoryEdit/components/PersonalInfo'
+import { InstitutionalLinkInfo } from '@views/WorkHistoryEdit/components/InstitutionalLinkInfo'
+import { AcademicInfo } from '@views/WorkHistoryEdit/components/AcademicInfo'
+import { getCNPQLevels, getInstitutionTypes } from '@views/WorkHistoryEdit/api'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 const WorkHistory = () => {
-  const [graduateInfo, setGraduateInfo] = useState<FormType>()
-  const [hasInstitutionalLink, setHasInstitutionalLink] = useState(false)
-  const [hasCNPQScholarship, setHasCNPQScholarship] = useState(false)
-  const [hasPostDoctorate, setHasPostDoctorate] = useState(false)
+  const [graduateInfo, setGraduateInfo] = useState<any>()
+  const [hasInstitutionalLink, setHasInstitutionalLink] = useState<boolean | null>(null)
+  const [hasCNPQScholarship, setHasCNPQScholarship] = useState<boolean | null>(null)
+  const [hasPostDoctorate, setHasPostDoctorate] = useState<boolean | null>(null)
   const [institutionTypes, setInstitutionTypes] = useState([])
   const [cnpqLevels, setCNPQLevels] = useState([])
+
   const router = useRouter()
 
   const { user } = useAuth()
 
   const { graduateid, historyid } = router.query
 
-  // useEffect(() => {
-  //   console.warn('graduateInfo', graduateInfo)
-  // }, [graduateInfo])
-
-  const { register, handleSubmit, reset } = useForm({
+  const formContext = useForm({
     defaultValues: useMemo(() => {
       return graduateInfo
     }, [graduateInfo]),
   })
+  const { reset } = formContext
 
   useEffect(() => {
     reset(graduateInfo)
   }, [graduateInfo])
 
   useEffect(() => {
-    const getInstitutionTypes = async () => {
-      const response = await fetch(`${GRADUATE_API}/v1/institution/type`, {
-        credentials: 'include',
-      })
-      const result = await response.json()
-      setInstitutionTypes(result)
-    }
-    const getCNPQLevels = async () => {
-      const response = await fetch(`${GRADUATE_API}/v1/cnpqlevels`, {
-        credentials: 'include',
-      })
-      const result = await response.json()
-      setCNPQLevels(result)
-    }
     const getGraduateAndWorkHistoryInfo = async () => {
       if (historyid) {
         const response = await fetch(`${GRADUATE_API}/v1/workhistory/${historyid}`, {
@@ -79,11 +50,32 @@ const WorkHistory = () => {
         })
         if (response.status === 200) {
           const result = await response.json()
-          setGraduateInfo(result)
-          const { institution, postDoctorate, cnpqLevelId } = result
-          if (institution) setHasInstitutionalLink(true)
-          if (postDoctorate) setHasPostDoctorate(true)
-          if (cnpqLevelId) setHasCNPQScholarship(true)
+          const {
+            email,
+            institutionName,
+            institutionType,
+            position,
+            postDoctorateName,
+            postDoctorateType,
+            cnpqId,
+            hasFinishedDoctorateOnUFF,
+            hasFinishedMasterDegreeOnUFF,
+          } = result
+
+          setGraduateInfo({
+            cnpqLevelId: cnpqId ?? 0,
+            email,
+            institutionType: institutionType ?? 0,
+            institutionName: institutionName ?? '',
+            position: position ?? '',
+            postDoctorateName: postDoctorateName ?? '',
+            postDoctorateType: postDoctorateType ?? 0,
+            hasFinishedDoctorateOnUFF: hasFinishedDoctorateOnUFF === 'true',
+            hasFinishedMasterDegreeOnUFF: hasFinishedMasterDegreeOnUFF === 'true',
+          })
+          if (institutionType) setHasInstitutionalLink(true)
+          if (postDoctorateType) setHasPostDoctorate(true)
+          if (cnpqId) setHasCNPQScholarship(true)
         }
       } else {
         try {
@@ -94,11 +86,32 @@ const WorkHistory = () => {
           if (response.status === 200) {
             const result = await response.json()
 
-            setGraduateInfo(result)
-            const { institution, postDoctorate, cnpqLevelId } = result
-            if (institution) setHasInstitutionalLink(true)
-            if (postDoctorate) setHasPostDoctorate(true)
-            if (cnpqLevelId) setHasCNPQScholarship(true)
+            const {
+              email,
+              institutionName,
+              institutionType,
+              position,
+              postDoctorateName,
+              postDoctorateType,
+              cnpqId,
+              hasFinishedDoctorateOnUFF,
+              hasFinishedMasterDegreeOnUFF,
+            } = result
+
+            setGraduateInfo({
+              cnpqLevelId: cnpqId ?? 0,
+              email,
+              institutionType: institutionType ?? 0,
+              institutionName: institutionName ?? '',
+              position: position ?? '',
+              postDoctorateName: postDoctorateName ?? '',
+              postDoctorateType: postDoctorateType ?? 0,
+              hasFinishedDoctorateOnUFF: hasFinishedDoctorateOnUFF === 'true',
+              hasFinishedMasterDegreeOnUFF: hasFinishedMasterDegreeOnUFF === 'true',
+            })
+            if (institutionType) setHasInstitutionalLink(true)
+            if (postDoctorateType) setHasPostDoctorate(true)
+            if (cnpqId) setHasCNPQScholarship(true)
           } else if (response.status === 404) {
             const response = await fetch(`${GRADUATE_API}/v1/graduate/${graduateid}`, {
               credentials: 'include',
@@ -110,43 +123,52 @@ const WorkHistory = () => {
             }
           }
         } catch (e) {
-          console.error(e)
+          console.error('sdfsdfsdfsdfsdfsdf', e)
         }
       }
     }
-    getInstitutionTypes()
-    getCNPQLevels()
+
+    getInstitutionTypes().then(types => setInstitutionTypes(types))
+    getCNPQLevels().then(levels => setCNPQLevels(levels))
     getGraduateAndWorkHistoryInfo()
   }, [])
-
-  // const validate = data => {}
 
   const onSend = async data => {
     const {
       email,
-      institution,
+      institutionName,
+      institutionType,
       position,
-      postDoctorate,
-      cnpqLevelId,
+      postDoctorateName,
+      postDoctorateType,
+      cnpqId,
       hasFinishedDoctorateOnUFF,
       hasFinishedMasterDegreeOnUFF,
     } = data
 
-    const body: FormType = {
-      email: graduateInfo?.email,
+    console.warn(data)
+
+    const body: any = {
+      email,
       position: position ?? graduateInfo?.position,
-      hasFinishedDoctorateOnUFF:
-        hasFinishedDoctorateOnUFF ?? graduateInfo?.hasFinishedDoctorateOnUFF,
-      hasFinishedMasterDegreeOnUFF:
-        hasFinishedMasterDegreeOnUFF ?? graduateInfo?.hasFinishedMasterDegreeOnUFF,
+      hasFinishedDoctorateOnUFF: hasFinishedDoctorateOnUFF
+        ? hasFinishedDoctorateOnUFF === 'true'
+        : graduateInfo?.hasFinishedDoctorateOnUFF,
+      hasFinishedMasterDegreeOnUFF: hasFinishedMasterDegreeOnUFF
+        ? hasFinishedMasterDegreeOnUFF === 'true'
+        : graduateInfo?.hasFinishedMasterDegreeOnUFF,
     }
     if (hasInstitutionalLink)
       body.institution = {
-        name: institution.name ?? graduateInfo?.institution?.name,
-        type: institution.type ?? graduateInfo?.institution?.type,
+        name: institutionName ?? graduateInfo?.institution?.name,
+        type: institutionType ?? graduateInfo?.institution?.type,
       }
-    if (hasPostDoctorate) body.postDoctorate = postDoctorate ?? graduateInfo?.postDoctorate
-    if (hasCNPQScholarship) body.cnpqLevelId = cnpqLevelId ?? graduateInfo?.cnpqLevelId
+    if (hasPostDoctorate)
+      body.postDoctorate =
+        postDoctorateName || postDoctorateType
+          ? { name: postDoctorateName, type: postDoctorateType }
+          : graduateInfo?.postDoctorate
+    if (hasCNPQScholarship) body.cnpqLevelId = cnpqId ?? graduateInfo?.cnpqLevelId
     if (email !== graduateInfo.email) {
       body.newEmail = email
     }
@@ -166,199 +188,88 @@ const WorkHistory = () => {
       myInit as RequestInit
     )
     if (result.status === 201 || result.status === 204) {
-      toast.success('Salvo com sucesso!', {
-        position: 'bottom-center',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      })
+      toast.success('Salvo com sucesso!')
     } else {
-      toast.error('Ocorreu algum problema.', {
-        position: 'bottom-center',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      })
+      toast.error('Ocorreu algum problema.')
     }
   }
+
+  const handleGetOnChangeValue = ({ target }) => {
+    const { value } = target
+    switch (value) {
+      case 'true':
+        return true
+      case 'false':
+        return false
+      default:
+        return null
+    }
+  }
+
+  const handleSetValue = (event, setFunction) => {
+    const value = handleGetOnChangeValue(event)
+    setFunction(value)
+  }
+
   return (
-    <>
-      <MainWrapper themeName={Theme.white}>
-        <Title>Registro de Histórico do Egresso</Title>
-        <form onSubmit={handleSubmit(onSend)}>
-          <Form>
-            <div>
-              <Subtitle>Informações pessoais</Subtitle>
-              <SectionEdit>
-                <FormInputGroupEdit>
-                  <InputEditar
-                    placeholder="E-mail"
-                    type="email"
-                    title="Digite um e-mail válido."
-                    pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}"
-                    {...register('email', { required: true })}
-                  />
-                  <Label htmlFor="email">E-mail</Label>
-                </FormInputGroupEdit>
-              </SectionEdit>
-            </div>
-
-            <div>
-              <Subtitle>Informações sobre vínculo institucional</Subtitle>
-              <Section>
-                <Checkbox
-                  type="checkbox"
-                  id="institutionalLink"
-                  checked={hasInstitutionalLink}
-                  onChange={() => setHasInstitutionalLink(!hasInstitutionalLink)}
-                />
-                <CheckboxLabel htmlFor="institutionalLink">
-                  Possui vínculo institucional
-                </CheckboxLabel>
-              </Section>
-              <Fragment>
-                <SectionEdit>
-                  <FormInputGroupEdit>
-                    <InputEditar
-                      placeholder="Nome da instituição"
-                      {...register('institution.name')}
-                      disabled={!hasInstitutionalLink}
+    <MainWrapper themeName={Theme.white}>
+      <PageWrapper spacing={2} container>
+        <Grid item>
+          <Grid container spacing={3}>
+            <Grid item>
+              <Title>Registro de Histórico do Egresso</Title>
+            </Grid>
+            <Grid item>
+              <FormContainer formContext={formContext} onSuccess={onSend}>
+                <Grid container spacing={6}>
+                  <Grid item xs={12}>
+                    <PersonalInfo />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <InstitutionalLinkInfo
+                      institutionTypes={institutionTypes}
+                      hasInstitutionalLink={hasInstitutionalLink}
+                      setHasInstitutionalLink={setHasInstitutionalLink}
+                      handleSetValue={handleSetValue}
                     />
-                    <Label htmlFor="institutionName">Nome da instituição</Label>
-                  </FormInputGroupEdit>
-                  <FormInputGroupEdit>
-                    <LabelSelect htmlFor="institutionType">Tipo de Instituição</LabelSelect>
-                    <Select {...register('institution.type')} disabled={!hasInstitutionalLink}>
-                      {institutionTypes.map(institutionType => (
-                        <option key={institutionType.id} value={institutionType.id}>
-                          {institutionType.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </FormInputGroupEdit>
-                  <FormInputGroupEdit>
-                    <InputEditar
-                      name="position"
-                      placeholder="Cargo"
-                      pattern="[^0-9]*"
-                      title="O campo deve possuir apenas letras."
-                      disabled={!hasInstitutionalLink}
-                      {...register('position')}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AcademicInfo
+                      role={user.role}
+                      cnpqLevels={cnpqLevels}
+                      hasCNPQScholarship={hasCNPQScholarship}
+                      setHasCNPQScholarship={setHasCNPQScholarship}
+                      institutionTypes={institutionTypes}
+                      hasPostDoctorate={hasPostDoctorate}
+                      setHasPostDoctorate={setHasPostDoctorate}
+                      handleSetValue={handleSetValue}
                     />
-                    <Label>Cargo</Label>
-                  </FormInputGroupEdit>
-                </SectionEdit>
-              </Fragment>
-            </div>
-
-            <div>
-              <Subtitle>Informações acadêmicas</Subtitle>
-            </div>
-            <Section>
-              <Checkbox
-                type="checkbox"
-                id="hasPostDoctorate"
-                checked={hasPostDoctorate}
-                onChange={() => setHasPostDoctorate(!hasPostDoctorate)}
-              />
-              <CheckboxLabel htmlFor="hasPostDoctorate">Possui pós-doutorado?</CheckboxLabel>
-            </Section>
-            <Fragment>
-              <SectionEdit>
-                <FormInputGroupEdit>
-                  <InputEditar
-                    placeholder="Nome da instituição"
-                    name="postDoctorate.name"
-                    disabled={!hasPostDoctorate}
-                    {...register('postDoctorate.name')}
-                  />
-                  <Label htmlFor="postDoctorate.name">Nome da instituição</Label>
-                </FormInputGroupEdit>
-                <FormInputGroupEdit>
-                  <LabelSelect htmlFor="postDoctorate.type">Tipo de Instituição</LabelSelect>
-                  <Select
-                    name="postDoctorate.type"
-                    disabled={!hasPostDoctorate}
-                    {...register('postDoctorate.type')}
-                  >
-                    {institutionTypes.map(institutionType => (
-                      <option key={institutionType.id} value={institutionType.id}>
-                        {institutionType.name}
-                      </option>
-                    ))}
-                  </Select>
-                </FormInputGroupEdit>
-              </SectionEdit>
-            </Fragment>
-            <Section>
-              <Checkbox
-                type="checkbox"
-                id="hasCNPQScholarship"
-                checked={hasCNPQScholarship}
-                onChange={() => setHasCNPQScholarship(!hasCNPQScholarship)}
-              />
-              <CheckboxLabel htmlFor="hasCNPQScholarship">Possui Bolsa CNPQ?</CheckboxLabel>
-            </Section>
-            <Fragment>
-              <SectionEdit>
-                <FormInputGroupEdit>
-                  <LabelSelect htmlFor="cnpqLevelId">Bolsa CNPQ</LabelSelect>
-                  <Select
-                    name="cnpqLevelId"
-                    disabled={!hasCNPQScholarship}
-                    {...register('cnpqLevelId')}
-                  >
-                    {cnpqLevels.map(level => (
-                      <option key={level.id} value={level.id}>
-                        {level.level}
-                      </option>
-                    ))}
-                  </Select>
-                </FormInputGroupEdit>
-              </SectionEdit>
-            </Fragment>
-            {user.role === Roles.ADMIN && (
-              <Fragment>
-                <Section>
-                  <Checkbox
-                    type="checkbox"
-                    id="hasFinishedDoctorateOnUFF"
-                    name="hasFinishedDoctorateOnUFF"
-                    {...register('hasFinishedDoctorateOnUFF')}
-                  />
-                  <CheckboxLabel htmlFor="hasFinishedDoctorateOnUFF">
-                    Concluiu o doutorado no PGC/UFF?
-                  </CheckboxLabel>
-                </Section>
-                <Section>
-                  <Checkbox
-                    type="checkbox"
-                    id="hasFinishedMasterDegreeOnUFF"
-                    name="hasFinishedMasterDegreeOnUFF"
-                    {...register('hasFinishedMasterDegreeOnUFF')}
-                  />
-                  <CheckboxLabel htmlFor="hasFinishedMasterDegreeOnUFF">
-                    Concluiu o mestrado no PGC ou CAA - UFF ?
-                  </CheckboxLabel>
-                </Section>
-              </Fragment>
-            )}
-
-            <FormInputGroup>
-              <ButtonSecondary onClick={() => router.push(`/egressos`)}>Voltar</ButtonSecondary>
-              <Button type="submit">Enviar</Button>
-              <ToastContainer position="bottom-center" />
-            </FormInputGroup>
-          </Form>
-        </form>
-      </MainWrapper>
-    </>
+                  </Grid>
+                  <Grid item xs={12} alignSelf={'center'}>
+                    <Grid container justifyContent={'center'} columnSpacing={3}>
+                      <Grid item>
+                        <Button
+                          size={'large'}
+                          variant="outlined"
+                          onClick={() => router.push(`/egressos`)}
+                        >
+                          Voltar
+                        </Button>
+                      </Grid>
+                      <Grid item>
+                        <Button size={'large'} variant="contained" type="submit">
+                          Enviar
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </FormContainer>
+            </Grid>
+          </Grid>
+        </Grid>
+      </PageWrapper>
+    </MainWrapper>
   )
 }
 
