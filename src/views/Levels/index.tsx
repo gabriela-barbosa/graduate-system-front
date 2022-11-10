@@ -1,36 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import { Theme } from '../../utils/enums'
-import { toast, ToastContainer } from 'react-toastify'
-import { Icon } from '../GraduatesList/index.style'
+import { Theme } from '@utils/enums'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { Modal } from 'react-bootstrap'
+import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/router'
-import MainWrapper from '../../components/MainWrapper'
+import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
 import {
-  ButtonLogin,
+  ActionIcon,
   Button,
-  Fields,
-  Input,
-  PageWrapper,
-  Subtitle,
-  Title,
-  ButtonSecondary,
-} from '../../styles/index.style'
+  MainWrapper,
+  showDeletedToast,
+  showSavedToast,
+  Table,
+  TableHeader,
+  TBody,
+  TD,
+  ToastContainer,
+  TR,
+} from '@components'
+import { FormControl, Grid, TextField } from '@mui/material'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 const Levels: React.FC = () => {
-  const [cnpqLevels, setCnpqLevels] = React.useState([])
-  const [newCnpqLevel, setNewCnpqLevel] = React.useState('')
-  const [currentEditId, setCurrentEditId] = React.useState('')
-  const [show3, setShow3] = useState(false)
-  const handleClose3 = () => setShow3(false)
-  const handleShow3 = () => setShow3(true)
-
-  const savedToast = () => toast('Salvo com sucesso!')
-  const deletedToast = () => toast('Deletado com sucesso!')
+  const [cnpqLevels, setCnpqLevels] = useState([])
+  const [currentLevel, setCurrentLevel] = useState({ id: null, value: '' })
+  const [show, setShow] = useState(false)
   const router = useRouter()
+
+  const { id, value } = currentLevel
+
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
+
   const onClickBack = () => {
     router.push('/gerenciamento')
   }
@@ -55,7 +58,7 @@ const Levels: React.FC = () => {
     const response = await fetch(`${GRADUATE_API}/v1/cnpqlevel/${id}`, myInit as RequestInit)
     if (response.status < 400) {
       await getCnpqLevels()
-      deletedToast()
+      showDeletedToast()
     }
   }
 
@@ -67,14 +70,14 @@ const Levels: React.FC = () => {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ level: newCnpqLevel }),
+      body: JSON.stringify({ level: value }),
     }
     const result = await fetch(`${GRADUATE_API}/v1/cnpqlevel`, myInit as RequestInit)
     if (result) {
       await getCnpqLevels()
-      savedToast()
-      setShow3(false)
-      setNewCnpqLevel('')
+      showSavedToast()
+      setShow(false)
+      setCurrentLevel({ id: null, value: '' })
     }
   }
 
@@ -86,25 +89,20 @@ const Levels: React.FC = () => {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ level: newCnpqLevel }),
+      body: JSON.stringify({ level: value }),
     }
-    const result = await fetch(
-      `${GRADUATE_API}/v1/cnpqlevel/${currentEditId}`,
-      myInit as RequestInit
-    )
+    const result = await fetch(`${GRADUATE_API}/v1/cnpqlevel/${id}`, myInit as RequestInit)
     if (result) {
-      setCurrentEditId('')
       await getCnpqLevels()
-      savedToast()
-      setShow3(false)
-      setNewCnpqLevel('')
+      showSavedToast()
+      setShow(false)
+      setCurrentLevel({ id: null, value: '' })
     }
   }
 
-  const handlerOpenEdit3 = (id: string, value: string) => {
-    setShow3(true)
-    setCurrentEditId(id)
-    setNewCnpqLevel(value)
+  const handlerOpenEdit = (id: string, value: string) => {
+    setShow(true)
+    setCurrentLevel({ id, value })
   }
 
   useEffect(() => {
@@ -117,78 +115,91 @@ const Levels: React.FC = () => {
     <>
       <MainWrapper themeName={Theme.white} hasContent={true} hasHeader={true}>
         <PageWrapper>
-          <Title>Atualizar Níveis CNPQ</Title>
-          <ToastContainer
-            position="bottom-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
-
-          <table className="tables">
-            <thead>
-              <tr className="table-header">
-                <td>
-                  <Fields>Nível CNPQ </Fields>
-                </td>
-                <td>
-                  <Fields></Fields>
-                </td>
-              </tr>
-            </thead>
-            <tbody>
-              {cnpqLevels?.map(level => (
-                <tr key={level.id}>
-                  <td>
-                    <Subtitle>{level.level}</Subtitle>
-                  </td>
-                  <td>
-                    <Icon>
-                      <FontAwesomeIcon
-                        onClick={() => handlerOpenEdit3(level.id, level.level)}
-                        icon={faPencilAlt}
-                      />
-                      <FontAwesomeIcon
-                        onClick={() => deleteCnpqLevel(level.id)}
-                        className="trash-icon"
-                        icon={faTrashAlt}
-                      />
-                    </Icon>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <br></br>
-            <Button onClick={handleShow3}>Adicionar Nível</Button>
-            <ButtonSecondary onClick={onClickBack}>Voltar</ButtonSecondary>
-          </table>
+          <Grid container rowSpacing={2}>
+            <Grid item xs={12}>
+              <Title>Atualizar Níveis CNPQ</Title>
+            </Grid>
+            <ToastContainer />
+            <Grid item xs={12} height={510}>
+              <Table>
+                <TableHeader>
+                  <TR className="table-header">
+                    <TD>
+                      <Fields>Nível CNPQ </Fields>
+                    </TD>
+                    <TD>
+                      <Fields></Fields>
+                    </TD>
+                  </TR>
+                </TableHeader>
+                <TBody>
+                  {cnpqLevels?.map(level => (
+                    <TR key={level.id}>
+                      <TD>
+                        <Subtitle>{level.level}</Subtitle>
+                      </TD>
+                      <TD>
+                        <ActionIcon>
+                          <FontAwesomeIcon
+                            onClick={() => handlerOpenEdit(level.id, level.level)}
+                            icon={faPencilAlt}
+                          />
+                          <FontAwesomeIcon
+                            onClick={() => deleteCnpqLevel(level.id)}
+                            className="trash-icon"
+                            icon={faTrashAlt}
+                          />
+                        </ActionIcon>
+                      </TD>
+                    </TR>
+                  ))}
+                </TBody>
+              </Table>
+            </Grid>
+            <Grid item>
+              <Grid container columnSpacing={2}>
+                <Grid item>
+                  <Button
+                    size={'large'}
+                    variant={'contained'}
+                    onClick={() => {
+                      setCurrentLevel({ id: null, value: '' })
+                      handleShow()
+                    }}
+                  >
+                    Adicionar Nível
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                    Voltar
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
         </PageWrapper>
       </MainWrapper>
 
-      <Modal show={show3} onHide={handleClose3}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Fields>{currentEditId === '' ? 'Adicionar' : 'Editar'} Nível CNPQ</Fields>
+          <Fields>{id ? 'Editar' : 'Adicionar'} Nível CNPQ</Fields>
         </Modal.Header>
         <Modal.Body>
-          <Input
-            type="text"
-            onChange={event => setNewCnpqLevel(event.target.value)}
-            placeholder="Novo Nível"
-            required
-          />
+          <FormControl fullWidth>
+            <TextField
+              value={value}
+              required
+              name={'cnpqLevel'}
+              label={'Nível CNPQ'}
+              onChange={({ target }) => setCurrentLevel({ ...currentLevel, value: target.value })}
+            />
+          </FormControl>
         </Modal.Body>
         <Modal.Footer>
-          <ButtonLogin
-            type="submit"
-            onClick={currentEditId === '' ? handleSaveCnpq : handleUpdateCnpq}
-          >
+          <Button type="submit" onClick={id ? handleUpdateCnpq : handleSaveCnpq}>
             Salvar
-          </ButtonLogin>
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

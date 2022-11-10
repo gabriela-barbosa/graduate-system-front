@@ -1,36 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import { Theme } from '../../utils/enums'
+import { Theme } from '@utils/enums'
 import 'react-toastify/dist/ReactToastify.css'
-import { Icon } from '../GraduatesList/index.style'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { Modal } from 'react-bootstrap'
 import { useRouter } from 'next/router'
-import MainWrapper from '../../components/MainWrapper'
+import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
 import {
+  ActionIcon,
   Button,
-  ButtonSecondary,
-  Fields,
-  Input,
-  PageWrapper,
-  Subtitle,
-  Title,
-} from '../../styles/index.style'
-import { toast, ToastContainer } from '../../components/Toast'
+  MainWrapper,
+  showSavedToast,
+  Table,
+  TableHeader,
+  TBody,
+  TD,
+  toast,
+  ToastContainer,
+  TR,
+} from '@components'
+import { FormControl, Grid, TextField } from '@mui/material'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 const Institutions: React.FC = () => {
   const [institutionTypes, setInstitutionTypes] = React.useState([])
-  const [newInstitutionType, setNewInstitutionType] = React.useState('')
-  const [currentEditId, setCurrentEditId] = React.useState('')
-  const [show2, setShow2] = useState(false)
-  const handleClose2 = () => setShow2(false)
-  const handleShow2 = () => setShow2(true)
+  const [currentInstitution, setCurrentInstitution] = useState({ id: null, value: '' })
+  const [show, setShow] = useState(false)
+  const router = useRouter()
 
+  const { id, value } = currentInstitution
+
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
   const savedToast = () => toast('Salvo com sucesso!')
   const deletedToast = () => toast('Deletado com sucesso!')
-  const router = useRouter()
   const onClickBack = () => {
     router.push('/gerenciamento')
   }
@@ -67,14 +71,14 @@ const Institutions: React.FC = () => {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ name: newInstitutionType }),
+      body: JSON.stringify({ name: value }),
     }
     const result = await fetch(`${GRADUATE_API}/v1/institution/type`, myInit as RequestInit)
     if (result) {
       await getInstitutionTypes()
       savedToast()
-      setShow2(false)
-      setNewInstitutionType('')
+      setShow(false)
+      setCurrentInstitution({ id: null, value: '' })
     }
   }
 
@@ -86,25 +90,20 @@ const Institutions: React.FC = () => {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ name: newInstitutionType }),
+      body: JSON.stringify({ name: value }),
     }
-    const result = await fetch(
-      `${GRADUATE_API}/v1/institution/type/${currentEditId}`,
-      myInit as RequestInit
-    )
+    const result = await fetch(`${GRADUATE_API}/v1/institution/type/${id}`, myInit as RequestInit)
     if (result) {
-      setCurrentEditId('')
       await getInstitutionTypes()
-      savedToast()
-      setShow2(false)
-      setNewInstitutionType('')
+      showSavedToast()
+      setShow(false)
+      setCurrentInstitution({ id: null, value: '' })
     }
   }
 
-  const handlerOpenEdit2 = (id: string, value: string) => {
-    setShow2(true)
-    setCurrentEditId(id)
-    setNewInstitutionType(value)
+  const handlerOpenEdit = (id: string, value: string) => {
+    setShow(true)
+    setCurrentInstitution({ id, value })
   }
 
   useEffect(() => {
@@ -115,64 +114,98 @@ const Institutions: React.FC = () => {
 
   return (
     <>
-      <MainWrapper themeName={Theme.white} hasContent={true} hasHeader={true}>
+      <MainWrapper themeName={Theme.white} hasContent hasHeader>
         <PageWrapper>
-          <Title>Atualizar Tipo de Instituição</Title>
-          <ToastContainer />
-          <table className="tables">
-            <thead>
-              <tr className="table-header">
-                <td>
-                  <Fields>Tipo de Instituição </Fields>
-                </td>
-                <td>
-                  <Fields></Fields>
-                </td>
-              </tr>
-            </thead>
-            {institutionTypes?.map(institutionType => (
-              <tr key={institutionType.id}>
-                <td>
-                  <Subtitle>{institutionType.name}</Subtitle>
-                </td>
-                <td>
-                  <Icon>
-                    <FontAwesomeIcon
-                      onClick={() => handlerOpenEdit2(institutionType.id, institutionType.name)}
-                      icon={faPencilAlt}
-                    />
-                    <FontAwesomeIcon
-                      onClick={() => deleteInstitutionType(institutionType.id)}
-                      className="trash-icon"
-                      icon={faTrashAlt}
-                    />
-                  </Icon>
-                </td>
-              </tr>
-            ))}
-          </table>
-          <br></br>
-          <Button onClick={handleShow2}>Adicionar Instituição</Button>
-          <ButtonSecondary onClick={onClickBack}>Voltar</ButtonSecondary>
+          <Grid container rowSpacing={2}>
+            <Grid item xs={12}>
+              <Title>Atualizar Tipo de Instituição</Title>
+            </Grid>
+            <Grid item xs={12} height={510}>
+              <Table>
+                <TableHeader>
+                  <TR>
+                    <TD>
+                      <Fields>Tipo de Instituição </Fields>
+                    </TD>
+                    <td>
+                      <Fields></Fields>
+                    </td>
+                  </TR>
+                </TableHeader>
+                <TBody>
+                  {institutionTypes?.map(institutionType => (
+                    <TR key={institutionType.id}>
+                      <TD>
+                        <Subtitle>{institutionType.name}</Subtitle>
+                      </TD>
+                      <TD>
+                        <ActionIcon>
+                          <FontAwesomeIcon
+                            onClick={() =>
+                              handlerOpenEdit(institutionType.id, institutionType.name)
+                            }
+                            icon={faPencilAlt}
+                          />
+                          <FontAwesomeIcon
+                            onClick={() => deleteInstitutionType(institutionType.id)}
+                            className="trash-icon"
+                            icon={faTrashAlt}
+                          />
+                        </ActionIcon>
+                      </TD>
+                    </TR>
+                  ))}
+                </TBody>
+              </Table>
+            </Grid>
+            <Grid item>
+              <Grid container columnSpacing={2}>
+                <Grid item>
+                  <Button
+                    size={'large'}
+                    variant={'contained'}
+                    onClick={() => {
+                      setCurrentInstitution({ id: null, value: '' })
+                      handleShow()
+                    }}
+                  >
+                    Adicionar Instituição
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                    Voltar
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+            <ToastContainer />
+          </Grid>
         </PageWrapper>
       </MainWrapper>
 
-      <Modal show={show2} onHide={handleClose2}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Fields>{currentEditId === '' ? 'Adicionar' : 'Editar'} Instituição</Fields>
+          <Fields>{id ? 'Editar' : 'Adicionar'} Instituição</Fields>
         </Modal.Header>
         <Modal.Body>
-          <Input
-            type="text"
-            onChange={event => setNewInstitutionType(event.target.value)}
-            placeholder="Nova Instituição"
-            required
-          ></Input>
+          <FormControl fullWidth>
+            <TextField
+              value={value}
+              required
+              name={'institution'}
+              label={'Instituição'}
+              onChange={({ target }) =>
+                setCurrentInstitution({ ...currentInstitution, value: target.value })
+              }
+            />
+          </FormControl>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            type="submit"
-            onClick={currentEditId === '' ? handleSaveInstitution : handleUpdateInstitution}
+            size={'large'}
+            variant={'contained'}
+            onClick={id ? handleUpdateInstitution : handleSaveInstitution}
           >
             Salvar
           </Button>

@@ -5,9 +5,7 @@ import { theme } from './theme'
 const fontFamily = 'font-family: Roboto, sans-serif'
 
 export const Content = styled.div`
-  //width: 100%;
   padding: 50px;
-  //position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -95,106 +93,12 @@ export const Label = styled.label`
   line-height: 14px;
 `
 
-export const Input = styled.input`
-  display: block;
-  width: 100%;
-  //width: 300px;
-  height: 48px;
-  padding-left: 16px;
-  transition: all 0.3s linear;
-  border: 3px solid ${theme.palette.grey['500']};
-  border-radius: 8px;
-  background-color: ${theme.palette.primary.contrastText};
-  color: ${theme.palette.primary.main};
-  font-family: ${fontFamily};
-  font-size: 20px;
-  line-height: 23px;
-
-  &:disabled {
-    border: 3px solid #cbcbcb7c;
-    background-color: #ffffff7f;
-    color: ${theme.palette.primary.main};
-  }
-
-  &:disabled::placeholder {
-    color: ${theme.palette.primary.main};
-  }
-
-  &:focus {
-    outline: 0;
-  }
-
-  &:not(:placeholder-shown) {
-    //padding-top: 26px;
-    //padding-bottom: 14px;
-    padding-left: 16px;
-  }
-
-  &:not(:placeholder-shown) + ${Label} {
-    transform: translateY(-12px);
-    opacity: 1;
-  }
-
-  &::placeholder {
-    top: 0;
-    color: #4b907e;
-    font-size: 16px;
-    font-style: normal;
-    font-family: ${fontFamily};
-    letter-spacing: 0.48px;
-    line-height: 19px;
-  }
-`
-
 export const Error = styled.p`
   height: 30px;
   margin-top: 5px;
   color: #55c32d;
   font-size: 12px;
   line-height: lh(12px, 14px);
-`
-
-export const Button = styled.button`
-  width: 164px;
-  height: 46px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  background-color: #4b907eff;
-  opacity: 0.8;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 17px;
-  line-height: 23px;
-  color: #ffff;
-  border: none;
-
-  &:hover {
-    opacity: 1;
-  }
-`
-
-export const ButtonSecondary = styled.button`
-  margin: 0 10px;
-  width: 164px;
-  height: 46px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  background-color: #ffff;
-  opacity: 0.8;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 17px;
-  line-height: 23px;
-  color: #4b907eff;
-  border: solid 2px #4b907eff;
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 export const Background = styled.div`
@@ -229,6 +133,9 @@ export const Fields = styled.h1`
 `
 
 export const Subtitle = styled.h1`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding-top: 0;
   padding-bottom: 0;
   padding-right: 140px;
@@ -239,25 +146,4 @@ export const Subtitle = styled.h1`
   line-height: 47px;
 
   color: #0b6951b2;
-`
-
-export const ButtonLogin = styled.button`
-  width: 154px;
-  height: 46px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  background-color: #ffff;
-  opacity: 0.8;
-  font-family: ${fontFamily};
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 23px;
-  color: #4b907eff;
-  border: none;
-
-  &:hover {
-    opacity: 1;
-  }
 `

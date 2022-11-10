@@ -16,4 +16,7 @@ const ToastContainer = () => (
   ></Toast>
 )
 
-export { ToastContainer, toast }
+const showSavedToast = () => toast('Salvo com sucesso!')
+const showDeletedToast = () => toast('Deletado com sucesso!')
+
+export { ToastContainer, toast, showSavedToast, showDeletedToast }

@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { MainWrapper, Input, Select, Button } from '@components'
+import {
+  MainWrapper,
+  Input,
+  Select,
+  Button,
+  Table,
+  TableHeader,
+  TR,
+  TD,
+  TBody,
+  ActionIcon,
+} from '@components'
 import { Theme } from '@utils/enums'
-import { Icon, Table, TableHeader, TBody, TD, TR } from './index.style'
 
 import { FormControl, Grid, Pagination } from '@mui/material'
 
@@ -196,12 +206,12 @@ const GraduateList: React.FC = () => {
                         <Fields>{graduate.position ?? '-'}</Fields>
                       </TD>
                       <TD>
-                        <Icon>
+                        <ActionIcon>
                           <FontAwesomeIcon
                             onClick={() => onClickEdit(graduate)}
                             icon={faPencilAlt}
                           />
-                        </Icon>
+                        </ActionIcon>
                       </TD>
                     </TR>
                   ))}

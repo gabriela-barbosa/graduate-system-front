@@ -8,9 +8,8 @@ import article from '@public/foto3.png'
 import { useRouter } from 'next/router'
 import MainWrapper from '@components/MainWrapper'
 import { PageWrapper, Title } from '@styles/index.style'
-import { Card, CardTitle, IconImage } from './index.style'
 import { Grid } from '@mui/material'
-import MailOutlineIcon from '@mui/icons-material/MailOutline'
+import { CardOptions, colors } from '@components'
 
 enum configOptions {
   PROGRAM = 'program',
@@ -19,19 +18,54 @@ enum configOptions {
   CONFIG_EMAIL = 'configEmail',
 }
 
-const options = {
-  [configOptions.PROGRAM]: '/ciprograms',
-  [configOptions.INSTITUTION_TYPE]: '/institutiontypes',
-  [configOptions.CNPQ_LEVELS]: '/cnpqlevels',
-  [configOptions.CONFIG_EMAIL]: '/gerenciamento/email',
+const links = {
+  [configOptions.PROGRAM]: '/programasic',
+  [configOptions.INSTITUTION_TYPE]: '/tiposdeinstituicao',
+  [configOptions.CNPQ_LEVELS]: '/niveiscnpq',
+  [configOptions.CONFIG_EMAIL]: '/email',
 }
 
 const Select: React.FC = () => {
   const router = useRouter()
 
   const goToPage = (option: configOptions) => {
-    router.push(options[option])
+    router.push(`gerenciamento/${links[option]}`)
   }
+
+  const options = [
+    {
+      title: 'Configurar Programas',
+      subtitle: 'Adicione, exclua ou edite um programa',
+      icon: money,
+      altImg: 'money',
+      color: colors.green,
+      onClick: () => goToPage(configOptions.PROGRAM),
+    },
+    {
+      title: 'Configurar Tipo de Instituição',
+      subtitle: 'Adicione, exclua ou edite um tipo de instituição',
+      icon: settings,
+      altImg: 'settings',
+      color: colors.red,
+      onClick: () => goToPage(configOptions.INSTITUTION_TYPE),
+    },
+    {
+      title: 'Configurar Níveis CNPQ',
+      subtitle: 'Adicione, exclua ou edite um nível CNPQ',
+      icon: article,
+      altImg: 'article',
+      color: colors.blue,
+      onClick: () => goToPage(configOptions.CNPQ_LEVELS),
+    },
+    {
+      title: 'Configurar Conteúdo do Email',
+      subtitle: 'Adicione, exclua ou edite um email',
+      icon: article,
+      altImg: 'article',
+      color: colors.yellow,
+      onClick: () => goToPage(configOptions.CONFIG_EMAIL),
+    },
+  ]
 
   return (
     <>
@@ -41,69 +75,18 @@ const Select: React.FC = () => {
           <br></br>
           <br></br>
           <Grid container spacing={8}>
-            <Grid item>
-              <Card color="green" onClick={() => goToPage(configOptions.PROGRAM)}>
-                <Grid container spacing={1} direction="column">
-                  <Grid item>
-                    <CardTitle>Configurar Programas</CardTitle>
-                  </Grid>
-                  <Grid item>
-                    <p>Adicione, exclua ou edite um programa</p>
-                  </Grid>
-                  <Grid item>
-                    <IconImage src={money} alt="money" />
-                  </Grid>
-                </Grid>
-              </Card>
-            </Grid>
-
-            <Grid item>
-              <Card color="red" onClick={() => goToPage(configOptions.INSTITUTION_TYPE)}>
-                <Grid container spacing={1} direction="column">
-                  <Grid item>
-                    <CardTitle>Configurar Tipo de Instituição</CardTitle>
-                  </Grid>
-                  <Grid item>
-                    <p>Adicione, exclua ou edite um tipo de instituição</p>
-                  </Grid>
-                  <Grid item>
-                    <IconImage src={settings} alt="settings" />
-                  </Grid>
-                </Grid>
-              </Card>
-            </Grid>
-
-            <Grid item>
-              <Card color={'blue'} onClick={() => goToPage(configOptions.CNPQ_LEVELS)}>
-                <Grid container spacing={1} direction="column">
-                  <Grid item>
-                    <CardTitle>Configurar Níveis CNPQ</CardTitle>
-                  </Grid>
-                  <Grid item>
-                    <p>Adicione, exclua ou edite um nível CNPQ</p>
-                  </Grid>
-                  <Grid item>
-                    <IconImage src={article} alt="article" />
-                  </Grid>
-                </Grid>
-              </Card>
-            </Grid>
-
-            <Grid item>
-              <Card color={'yellow'} onClick={() => goToPage(configOptions.CONFIG_EMAIL)}>
-                <Grid container spacing={1} direction="column">
-                  <Grid item>
-                    <CardTitle>Configurar Conteúdo do Email</CardTitle>
-                  </Grid>
-                  <Grid item>
-                    <p>Adicione, exclua ou edite um email</p>
-                  </Grid>
-                  <Grid item>
-                    <MailOutlineIcon sx={{ fontSize: 50 }} />
-                  </Grid>
-                </Grid>
-              </Card>
-            </Grid>
+            {options.map(({ title, subtitle, icon, altImg, color, onClick }, index) => (
+              <Grid item key={index}>
+                <CardOptions
+                  color={color}
+                  onClick={onClick}
+                  altImg={altImg}
+                  icon={icon}
+                  subtitle={subtitle}
+                  title={title}
+                />
+              </Grid>
+            ))}
           </Grid>
         </PageWrapper>
       </MainWrapper>
