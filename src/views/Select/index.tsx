@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import money from '@public/foto1.png'
 import settings from '@public/foto2.jpg'
 import article from '@public/foto3.png'
+import email from '@public/email.png'
 
 import { useRouter } from 'next/router'
 import MainWrapper from '@components/MainWrapper'
@@ -35,7 +36,7 @@ const Select: React.FC = () => {
   const options = [
     {
       title: 'Configurar Programas',
-      subtitle: 'Adicione, exclua ou edite um programa',
+      subtitle: 'Adicione, exclua ou edite um Programa de Pós-graduação.',
       icon: money,
       altImg: 'money',
       color: colors.green,
@@ -43,7 +44,7 @@ const Select: React.FC = () => {
     },
     {
       title: 'Configurar Tipo de Instituição',
-      subtitle: 'Adicione, exclua ou edite um tipo de instituição',
+      subtitle: 'Adicione, exclua ou edite um Tipo de Instituição.',
       icon: settings,
       altImg: 'settings',
       color: colors.red,
@@ -51,7 +52,7 @@ const Select: React.FC = () => {
     },
     {
       title: 'Configurar Níveis CNPQ',
-      subtitle: 'Adicione, exclua ou edite um nível CNPQ',
+      subtitle: 'Adicione, exclua ou edite um Nível CNPQ',
       icon: article,
       altImg: 'article',
       color: colors.blue,
@@ -59,9 +60,9 @@ const Select: React.FC = () => {
     },
     {
       title: 'Configurar Conteúdo do Email',
-      subtitle: 'Adicione, exclua ou edite um email',
-      icon: article,
-      altImg: 'article',
+      subtitle: 'Adicione, exclua ou edite um Email',
+      icon: email,
+      altImg: 'email',
       color: colors.yellow,
       onClick: () => goToPage(configOptions.CONFIG_EMAIL),
     },
