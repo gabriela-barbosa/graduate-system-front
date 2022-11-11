@@ -10,12 +10,12 @@ import {
   ActionIcon,
   Button,
   MainWrapper,
+  showDeletedToast,
   showSavedToast,
   Table,
   TableHeader,
   TBody,
   TD,
-  toast,
   ToastContainer,
   TR,
 } from '@components'
@@ -24,7 +24,7 @@ import { FormControl, Grid, TextField } from '@mui/material'
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 const Institutions: React.FC = () => {
-  const [institutionTypes, setInstitutionTypes] = React.useState([])
+  const [institutionTypes, setInstitutionTypes] = useState([])
   const [currentInstitution, setCurrentInstitution] = useState({ id: null, value: '' })
   const [show, setShow] = useState(false)
   const router = useRouter()
@@ -33,8 +33,6 @@ const Institutions: React.FC = () => {
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
-  const savedToast = () => toast('Salvo com sucesso!')
-  const deletedToast = () => toast('Deletado com sucesso!')
   const onClickBack = () => {
     router.push('/gerenciamento')
   }
@@ -59,7 +57,7 @@ const Institutions: React.FC = () => {
     const response = await fetch(`${GRADUATE_API}/v1/institution/type/${id}`, myInit as RequestInit)
     if (response.status < 400) {
       await getInstitutionTypes()
-      deletedToast()
+      showDeletedToast()
     }
   }
 
@@ -76,7 +74,7 @@ const Institutions: React.FC = () => {
     const result = await fetch(`${GRADUATE_API}/v1/institution/type`, myInit as RequestInit)
     if (result) {
       await getInstitutionTypes()
-      savedToast()
+      showSavedToast()
       setShow(false)
       setCurrentInstitution({ id: null, value: '' })
     }
