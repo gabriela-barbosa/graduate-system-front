@@ -5,6 +5,7 @@ import money from '@public/foto1.png'
 import settings from '@public/foto2.jpg'
 import article from '@public/foto3.png'
 import email from '@public/email.png'
+import user from '@public/user.png'
 
 import { useRouter } from 'next/router'
 import MainWrapper from '@components/MainWrapper'
@@ -17,13 +18,15 @@ enum configOptions {
   INSTITUTION_TYPE = 'institutionType',
   CNPQ_LEVELS = 'cnpqLevels',
   CONFIG_EMAIL = 'configEmail',
+  CONFIG_USER = 'configUser',
 }
 
 const links = {
-  [configOptions.PROGRAM]: '/programasic',
-  [configOptions.INSTITUTION_TYPE]: '/tiposdeinstituicao',
-  [configOptions.CNPQ_LEVELS]: '/niveiscnpq',
-  [configOptions.CONFIG_EMAIL]: '/email',
+  [configOptions.PROGRAM]: 'programasic',
+  [configOptions.INSTITUTION_TYPE]: 'tiposdeinstituicao',
+  [configOptions.CNPQ_LEVELS]: 'niveiscnpq',
+  [configOptions.CONFIG_EMAIL]: 'emails',
+  [configOptions.CONFIG_USER]: 'usuarios',
 }
 
 const Select: React.FC = () => {
@@ -36,7 +39,7 @@ const Select: React.FC = () => {
   const options = [
     {
       title: 'Configurar Programas',
-      subtitle: 'Adicione, exclua ou edite um Programa de Pós-graduação.',
+      subtitle: 'Adicione, exclua ou edite um programa de pós-graduação.',
       icon: money,
       altImg: 'money',
       color: colors.green,
@@ -44,7 +47,7 @@ const Select: React.FC = () => {
     },
     {
       title: 'Configurar Tipo de Instituição',
-      subtitle: 'Adicione, exclua ou edite um Tipo de Instituição.',
+      subtitle: 'Adicione, exclua ou edite um tipo de instituição.',
       icon: settings,
       altImg: 'settings',
       color: colors.red,
@@ -52,7 +55,7 @@ const Select: React.FC = () => {
     },
     {
       title: 'Configurar Níveis CNPQ',
-      subtitle: 'Adicione, exclua ou edite um Nível CNPQ',
+      subtitle: 'Adicione, exclua ou edite um nível CNPQ.',
       icon: article,
       altImg: 'article',
       color: colors.blue,
@@ -60,11 +63,19 @@ const Select: React.FC = () => {
     },
     {
       title: 'Configurar Conteúdo do Email',
-      subtitle: 'Adicione, exclua ou edite um Email',
+      subtitle: 'Adicione, exclua ou edite um email.',
       icon: email,
       altImg: 'email',
       color: colors.yellow,
       onClick: () => goToPage(configOptions.CONFIG_EMAIL),
+    },
+    {
+      title: 'Configurar Usuários',
+      subtitle: 'Adicione, exclua ou edite um usuário.',
+      icon: user,
+      altImg: 'user',
+      color: colors.purple,
+      onClick: () => goToPage(configOptions.CONFIG_USER),
     },
   ]
 

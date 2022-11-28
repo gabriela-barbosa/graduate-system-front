@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { Roles } from '../utils/enums'
 
 // export interface User {
-//   email: number
+//   emails: number
 // }
 
 export type AuthContextType = {

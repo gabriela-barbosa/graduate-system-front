@@ -34,7 +34,6 @@ import {
 } from '@mui/material'
 import { PaginationType } from '@views/GraduatesList/types'
 import { toast } from 'react-toastify'
-import { RadioButtonGroup } from 'react-hook-form-mui'
 
 interface Email {
   id?: string
@@ -100,7 +99,7 @@ const EmailConfig = () => {
     await getEmails(value)
   }
 
-  const deleteInstitutionType = async (id: string) => {
+  const deleteEmail = async (id: string) => {
     const myInit = {
       method: 'DELETE',
       headers: {
@@ -226,7 +225,7 @@ const EmailConfig = () => {
                             icon={faPencilAlt}
                           />
                           <FontAwesomeIcon
-                            onClick={() => deleteInstitutionType(email.id)}
+                            onClick={() => deleteEmail(email.id)}
                             className="trash-icon"
                             icon={faTrashAlt}
                           />
@@ -285,7 +284,7 @@ const EmailConfig = () => {
                   disabled={!!id}
                   required
                   name={'name'}
-                  label={'Nome do email'}
+                  label={'Nome do emails'}
                   onChange={({ target }) =>
                     setCurrentEmail({ ...currentEmail, name: target.value })
                   }

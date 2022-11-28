@@ -1,7 +1,7 @@
 import React from 'react'
 import { AppProps } from 'next/app'
 import GlobalStyle from '../src/styles/global'
-import { theme } from '../src/styles/theme'
+import { theme } from '@styles/theme'
 import { AuthProvider } from '../src/api/AuthProvider'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { ThemeProvider } from '@mui/material'

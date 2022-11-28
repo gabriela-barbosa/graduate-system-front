@@ -29,6 +29,7 @@ export const colors = {
   green: '#3bb54a',
   blue: '#4895ff',
   yellow: '#d1b534',
+  purple: '#ab45de',
 }
 
 const Card = styled.div`

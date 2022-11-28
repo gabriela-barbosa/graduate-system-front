@@ -7,9 +7,9 @@ export const PersonalInfo = () => {
   const getEmailErrorMessageByType = type => {
     switch (type) {
       case 'pattern':
-        return 'Insira um email válido.'
+        return 'Insira um emails válido.'
       case 'required':
-        return 'Digite o email.'
+        return 'Digite o emails.'
     }
   }
   return (

@@ -8,3 +8,9 @@ export enum Roles {
   GRADUATE = 'GRADUATE',
   PROFESSOR = 'PROFESSOR',
 }
+
+export const RoleTranslation = {
+  [Roles.PROFESSOR]: 'Orientador',
+  [Roles.ADMIN]: 'Administrador',
+  [Roles.GRADUATE]: 'Egresso',
+}
