@@ -25,12 +25,16 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormLabel,
   Grid,
   Pagination,
+  Radio,
+  RadioGroup,
   TextField,
 } from '@mui/material'
 import { PaginationType } from '@views/GraduatesList/types'
 import { toast } from 'react-toastify'
+import { RadioButtonGroup } from 'react-hook-form-mui'
 
 interface Email {
   id?: string
@@ -50,7 +54,16 @@ const pageSize = 10
 const EmailConfig = () => {
   const [emails, setEmails] = useState([])
   const [pagination, setPagination] = useState<PaginationType>({ page: 0, size: 0, total: 0 })
-
+  const [previousEmail, setPreviousEmail] = useState<Email>({
+    buttonText: '',
+    buttonURL: '',
+    content: '',
+    id: '',
+    isGraduateEmail: false,
+    name: '',
+    title: '',
+    active: false,
+  })
   const [currentEmail, setCurrentEmail] = useState<Email>({
     buttonText: '',
     buttonURL: '',
@@ -159,6 +172,7 @@ const EmailConfig = () => {
   const handlerOpenEdit = current => {
     setShow(true)
     setCurrentEmail(current)
+    setPreviousEmail(current)
   }
 
   useEffect(() => {
@@ -183,7 +197,7 @@ const EmailConfig = () => {
                       <Fields>Nome</Fields>
                     </TD>
                     <TD>
-                      <Fields>Email para egresso?</Fields>
+                      <Fields>Tipo do Email</Fields>
                     </TD>
                     <TD>
                       <Fields>Status</Fields>
@@ -200,7 +214,7 @@ const EmailConfig = () => {
                         <Subtitle>{email.name}</Subtitle>
                       </TD>
                       <TD>
-                        <Subtitle>{email.isGraduateEmail ? 'Sim' : 'Não'}</Subtitle>
+                        <Subtitle>{email.isGraduateEmail ? 'Egresso' : 'Orientador'}</Subtitle>
                       </TD>
                       <TD>
                         <Fields>{email.active ? 'Ativo' : 'Inativo'}</Fields>
@@ -336,7 +350,7 @@ const EmailConfig = () => {
                   control={
                     <Checkbox
                       name={'active'}
-                      disabled={currentEmail.active}
+                      disabled={previousEmail.active}
                       checked={currentEmail.active}
                       onChange={() =>
                         setCurrentEmail({
@@ -351,24 +365,31 @@ const EmailConfig = () => {
               </FormGroup>
             </Grid>
             <Grid item xs={12}>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name={'isGraduateEmail'}
-                      checked={currentEmail.isGraduateEmail}
-                      disabled={!!id}
-                      onChange={() =>
-                        setCurrentEmail({
-                          ...currentEmail,
-                          isGraduateEmail: !currentEmail.isGraduateEmail,
-                        })
-                      }
-                    />
+              <FormControl>
+                <FormLabel id={'isGraduateEmailLabel'}> Destinatário do email:</FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby="isGraduateEmailLabel"
+                  name="isGraduateEmailLabel"
+                  value={currentEmail.isGraduateEmail}
+                  onChange={({ target }) =>
+                    setCurrentEmail({ ...currentEmail, isGraduateEmail: target.value === 'true' })
                   }
-                  label="Email para egresso?"
-                />
-              </FormGroup>
+                >
+                  <FormControlLabel
+                    disabled={!!id}
+                    value={true}
+                    control={<Radio />}
+                    label={'Egresso'}
+                  />
+                  <FormControlLabel
+                    disabled={!!id}
+                    value={false}
+                    control={<Radio />}
+                    label={'Orientador'}
+                  />
+                </RadioGroup>
+              </FormControl>
             </Grid>
           </Grid>
         </Modal.Body>
