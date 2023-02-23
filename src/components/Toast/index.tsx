@@ -18,5 +18,6 @@ const ToastContainer = () => (
 
 const showSavedToast = () => toast('Salvo com sucesso!')
 const showDeletedToast = () => toast('Deletado com sucesso!')
+const showErrorToast = errorMessage => toast.error(errorMessage)
 
-export { ToastContainer, toast, showSavedToast, showDeletedToast }
+export { ToastContainer, toast, showSavedToast, showDeletedToast, showErrorToast }
