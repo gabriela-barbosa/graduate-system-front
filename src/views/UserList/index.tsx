@@ -21,6 +21,7 @@ import { Grid, Pagination } from '@mui/material'
 import { PaginationType } from '@views/GraduatesList/types'
 import EditAddUserModal from '@views/UserList/EditAddUserModal'
 import { showErrorToast } from '@components/Toast'
+import { User } from '@context/authContext'
 
 interface Email {
   id?: string
@@ -38,7 +39,7 @@ const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 const pageSize = 10
 
 const EmailConfig = () => {
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState<User[]>([])
   const [pagination, setPagination] = useState<PaginationType>({ page: 0, size: 0, total: 0 })
   const [previousUser, setPreviousUser] = useState<Email>({
     buttonText: '',
@@ -196,7 +197,11 @@ const EmailConfig = () => {
                         <Subtitle>{user.email}</Subtitle>
                       </TD>
                       <TD>
-                        <Fields>{RoleTranslation[user.role]}</Fields>
+                        <Fields>
+                          {user.roles.length < 1
+                            ? RoleTranslation[user.roles.length - 1]
+                            : RoleTranslation.multiple}
+                        </Fields>
                       </TD>
                       <TD>
                         <ActionIcon>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Roles, Theme } from '@utils/enums'
+import { Role, Theme } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { Button, MainWrapper, Input } from '@components'
@@ -14,6 +14,7 @@ import { FormContainer } from 'react-hook-form-mui'
 import { Box, FormControl } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { Password } from '@components/Input'
+import { User } from '@context/authContext'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 styled(FormInputGroup)`
@@ -23,21 +24,12 @@ const Home: React.FC = () => {
   const formContext = useForm()
   const router = useRouter()
   const { user, setUser } = useAuth()
-  const redirectAccordingRole = async user => {
-    switch (user?.role) {
-      case Roles.GRADUATE: {
-        await router.push(`/historico/${user.id}`)
-        break
-      }
-      case Roles.PROFESSOR: {
-        await router.push(`/egressos`)
-        break
-      }
-      case Roles.ADMIN: {
-        await router.push(`/egressos`)
-        break
-      }
+  const redirectAccordingRole = async (user: User) => {
+    if (user?.roles.some(role => role === Role.PROFESSOR || role === Role.ADMIN)) {
+      await router.push(`/egressos`)
+      return
     }
+    await router.push(`/historico/${user.id}`)
   }
 
   useEffect(() => {

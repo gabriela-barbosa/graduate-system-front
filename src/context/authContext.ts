@@ -1,6 +1,6 @@
 // @types.todo.ts
 import { Dispatch, SetStateAction } from 'react'
-import { Roles } from '../utils/enums'
+import { Role } from '../utils/enums'
 
 // export interface User {
 //   emails: number
@@ -36,7 +36,8 @@ export type User = {
   id: number
   name: string
   email: string
-  role: Roles
+  roles: Role[]
   advisor: Advisor
   createdAt: Date
+  currentRole?: Role
 }

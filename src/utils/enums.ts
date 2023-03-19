@@ -3,14 +3,15 @@ export enum Theme {
   white = 'white',
 }
 
-export enum Roles {
+export enum Role {
   ADMIN = 'ADMIN',
   GRADUATE = 'GRADUATE',
   PROFESSOR = 'PROFESSOR',
 }
 
 export const RoleTranslation = {
-  [Roles.PROFESSOR]: 'Orientador',
-  [Roles.ADMIN]: 'Administrador',
-  [Roles.GRADUATE]: 'Egresso',
+  [Role.PROFESSOR]: 'Orientador',
+  [Role.ADMIN]: 'Administrador',
+  [Role.GRADUATE]: 'Egresso',
+  multiple: 'Múltiplas',
 }

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { AuthContextType, User } from '@context/authContext'
-import { Roles } from '@utils/enums'
+import { Role } from '@utils/enums'
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 export const AuthContext = createContext<AuthContextType | null>(null)
@@ -20,15 +20,19 @@ const AuthProvider = ({ children }) => {
       if (profile.error) {
         setUser(null)
         return null
-      } else {
-        if (profile.message === 'Unauthenticated') {
-          setUser(null)
-          return null
-        } else {
-          setUser(profile)
-          return profile
-        }
       }
+      if (profile.message === 'Unauthenticated') {
+        setUser(null)
+        return null
+      }
+
+      const currentRole =
+        profile.roles.find(role => role === Role.ADMIN) ??
+        profile.roles.find(role => role === Role.PROFESSOR) ??
+        profile.roles.find(role => role === Role.GRADUATE)
+
+      setUser({ ...profile, currentRole })
+      return profile
     } catch (err) {
       return null
     }
@@ -48,10 +52,10 @@ const AuthProvider = ({ children }) => {
       if (url !== '/' && !user) {
         await router.push('/')
       } else if (url === '/' && user) {
-        if (user.role === Roles.GRADUATE) {
-          await router.push(`/historico/${user.id}`)
-        } else {
+        if (user?.roles.some(role => role === Role.PROFESSOR || role === Role.ADMIN)) {
           await router.push('/egressos')
+        } else {
+          await router.push(`/historico/${user.id}`)
         }
       }
     }

@@ -7,7 +7,7 @@ import React from 'react'
 import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
-import { Roles } from '../../utils/enums'
+import { Role } from '../../utils/enums'
 import Grid from '@mui/material/Unstable_Grid2'
 import SettingsIcon from '@mui/icons-material/Settings'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
@@ -60,7 +60,7 @@ const MainHeader: React.FC = () => {
                 <Texto>Olá, {user?.name}!</Texto> <LogoutButton onClick={logout}>Sair</LogoutButton>
               </Grid>
               <Grid>
-                {user?.role === Roles.ADMIN && (
+                {user?.roles === Role.ADMIN && (
                   <EditIcon onClick={onClickConfig}>
                     <SettingsIcon fontSize="large" />
                   </EditIcon>

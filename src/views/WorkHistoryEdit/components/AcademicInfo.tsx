@@ -3,7 +3,7 @@ import { Subtitle } from '@views/WorkHistoryEdit/index.style'
 import React from 'react'
 import { Input, Select } from '@components'
 import { Option } from '@views/WorkHistoryEdit/types'
-import { Roles } from '@utils/enums'
+import { Role } from '@utils/enums'
 import { RadioButtonGroup } from 'react-hook-form-mui'
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   setHasCNPQScholarship: (value?) => void
   setHasPostDoctorate: (value?) => void
   handleSetValue: (event: unknown, setHasCNPQScholarship: () => void) => void
-  role?: Roles
+  currentRole?: Role
 }
 
 export const AcademicInfo = ({
@@ -25,7 +25,7 @@ export const AcademicInfo = ({
   cnpqLevels,
   setHasPostDoctorate,
   handleSetValue,
-  role,
+  currentRole,
 }: Props) => {
   return (
     <Grid container spacing={1}>
@@ -96,7 +96,7 @@ export const AcademicInfo = ({
               />
             </FormControl>
           </Grid>
-          {role && role === Roles.ADMIN && (
+          {currentRole && currentRole === Role.ADMIN && (
             <>
               <Grid item xs={12}>
                 <FormControl>

@@ -235,7 +235,7 @@ const WorkHistory = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <AcademicInfo
-                      role={user.role}
+                      currentRole={user.currentRole}
                       cnpqLevels={cnpqLevels}
                       hasCNPQScholarship={hasCNPQScholarship}
                       setHasCNPQScholarship={setHasCNPQScholarship}
