@@ -13,5 +13,5 @@ export const RoleTranslation = {
   [Role.PROFESSOR]: 'Orientador',
   [Role.ADMIN]: 'Administrador',
   [Role.GRADUATE]: 'Egresso',
-  multiple: 'Múltiplas',
+  multiple: 'Múltiplos',
 }

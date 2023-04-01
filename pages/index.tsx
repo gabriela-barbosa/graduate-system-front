@@ -29,7 +29,7 @@ const Home: React.FC = () => {
       await router.push(`/egressos`)
       return
     }
-    await router.push(`/historico/${user.id}`)
+    if (user?.roles.includes(Role.GRADUATE)) await router.push(`/historico/${user.id}`)
   }
 
   useEffect(() => {
@@ -52,7 +52,11 @@ const Home: React.FC = () => {
         credentials: 'include',
       })
       const profile = await response.json()
-      setUser(profile)
+      const currentRole =
+        profile.roles.find(role => role === Role.ADMIN) ??
+        profile.roles.find(role => role === Role.PROFESSOR) ??
+        profile.roles.find(role => role === Role.GRADUATE)
+      setUser({ ...profile, currentRole })
       await redirectAccordingRole(profile)
     }
   }

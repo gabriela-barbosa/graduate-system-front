@@ -51,16 +51,7 @@ const EmailConfig = () => {
     title: '',
     active: false,
   })
-  const [currentUser, setCurrentUser] = useState<Email>({
-    buttonText: '',
-    buttonURL: '',
-    content: '',
-    id: '',
-    isGraduateEmail: false,
-    name: '',
-    title: '',
-    active: false,
-  })
+  const [currentUser, setCurrentUser] = useState<User>({} as User)
   const [show, setShow] = useState(false)
   const router = useRouter()
 
@@ -99,16 +90,7 @@ const EmailConfig = () => {
   }
 
   const setCurrentUserEmpty = () => {
-    setCurrentUser({
-      active: false,
-      buttonText: '',
-      buttonURL: '',
-      content: '',
-      isGraduateEmail: false,
-      name: '',
-      title: '',
-      id: null,
-    })
+    setCurrentUser({} as User)
   }
 
   const handleSaveEmail = async () => {
@@ -167,7 +149,7 @@ const EmailConfig = () => {
         <PageWrapper>
           <Grid container rowSpacing={2}>
             <Grid item xs={12}>
-              <Title>Atualizar Informações do Usuário</Title>
+              <Title>Atualizar Informações de Usuário</Title>
             </Grid>
             <Grid item xs={12} minHeight={510}>
               <Table>
@@ -180,7 +162,7 @@ const EmailConfig = () => {
                       <Fields>Email</Fields>
                     </TD>
                     <TD>
-                      <Fields>Tipo</Fields>
+                      <Fields>Papel do Usuário</Fields>
                     </TD>
                     <td>
                       <Fields></Fields>
@@ -198,8 +180,8 @@ const EmailConfig = () => {
                       </TD>
                       <TD>
                         <Fields>
-                          {user.roles.length < 1
-                            ? RoleTranslation[user.roles.length - 1]
+                          {user.roles.length === 1
+                            ? RoleTranslation[user.roles[0]]
                             : RoleTranslation.multiple}
                         </Fields>
                       </TD>

@@ -1,10 +1,10 @@
 import { Modal } from 'react-bootstrap'
 import { Fields } from '@styles/index.style'
-import { Box, FormControl, Grid, MenuItem, TextField } from '@mui/material'
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { Button } from '@components'
 import React from 'react'
 import 'react-toastify/dist/ReactToastify.css'
-import { RoleTranslation } from '@utils/enums'
+import { Role, RoleTranslation } from '@utils/enums'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -18,7 +18,9 @@ interface Props {
 
 const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props) => {
   const { id } = currentUser
-  const roles = Object.keys(RoleTranslation)
+  const roles = Object.keys(Role).filter(item => {
+    return isNaN(Number(item))
+  })
   const createUpdateUser = async user => {
     const myInit = {
       method: 'POST',
@@ -38,15 +40,14 @@ const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props)
   }
   const handleSubmit = async event => {
     event.preventDefault()
-    const { name, email, role } = event.target
-    console.log(Object.keys(RoleTranslation))
+    const { name, email, roles } = event.target
+    console.log(roles.value)
     const user = {
       id,
       name: name.value,
       email: email.value,
-      role: role.value,
+      roles: typeof roles.value === 'string' ? roles.value.split(',') : roles.value,
     }
-    console.log('passei aqui create', user)
 
     await createUpdateUser(user)
   }
@@ -54,7 +55,7 @@ const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props)
     <Modal show={show} onHide={handleClose}>
       <Box component={'form'} onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Fields>{id ? 'Editar' : 'Adicionar'} Email</Fields>
+          <Fields>{id ? 'Editar' : 'Adicionar'} Usuário</Fields>
         </Modal.Header>
         <Modal.Body>
           <Grid container rowSpacing={4}>
@@ -75,18 +76,20 @@ const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props)
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <TextField
-                  select
-                  defaultValue={currentUser.role}
-                  name={'role'}
-                  label={'Tipo de Usuário'}
+                <InputLabel htmlFor={'roles'}>Papel do Usuário</InputLabel>
+                <Select
+                  multiple
+                  defaultValue={currentUser.roles ?? []}
+                  name={'roles'}
+                  id={'roles'}
+                  label={'Papel do Usuário'}
                 >
                   {roles.map(role => (
                     <MenuItem key={role} value={role}>
                       {RoleTranslation[role]}
                     </MenuItem>
                   ))}
-                </TextField>
+                </Select>
               </FormControl>
             </Grid>
           </Grid>

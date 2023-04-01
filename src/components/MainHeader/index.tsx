@@ -2,12 +2,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Header, Cabecalho, Title, ProfileIcon, Texto, LogoutButton, EditIcon } from './index.style'
 import logo from '../../../public/logo-ic-uff-verde.png'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { useAuth } from '../../api/AuthProvider'
 import { useRouter } from 'next/router'
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
-import { Role } from '../../utils/enums'
+import { Role } from '@utils/enums'
 import Grid from '@mui/material/Unstable_Grid2'
 import SettingsIcon from '@mui/icons-material/Settings'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
@@ -60,7 +58,7 @@ const MainHeader: React.FC = () => {
                 <Texto>Olá, {user?.name}!</Texto> <LogoutButton onClick={logout}>Sair</LogoutButton>
               </Grid>
               <Grid>
-                {user?.roles === Role.ADMIN && (
+                {user?.currentRole === Role.ADMIN && (
                   <EditIcon onClick={onClickConfig}>
                     <SettingsIcon fontSize="large" />
                   </EditIcon>

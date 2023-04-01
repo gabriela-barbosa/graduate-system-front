@@ -23,6 +23,7 @@ import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { useAuth } from '../../api/AuthProvider'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -41,6 +42,9 @@ const GraduateList: React.FC = () => {
   const [institutionTypes, setInstitutionTypes] = useState([])
   const defaultInstitutionType = { id: 0, label: 'Nenhum tipo de instituição selecionado' }
   const router = useRouter()
+  const { user } = useAuth()
+
+  console.warn(user)
 
   const formContext = useForm()
   const { getValues, reset } = formContext
@@ -59,7 +63,11 @@ const GraduateList: React.FC = () => {
   }
   const getGraduates = async (page: number, filters?: ListGraduatesFilters) => {
     const filledFilters = getFilledFilters(filters)
-    filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])
+    filledFilters.push(
+      ['page', `${page - 1}`],
+      ['pageSize', `${pageSize}`],
+      ['currentRole', user?.currentRole]
+    )
     const response = await fetch(
       `${GRADUATE_API}/v1/graduates?` + new URLSearchParams(filledFilters),
       {
@@ -192,15 +200,10 @@ const GraduateList: React.FC = () => {
                         <Fields status={graduate.status}>{status[graduate.status]}</Fields>
                       </TD>
                       <TD>
-                        <Fields>{graduate.workPlace ? graduate.workPlace.name : '-'}</Fields>
+                        <Fields>{graduate.workPlace?.name ?? '-'}</Fields>
                       </TD>
                       <TD>
-                        <Fields>
-                          -{/* {institutionTypes.find(item => { */}
-                          {/*  console.log(item, graduate) */}
-                          {/*  return item?.id === (graduate.workPlace ? graduate.workPlace.id : 0) */}
-                          {/* }) ?? '-'} */}
-                        </Fields>
+                        <Fields>{graduate.workPlace?.type ?? '-'}</Fields>
                       </TD>
                       <TD>
                         <Fields>{graduate.position ?? '-'}</Fields>
