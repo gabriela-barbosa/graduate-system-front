@@ -23,17 +23,6 @@ import EditAddUserModal from '@views/UserList/EditAddUserModal'
 import { showErrorToast } from '@components/Toast'
 import { User } from '@context/authContext'
 
-interface Email {
-  id?: string
-  title: string
-  name: string
-  content: string
-  buttonText: string
-  buttonURL: string
-  isGraduateEmail: boolean
-  active: boolean
-}
-
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 const pageSize = 10
@@ -41,21 +30,9 @@ const pageSize = 10
 const EmailConfig = () => {
   const [users, setUsers] = useState<User[]>([])
   const [pagination, setPagination] = useState<PaginationType>({ page: 0, size: 0, total: 0 })
-  const [previousUser, setPreviousUser] = useState<Email>({
-    buttonText: '',
-    buttonURL: '',
-    content: '',
-    id: '',
-    isGraduateEmail: false,
-    name: '',
-    title: '',
-    active: false,
-  })
   const [currentUser, setCurrentUser] = useState<User>({} as User)
   const [show, setShow] = useState(false)
   const router = useRouter()
-
-  const { id } = currentUser
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -93,48 +70,8 @@ const EmailConfig = () => {
     setCurrentUser({} as User)
   }
 
-  const handleSaveEmail = async () => {
-    const myInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(currentUser),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/email`, myInit as RequestInit)
-    if (result) {
-      await getUsers(1)
-      showSavedToast()
-      setShow(false)
-      setCurrentUserEmpty()
-    }
-  }
-
-  const handleUpdateInstitution = async () => {
-    const myInit = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(currentUser),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/email/${id}`, myInit as RequestInit)
-    if (result) {
-      await getUsers(1)
-      showSavedToast()
-      setShow(false)
-      setCurrentUserEmpty()
-    }
-  }
-
-  const handlerOpenEdit = current => {
-    setShow(true)
-    setCurrentUser(current)
-    setPreviousUser(current)
+  const onClickEdit = (id: string) => {
+    router.push(`usuarios/${id}`)
   }
 
   useEffect(() => {
@@ -188,7 +125,7 @@ const EmailConfig = () => {
                       <TD>
                         <ActionIcon>
                           <FontAwesomeIcon
-                            onClick={() => handlerOpenEdit(user)}
+                            onClick={() => onClickEdit(user.id)}
                             icon={faPencilAlt}
                           />
                         </ActionIcon>

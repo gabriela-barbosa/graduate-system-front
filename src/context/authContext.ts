@@ -13,27 +13,33 @@ export type AuthContextType = {
 }
 
 export type Course = {
-  id: number
+  id: string
   program: Program
   minuteDefense: number
   createdAt: Date
 }
 
 export type Program = {
-  id: number
+  id: string
   initials: string
   active: boolean
   createdAt: Date
 }
 
 export type Advisor = {
-  id: number
+  id: string
+  courses: Course[]
+  createdAt: Date
+}
+
+export type Graduate = {
+  id: string
   courses: Course[]
   createdAt: Date
 }
 
 export type User = {
-  id: number
+  id: string
   name: string
   email: string
   roles: Role[]
