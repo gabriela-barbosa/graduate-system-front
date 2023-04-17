@@ -15,7 +15,6 @@ type AppProps = {
 }
 
 export const Wrapper = styled.div<AppProps>`
-  display: grid;
   position: relative;
   width: 100%;
   height: 100%;

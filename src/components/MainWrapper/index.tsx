@@ -1,4 +1,4 @@
-import { Wrapper, Content } from './index.style'
+import { Content, Wrapper } from './index.style'
 import React from 'react'
 import { Theme } from '../../utils/enums'
 import Head from 'next/head'

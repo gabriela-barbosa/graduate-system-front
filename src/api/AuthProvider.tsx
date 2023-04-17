@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { AuthContextType } from '../context/authContext'
-import { Roles } from '../utils/enums'
+import { AuthContextType, User } from '@context/authContext'
+import { Role } from '@utils/enums'
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
 export const AuthContext = createContext<AuthContextType | null>(null)
 
 const AuthProvider = ({ children }) => {
   const { pathname, events } = useRouter()
-  const [user, setUser] = useState<any>()
+  const [user, setUser] = useState<User>()
   const router = useRouter()
 
   async function getUser() {
@@ -19,21 +19,31 @@ const AuthProvider = ({ children }) => {
       const profile = await response.json()
       if (profile.error) {
         setUser(null)
-      } else {
-        if (profile.message === 'Unauthenticated') {
-          setUser(null)
-        } else {
-          setUser(profile)
-        }
+        return null
       }
+      if (profile.message === 'Unauthenticated') {
+        setUser(null)
+        return null
+      }
+
+      const currentRole =
+        profile.roles.find(role => role === Role.ADMIN) ??
+        profile.roles.find(role => role === Role.PROFESSOR) ??
+        profile.roles.find(role => role === Role.GRADUATE)
+
+      setUser({ ...profile, currentRole })
+      return profile
     } catch (err) {
-      console.error(err)
+      return null
     }
   }
 
   useEffect(() => {
-    console.log('passei aqui')
-    getUser()
+    if (pathname !== '/' && !user) {
+      getUser().then(value => {
+        if (!value) router.push('/')
+      })
+    }
   }, [pathname])
 
   useEffect(() => {
@@ -42,19 +52,17 @@ const AuthProvider = ({ children }) => {
       if (url !== '/' && !user) {
         await router.push('/')
       } else if (url === '/' && user) {
-        if (user.role === Roles.GRADUATE) {
-          await router.push('/editar')
+        if (user?.roles.some(role => role === Role.PROFESSOR || role === Role.ADMIN)) {
+          await router.push('/egressos')
         } else {
-          await router.push('/listagem')
+          await router.push(`/historico/${user.id}`)
         }
       }
     }
-
     // Check that initial route is OK
     if (pathname !== '/' && user === null) {
       router.push('/')
     }
-
     // Monitor routes
     events.on('routeChangeStart', handleRouteChange)
     return () => {
@@ -62,9 +70,9 @@ const AuthProvider = ({ children }) => {
     }
   }, [user])
 
-  return <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, setUser, getUser }}>{children}</AuthContext.Provider>
 }
 
-const useAuth: any = () => useContext(AuthContext)
+const useAuth: () => AuthContextType = () => useContext(AuthContext)
 
 export { AuthProvider, useAuth }
