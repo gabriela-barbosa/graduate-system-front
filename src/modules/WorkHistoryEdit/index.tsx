@@ -10,10 +10,10 @@ import { useRouter } from 'next/router'
 import { PageWrapper } from '@styles/index.style'
 import { Grid } from '@mui/material'
 import { FormContainer } from 'react-hook-form-mui'
-import { PersonalInfo } from '@views/WorkHistoryEdit/components/PersonalInfo'
-import { InstitutionalLinkInfo } from '@views/WorkHistoryEdit/components/InstitutionalLinkInfo'
-import { AcademicInfo } from '@views/WorkHistoryEdit/components/AcademicInfo'
-import { getCNPQLevels, getInstitutionTypes } from '@views/WorkHistoryEdit/api'
+import { PersonalInfo } from './components/PersonalInfo'
+import { InstitutionalLinkInfo } from './components/InstitutionalLinkInfo'
+import { AcademicInfo } from './components/AcademicInfo'
+import { getInstitutionTypes } from './api'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -23,7 +23,6 @@ const WorkHistory = () => {
   const [hasCNPQScholarship, setHasCNPQScholarship] = useState<boolean | null>(null)
   const [hasPostDoctorate, setHasPostDoctorate] = useState<boolean | null>(null)
   const [institutionTypes, setInstitutionTypes] = useState([])
-  const [cnpqLevels, setCNPQLevels] = useState([])
 
   const router = useRouter()
 
@@ -38,18 +37,49 @@ const WorkHistory = () => {
   })
   const { reset } = formContext
 
-  useEffect(() => {
-    reset(graduateInfo)
-  }, [graduateInfo])
+  const getGraduateAndWorkHistoryInfo = async () => {
+    if (historyid) {
+      const response = await fetch(`${GRADUATE_API}/v1/workhistory/${historyid}`, {
+        credentials: 'include',
+      })
+      if (response.status === 200) {
+        const result = await response.json()
+        const {
+          email,
+          institutionName,
+          institutionType,
+          position,
+          postDoctorateName,
+          postDoctorateType,
+          cnpqId,
+          hasFinishedDoctorateOnUFF,
+          hasFinishedMasterDegreeOnUFF,
+        } = result
 
-  useEffect(() => {
-    const getGraduateAndWorkHistoryInfo = async () => {
-      if (historyid) {
-        const response = await fetch(`${GRADUATE_API}/v1/workhistory/${historyid}`, {
+        setGraduateInfo({
+          cnpqLevelId: cnpqId ?? 0,
+          email,
+          institutionType: institutionType ?? 0,
+          institutionName: institutionName ?? '',
+          position: position ?? '',
+          postDoctorateName: postDoctorateName ?? '',
+          postDoctorateType: postDoctorateType ?? 0,
+          hasFinishedDoctorateOnUFF: hasFinishedDoctorateOnUFF === 'true',
+          hasFinishedMasterDegreeOnUFF: hasFinishedMasterDegreeOnUFF === 'true',
+        })
+        if (institutionType) setHasInstitutionalLink(true)
+        if (postDoctorateType) setHasPostDoctorate(true)
+        if (cnpqId) setHasCNPQScholarship(true)
+      }
+    } else {
+      try {
+        const response = await fetch(`${GRADUATE_API}/v1/workhistory/graduate/${graduateid}`, {
           credentials: 'include',
         })
+
         if (response.status === 200) {
           const result = await response.json()
+
           const {
             email,
             institutionName,
@@ -76,60 +106,28 @@ const WorkHistory = () => {
           if (institutionType) setHasInstitutionalLink(true)
           if (postDoctorateType) setHasPostDoctorate(true)
           if (cnpqId) setHasCNPQScholarship(true)
-        }
-      } else {
-        try {
-          const response = await fetch(`${GRADUATE_API}/v1/workhistory/graduate/${graduateid}`, {
+        } else if (response.status === 404) {
+          const response = await fetch(`${GRADUATE_API}/v1/graduate/${graduateid}`, {
             credentials: 'include',
           })
-
           if (response.status === 200) {
             const result = await response.json()
 
-            const {
-              email,
-              institutionName,
-              institutionType,
-              position,
-              postDoctorateName,
-              postDoctorateType,
-              cnpqId,
-              hasFinishedDoctorateOnUFF,
-              hasFinishedMasterDegreeOnUFF,
-            } = result
-
-            setGraduateInfo({
-              cnpqLevelId: cnpqId ?? 0,
-              email,
-              institutionType: institutionType ?? 0,
-              institutionName: institutionName ?? '',
-              position: position ?? '',
-              postDoctorateName: postDoctorateName ?? '',
-              postDoctorateType: postDoctorateType ?? 0,
-              hasFinishedDoctorateOnUFF: hasFinishedDoctorateOnUFF === 'true',
-              hasFinishedMasterDegreeOnUFF: hasFinishedMasterDegreeOnUFF === 'true',
-            })
-            if (institutionType) setHasInstitutionalLink(true)
-            if (postDoctorateType) setHasPostDoctorate(true)
-            if (cnpqId) setHasCNPQScholarship(true)
-          } else if (response.status === 404) {
-            const response = await fetch(`${GRADUATE_API}/v1/graduate/${graduateid}`, {
-              credentials: 'include',
-            })
-            if (response.status === 200) {
-              const result = await response.json()
-
-              setGraduateInfo({ email: result.user.email })
-            }
+            setGraduateInfo({ email: result.user.email })
           }
-        } catch (e) {
-          console.error('sdfsdfsdfsdfsdfsdf', e)
         }
+      } catch (e) {
+        console.error('sdfsdfsdfsdfsdfsdf', e)
       }
     }
+  }
 
+  useEffect(() => {
+    reset(graduateInfo)
+  }, [graduateInfo])
+
+  useEffect(() => {
     getInstitutionTypes().then(types => setInstitutionTypes(types))
-    getCNPQLevels().then(levels => setCNPQLevels(levels))
     getGraduateAndWorkHistoryInfo()
   }, [])
 
@@ -236,7 +234,6 @@ const WorkHistory = () => {
                   <Grid item xs={12}>
                     <AcademicInfo
                       currentRole={user.currentRole}
-                      cnpqLevels={cnpqLevels}
                       hasCNPQScholarship={hasCNPQScholarship}
                       setHasCNPQScholarship={setHasCNPQScholarship}
                       institutionTypes={institutionTypes}

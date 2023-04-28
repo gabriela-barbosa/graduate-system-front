@@ -1,1 +1,1 @@
-export { default } from '../../src/views/GraduatesList'
+export { default } from '../../src/modules/GraduatesList'

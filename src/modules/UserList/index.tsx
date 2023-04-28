@@ -18,8 +18,8 @@ import {
 import { RoleTranslation, Theme } from '@utils/enums'
 import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
 import { Grid, Pagination } from '@mui/material'
-import { PaginationType } from '@views/GraduatesList/types'
-import EditAddUserModal from '@views/UserList/EditAddUserModal'
+import { PaginationType } from '../GraduatesList/types'
+import EditAddUserModal from '../UserList/EditAddUserModal'
 import { showErrorToast } from '@components/Toast'
 import { User } from '@context/authContext'
 

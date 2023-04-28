@@ -1,1 +1,1 @@
-export { default } from '@views/Institutions'
+export { default } from '../../../src/modules/Institutions'

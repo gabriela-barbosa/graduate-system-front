@@ -32,7 +32,7 @@ import {
   RadioGroup,
   TextField,
 } from '@mui/material'
-import { PaginationType } from '@views/GraduatesList/types'
+import { PaginationType } from '../../../src/modules/GraduatesList/types'
 import { toast } from 'react-toastify'
 
 interface Email {

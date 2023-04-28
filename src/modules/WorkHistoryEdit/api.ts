@@ -7,7 +7,7 @@ export const getInstitutionTypes = async () => {
   })
 
   if (response.status >= 400 && response.status < 600) {
-    toast.error('Erro ao buscar tipos de insituição')
+    toast.error('Erro ao buscar tipos de instituição')
     return
   }
   const result = await response.json()
@@ -21,9 +21,16 @@ export const getCNPQLevels = async () => {
     credentials: 'include',
   })
   const result = await response.json()
-  console.log('asdasdas', result)
   return [
-    { id: 0, label: 'Nenhuma bolsa secionada' },
+    { id: 0, label: 'Nenhuma bolsa selecionada' },
     ...result.map(({ level, id }) => ({ id, label: level })),
   ]
+}
+
+export const getCourses = async () => {
+  const response = await fetch(`${GRADUATE_API}/v1/courses`, {
+    credentials: 'include',
+  })
+  const result = await response.json()
+  return result
 }

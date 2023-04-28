@@ -1,1 +1,1 @@
-export { default } from '@views/Programs'
+export { default } from '../../../src/modules/Programs'

@@ -1,1 +1,1 @@
-export { default } from '../../src/views/WorkHistoryEdit'
+export { default } from '../../src/modules/WorkHistoryEdit'

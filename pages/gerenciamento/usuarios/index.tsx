@@ -1,1 +1,1 @@
-export { default } from '@views/UserList'
+export { default } from '../../../src/modules/UserList'

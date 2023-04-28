@@ -1,5 +1,5 @@
 import { FormControl, Grid } from '@mui/material'
-import { Subtitle } from '@views/WorkHistoryEdit/index.style'
+import { Subtitle } from '../../WorkHistoryEdit/index.style'
 import { Input } from '@components'
 import React from 'react'
 

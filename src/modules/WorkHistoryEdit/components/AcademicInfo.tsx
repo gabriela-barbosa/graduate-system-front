@@ -1,14 +1,14 @@
 import { FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material'
-import { Subtitle } from '@views/WorkHistoryEdit/index.style'
-import React from 'react'
+import { Subtitle } from '../../WorkHistoryEdit/index.style'
+import React, { useEffect, useState } from 'react'
 import { Input, Select } from '@components'
-import { Option } from '@views/WorkHistoryEdit/types'
+import { Option } from '../../WorkHistoryEdit/types'
 import { Role } from '@utils/enums'
 import { RadioButtonGroup } from 'react-hook-form-mui'
+import { getCNPQLevels } from '../api'
 
 interface Props {
   institutionTypes: Option[]
-  cnpqLevels: Option[]
   hasPostDoctorate: boolean
   hasCNPQScholarship: boolean
   setHasCNPQScholarship: (value?) => void
@@ -22,11 +22,16 @@ export const AcademicInfo = ({
   hasPostDoctorate,
   hasCNPQScholarship,
   setHasCNPQScholarship,
-  cnpqLevels,
   setHasPostDoctorate,
   handleSetValue,
   currentRole,
 }: Props) => {
+  const [cnpqLevels, setCNPQLevels] = useState([])
+
+  useEffect(() => {
+    getCNPQLevels().then(levels => setCNPQLevels(levels))
+  }, [])
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>

@@ -1,13 +1,15 @@
-import { Fields, PageWrapper, Title } from '@styles/index.style'
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import { Button, Input, MainWrapper } from '@components'
+import { PageWrapper, Title } from '@styles/index.style'
+import { Grid } from '@mui/material'
+import { Button, MainWrapper } from '@components'
 import React, { useEffect, useMemo, useState } from 'react'
 import 'react-toastify/dist/ReactToastify.css'
-import { Role, RoleTranslation, Theme } from '@utils/enums'
+import { Theme } from '@utils/enums'
 import { useRouter } from 'next/router'
 import { User } from '@context/authContext'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { FormContainer } from 'react-hook-form-mui'
+import UserInfo from '../../../src/modules/User/UserInfo'
+import GraduateInfo from '../../../src/modules/User/GraduateInfo'
 
 const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
 
@@ -22,9 +24,6 @@ const UserDetail = () => {
 
   const [user, setUser] = useState<User>()
 
-  const roles = Object.keys(Role).filter(item => {
-    return isNaN(Number(item))
-  })
   const createUpdateUser = async user => {
     const myInit = {
       method: 'POST',
@@ -42,12 +41,35 @@ const UserDetail = () => {
   }
   const formContext = useForm({
     defaultValues: useMemo(() => {
-      return user
+      if (user) {
+        const currentUser = user
+        if (user.graduate?.postDoctorate) {
+          currentUser.graduate.hasPostDoctorate = true
+        } else if (user.graduate?.postDoctorate == null) {
+          currentUser.graduate.hasPostDoctorate = 'unknown'
+        }
+
+        if (user.graduate?.cnpqScholarship.length) {
+          currentUser.graduate.hasCNPQScholarship = true
+        } else if (user.graduate?.postDoctorate == null) {
+          currentUser.graduate.hasPostDoctorate = 'unknown'
+        }
+
+        if (user.graduate?.hasFinishedDoctorateOnUFF === null) {
+          currentUser.graduate.hasFinishedDoctorateOnUFF = 'unknown'
+        }
+
+        if (user.graduate?.hasFinishedMasterDegreeOnUFF === null) {
+          currentUser.graduate.hasFinishedMasterDegreeOnUFF = 'unknown'
+        }
+        console.log(currentUser)
+        return currentUser
+      }
     }, [user]),
   })
-  const { reset, control } = formContext
+  const { reset, control, getValues } = formContext
 
-  const getUser = async () => {
+  const getUser = async id => {
     if (id !== 'criar') {
       const response = await fetch(`${GRADUATE_API}/v1/user/${id}`, { credentials: 'include' })
       if (response?.status < 400) {
@@ -62,7 +84,6 @@ const UserDetail = () => {
   const handleSubmit = async event => {
     event.preventDefault()
     const { name, email, roles } = event.target
-    console.log(roles.value)
     const user = {
       id,
       name: name.value,
@@ -72,11 +93,16 @@ const UserDetail = () => {
 
     await createUpdateUser(user)
   }
+
+  const onClickBack = () => {
+    router.push('/gerenciamento/usuarios')
+  }
+
   useEffect(() => {
     reset(user)
   }, [user])
   useEffect(() => {
-    getUser()
+    id && getUser(id)
   }, [])
   return (
     <MainWrapper themeName={Theme.white} hasContent hasHeader>
@@ -86,46 +112,11 @@ const UserDetail = () => {
             <Grid item xs={12}>
               <Title>{id ? 'Editar' : 'Adicionar'} Usuário</Title>
             </Grid>
-            <Grid item xs={12} minHeight={510}>
-              <Grid container rowSpacing={4} columnSpacing={4}>
-                <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <Input required name={'name'} label={'Nome'} />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <Input required name={'email'} label={'Email'} />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor={'roles'}>Papel do Usuário</InputLabel>
-                    <Controller
-                      control={control}
-                      name={'roles'}
-                      render={({ field: { onChange, onBlur, name, value, ref } }) => (
-                        <Select
-                          multiple
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          name={name}
-                          id={'roles'}
-                          value={value ?? []}
-                          ref={ref}
-                          label={'Papel do Usuário'}
-                        >
-                          {roles.map(role => (
-                            <MenuItem key={role} value={role}>
-                              {RoleTranslation[role]}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      )}
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
+            <Grid item>
+              <UserInfo control={control} />
+            </Grid>
+            <Grid item>
+              <GraduateInfo control={control} />
             </Grid>
             <Grid item xs={12}>
               <Grid container columnSpacing={2}>
@@ -135,9 +126,9 @@ const UserDetail = () => {
                   </Button>
                 </Grid>
                 <Grid item>
-                  {/* <Button size={'large'} variant={'outlined'} onClick={onClickBack}> */}
-                  {/*  Voltar */}
-                  {/* </Button> */}
+                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                    Voltar
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>

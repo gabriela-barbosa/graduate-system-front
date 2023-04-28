@@ -32,10 +32,37 @@ export type Advisor = {
   createdAt: Date
 }
 
+export type InstitutionType = {
+  id: string
+  name: string
+}
+
+export type Institution = {
+  id: string
+  name: string
+  type: InstitutionType
+}
+
+export type CNPQLevel = {
+  id: string
+  level: string
+}
+
+export type CNPQScholarship = {
+  id: string
+  level: CNPQLevel
+}
+
 export type Graduate = {
   id: string
   courses: Course[]
+  cnpqScholarship: CNPQScholarship[]
   createdAt: Date
+  postDoctorate: Institution | null
+  hasPostDoctorate: boolean | string
+  hasCNPQScholarship: boolean | string
+  hasFinishedDoctorateOnUFF: boolean | null | 'unknown'
+  hasFinishedMasterDegreeOnUFF: boolean | null | 'unknown'
 }
 
 export type User = {
@@ -43,7 +70,8 @@ export type User = {
   name: string
   email: string
   roles: Role[]
-  advisor: Advisor
+  advisor: Advisor | null
+  graduate: Graduate | null
   createdAt: Date
   currentRole?: Role
 }

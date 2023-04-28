@@ -1,1 +1,1 @@
-export { default } from '../../src/views/Select'
+export { default } from '../../src/modules/Select'

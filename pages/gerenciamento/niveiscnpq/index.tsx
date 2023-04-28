@@ -1,1 +1,1 @@
-export { default } from '@views/Levels'
+export { default } from '../../../src/modules/Levels'
