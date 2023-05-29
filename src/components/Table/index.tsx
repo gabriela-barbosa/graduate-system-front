@@ -1,19 +1,25 @@
+import TableComponent from '@mui/material/Table'
+import TableHeadComponent from '@mui/material/TableHead'
+import TableCellComponent from '@mui/material/TableCell'
+import TableRowComponent from '@mui/material/TableRow'
+import TableBodyComponent from '@mui/material/TableBody'
+import TableContainerComponent from '@mui/material/TableContainer'
+
 import styled from 'styled-components'
 
-const TableHeader = styled.thead`
+const TableContainer = TableContainerComponent
+const TableHeader = styled(TableHeadComponent)`
   border-bottom: 1px solid #00000019;
 `
 
-const Table = styled.table`
-  padding-top: 50px;
-`
+const Table = styled(TableComponent)``
 
-const TD = styled.td`
+const TableCell = styled(TableCellComponent)`
   width: ${({ width }) => width ?? '300'}px;
 `
-const TR = styled.tr``
+const TableRow = TableRowComponent
 
-const TBody = styled.tbody``
+const TableBody = TableBodyComponent
 
 const ActionIcon = styled.button`
   font-size: 18px;
@@ -24,4 +30,4 @@ const ActionIcon = styled.button`
   background: transparent;
 `
 
-export { TableHeader, Table, ActionIcon, TD, TR, TBody }
+export { TableHeader, Table, ActionIcon, TableCell, TableRow, TableBody, TableContainer }

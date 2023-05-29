@@ -14,10 +14,10 @@ import {
   showSavedToast,
   Table,
   TableHeader,
-  TBody,
-  TD,
+  TableBody,
+  TableCell,
   ToastContainer,
-  TR,
+  TableRow,
 } from '@components'
 import { FormControl, Grid, TextField } from '@mui/material'
 
@@ -121,22 +121,22 @@ const Institutions: React.FC = () => {
             <Grid item xs={12} height={510}>
               <Table>
                 <TableHeader>
-                  <TR>
-                    <TD>
+                  <TableRow>
+                    <TableCell>
                       <Fields>Tipo de Instituição </Fields>
-                    </TD>
+                    </TableCell>
                     <td>
                       <Fields></Fields>
                     </td>
-                  </TR>
+                  </TableRow>
                 </TableHeader>
-                <TBody>
+                <TableBody>
                   {institutionTypes?.map(institutionType => (
-                    <TR key={institutionType.id}>
-                      <TD>
+                    <TableRow key={institutionType.id}>
+                      <TableCell>
                         <Subtitle>{institutionType.name}</Subtitle>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <ActionIcon>
                           <FontAwesomeIcon
                             onClick={() =>
@@ -150,10 +150,10 @@ const Institutions: React.FC = () => {
                             icon={faTrashAlt}
                           />
                         </ActionIcon>
-                      </TD>
-                    </TR>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </TBody>
+                </TableBody>
               </Table>
             </Grid>
             <Grid item>

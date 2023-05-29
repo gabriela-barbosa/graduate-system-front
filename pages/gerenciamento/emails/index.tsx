@@ -14,9 +14,9 @@ import {
   Table,
   TableHeader,
   ToastContainer,
-  TBody,
-  TD,
-  TR,
+  TableBody,
+  TableCell,
+  TableRow,
 } from '@components'
 import { Theme } from '@utils/enums'
 import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
@@ -32,7 +32,7 @@ import {
   RadioGroup,
   TextField,
 } from '@mui/material'
-import { PaginationType } from '../../../src/modules/GraduatesList/types'
+import { PaginationType } from '../../../src/modules/Egressos/types'
 import { toast } from 'react-toastify'
 
 interface Email {
@@ -191,34 +191,34 @@ const EmailConfig = () => {
             <Grid item xs={12} height={510}>
               <Table>
                 <TableHeader>
-                  <TR>
-                    <TD>
+                  <TableRow>
+                    <TableCell>
                       <Fields>Nome</Fields>
-                    </TD>
-                    <TD>
+                    </TableCell>
+                    <TableCell>
                       <Fields>Tipo do Email</Fields>
-                    </TD>
-                    <TD>
+                    </TableCell>
+                    <TableCell>
                       <Fields>Status</Fields>
-                    </TD>
+                    </TableCell>
                     <td>
                       <Fields></Fields>
                     </td>
-                  </TR>
+                  </TableRow>
                 </TableHeader>
-                <TBody>
+                <TableBody>
                   {emails?.map(email => (
-                    <TR key={email.id}>
-                      <TD>
+                    <TableRow key={email.id}>
+                      <TableCell>
                         <Subtitle>{email.name}</Subtitle>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <Subtitle>{email.isGraduateEmail ? 'Egresso' : 'Orientador'}</Subtitle>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <Fields>{email.active ? 'Ativo' : 'Inativo'}</Fields>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <ActionIcon>
                           <FontAwesomeIcon
                             onClick={() => handlerOpenEdit(email)}
@@ -230,10 +230,10 @@ const EmailConfig = () => {
                             icon={faTrashAlt}
                           />
                         </ActionIcon>
-                      </TD>
-                    </TR>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </TBody>
+                </TableBody>
               </Table>
             </Grid>
             <Grid item xs={12}>

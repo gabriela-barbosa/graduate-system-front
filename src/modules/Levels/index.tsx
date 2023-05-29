@@ -14,10 +14,10 @@ import {
   showSavedToast,
   Table,
   TableHeader,
-  TBody,
-  TD,
+  TableBody,
+  TableCell,
   ToastContainer,
-  TR,
+  TableRow,
 } from '@components'
 import { FormControl, Grid, TextField } from '@mui/material'
 
@@ -123,22 +123,22 @@ const Levels: React.FC = () => {
             <Grid item xs={12} height={510}>
               <Table>
                 <TableHeader>
-                  <TR className="table-header">
-                    <TD>
+                  <TableRow className="table-header">
+                    <TableCell>
                       <Fields>Nível CNPQ </Fields>
-                    </TD>
-                    <TD>
+                    </TableCell>
+                    <TableCell>
                       <Fields></Fields>
-                    </TD>
-                  </TR>
+                    </TableCell>
+                  </TableRow>
                 </TableHeader>
-                <TBody>
+                <TableBody>
                   {cnpqLevels?.map(level => (
-                    <TR key={level.id}>
-                      <TD>
+                    <TableRow key={level.id}>
+                      <TableCell>
                         <Subtitle>{level.level}</Subtitle>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <ActionIcon>
                           <FontAwesomeIcon
                             onClick={() => handlerOpenEdit(level.id, level.level)}
@@ -150,10 +150,10 @@ const Levels: React.FC = () => {
                             icon={faTrashAlt}
                           />
                         </ActionIcon>
-                      </TD>
-                    </TR>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </TBody>
+                </TableBody>
               </Table>
             </Grid>
             <Grid item>
