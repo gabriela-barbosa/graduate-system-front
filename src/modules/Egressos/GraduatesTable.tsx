@@ -19,12 +19,10 @@ interface ColumnDetail {
 interface Props {
   columns: ColumnDetail[]
   rows: {
-    fields: {
-      body: string | ReactElement
-      align?: Align
-      width?: string
-    }[]
-  }[]
+    body: string | ReactElement
+    align?: Align
+    width?: string
+  }[][]
 }
 const GraduateList = ({ columns, rows }: Props) => {
   const isString = item => typeof item === 'string'
@@ -38,7 +36,7 @@ const GraduateList = ({ columns, rows }: Props) => {
               <TableCell
                 key={column.name}
                 align={column.align ?? 'left'}
-                width={column.width ?? '100%'}
+                width={column.width ?? 'auto'}
               >
                 <Fields>{column.name}</Fields>
               </TableCell>
@@ -49,8 +47,8 @@ const GraduateList = ({ columns, rows }: Props) => {
         <TableBody>
           {rows.map((row, index) => (
             <TableRow key={index}>
-              {row.fields.map((field, i) => (
-                <TableCell key={`${index}-${i}`} align={field.align ?? 'left'}>
+              {row.map((field, i) => (
+                <TableCell key={`${index}-${i}`} align={field.align ?? 'left'} width={field.width}>
                   {isString(field.body) ? (
                     <Fields>{field.body}</Fields>
                   ) : (

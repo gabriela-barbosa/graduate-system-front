@@ -21,9 +21,9 @@ import { Grid, Pagination } from '@mui/material'
 import { PaginationType } from '../Egressos/types'
 import EditAddUserModal from '../UserList/EditAddUserModal'
 import { showErrorToast } from '@components/Toast'
-import { User } from '@context/authContext'
+import { User } from '@context/AuthContext'
 
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+const GRADUATE_API = process.env.GRADUATE_API
 
 const pageSize = 10
 

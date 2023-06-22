@@ -20,7 +20,7 @@ const IconWrapper = styled.div`
 `
 export const IconImage = ({ src, alt }) => (
   <IconWrapper>
-    <Image layout="fixed" width={64} height={64} src={src} alt={alt}></Image>
+    <Image fill={false} width={64} height={64} src={src} alt={alt}></Image>
   </IconWrapper>
 )
 

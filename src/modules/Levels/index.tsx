@@ -21,7 +21,7 @@ import {
 } from '@components'
 import { FormControl, Grid, TextField } from '@mui/material'
 
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+const GRADUATE_API = process.env.GRADUATE_API
 
 const Levels: React.FC = () => {
   const [cnpqLevels, setCnpqLevels] = useState([])
@@ -123,7 +123,7 @@ const Levels: React.FC = () => {
             <Grid item xs={12} height={510}>
               <Table>
                 <TableHeader>
-                  <TableRow className="table-header">
+                  <TableRow>
                     <TableCell>
                       <Fields>Nível CNPQ </Fields>
                     </TableCell>

@@ -1,35 +1,21 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Header, Cabecalho, Title, ProfileIcon, Texto, LogoutButton, EditIcon } from './index.style'
+import { Header, Cabecalho, Title, ProfileIcon, Texto, LogoutButton } from './index.style'
 import logo from '@public/logo-ic-uff-png.png'
 import React from 'react'
-import { useAuth } from '@api/AuthProvider'
-import { useRouter } from 'next/router'
-import { Role } from '@utils/enums'
+import { useAuth } from '@context/AuthProvider'
+import Router from 'next/router'
+import { Role, RoleTranslation } from '@utils/enums'
 import Grid from '@mui/material/Unstable_Grid2'
 import SettingsIcon from '@mui/icons-material/Settings'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+import { FormControl, IconButton, InputLabel, MenuItem } from '@mui/material'
+import { SelectMui } from '@components'
 
 const MainHeader: React.FC = () => {
-  const { user, setUser } = useAuth()
-  const router = useRouter()
-  const logout = async () => {
-    const myInit: RequestInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    }
-    await fetch(`${GRADUATE_API}/v1/logout`, myInit)
-    await router.push('/')
-    setUser(null)
-  }
-
+  const { user, currentRole, logout, updateCurrentRole } = useAuth()
   const onClickConfig = () => {
-    router.push('/gerenciamento')
+    Router.push('/gerenciamento')
   }
 
   return (
@@ -38,9 +24,7 @@ const MainHeader: React.FC = () => {
         <Grid container spacing={2}>
           <Grid xs alignSelf="center">
             <Link href="/egressos" passHref>
-              <a>
-                <Image src={logo} alt="Logo IC-UFF" />
-              </a>
+              <Image src={logo} width={108} alt="Logo IC-UFF" />
             </Link>
           </Grid>
 
@@ -50,6 +34,30 @@ const MainHeader: React.FC = () => {
           <Grid xs={4} xsOffset={1} alignSelf="center">
             <Grid container alignItems="center" justifyContent="flex-end">
               <Grid>
+                <FormControl>
+                  <InputLabel id="currentRoleLabel">Papel</InputLabel>
+                  <SelectMui
+                    labelId={'currentRoleLabel'}
+                    id={'currentRole'}
+                    name={'currentRole'}
+                    label={'Papel'}
+                    value={currentRole || ''}
+                    onChange={async event => {
+                      if (event.target.value) {
+                        const role = Role[event.target.value as keyof typeof Role]
+                        updateCurrentRole(role)
+                      }
+                    }}
+                  >
+                    {user?.roles.map((role, index) => (
+                      <MenuItem key={index} value={role}>
+                        {RoleTranslation[role]}
+                      </MenuItem>
+                    ))}
+                  </SelectMui>
+                </FormControl>
+              </Grid>
+              <Grid>
                 <ProfileIcon>
                   <AccountCircleIcon sx={{ fontSize: 50 }} />
                 </ProfileIcon>
@@ -57,11 +65,12 @@ const MainHeader: React.FC = () => {
               <Grid>
                 <Texto>Olá, {user?.name}!</Texto> <LogoutButton onClick={logout}>Sair</LogoutButton>
               </Grid>
+
               <Grid>
-                {user?.currentRole === Role.ADMIN && (
-                  <EditIcon onClick={onClickConfig}>
+                {currentRole === Role.ADMIN && (
+                  <IconButton onClick={onClickConfig}>
                     <SettingsIcon fontSize="large" />
-                  </EditIcon>
+                  </IconButton>
                 )}
               </Grid>
             </Grid>

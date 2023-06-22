@@ -1,36 +1,53 @@
 import { toast } from '@components'
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+import { AxiosInstance } from 'axios'
+import { CNPQLevelInfo, GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
 
-export const getInstitutionTypes = async () => {
-  const response = await fetch(`${GRADUATE_API}/v1/institution/type`, {
-    credentials: 'include',
-  })
-
-  if (response.status >= 400 && response.status < 600) {
+export const getGraduateInfoAndWorkHistory = async (
+  apiClient: AxiosInstance,
+  graduateId: string
+): Promise<GraduateWorkHistoriesInfo> => {
+  try {
+    const { data } = await apiClient.get<GraduateWorkHistoriesInfo>(
+      `/v1/work-history?userId=${graduateId}`
+    )
+    return data
+  } catch (error) {
     toast.error('Erro ao buscar tipos de instituição')
-    return
+    return error
   }
-  const result = await response.json()
-  return [
-    { id: 0, label: 'Nenhum tipo de instituição selecionado' },
-    ...result.map(({ name, id }) => ({ id, label: name })),
-  ]
 }
-export const getCNPQLevels = async () => {
-  const response = await fetch(`${GRADUATE_API}/v1/cnpqlevels`, {
-    credentials: 'include',
-  })
-  const result = await response.json()
+
+export const getInstitutionTypes = async (apiClient: AxiosInstance) => {
+  try {
+    const { data } = await apiClient.get(`/v1/institution/type`)
+
+    return [
+      { id: 0, label: 'Nenhum tipo de instituição selecionado' },
+      ...data.map(({ name, id }) => ({ id, label: name })),
+    ]
+  } catch (error) {
+    toast.error('Erro ao buscar tipos de instituição')
+    return error
+  }
+}
+
+export const getCNPQLevels = async (apiClient: AxiosInstance) => {
+  const { data, status } = await apiClient.get<CNPQLevelInfo[]>(`/v1/cnpq_levels`)
+  if (status >= 400 && status < 600) {
+    toast.error('Erro ao buscar tipos de bolsa CNPQ')
+    return data
+  }
   return [
     { id: 0, label: 'Nenhuma bolsa selecionada' },
-    ...result.map(({ level, id }) => ({ id, label: level })),
+    ...data.map(({ name, id }) => ({ id, label: name })),
   ]
 }
 
-export const getCourses = async () => {
-  const response = await fetch(`${GRADUATE_API}/v1/courses`, {
-    credentials: 'include',
-  })
-  const result = await response.json()
-  return result
+export const getCourses = async (apiClient: AxiosInstance) => {
+  const { data, status } = await apiClient.get(`/v1/courses`)
+  if (status >= 400 && status < 600) {
+    toast.error('Erro ao buscar cursos')
+    return data
+  }
+  return data.map(({ level, id }) => ({ id, label: level }))
 }

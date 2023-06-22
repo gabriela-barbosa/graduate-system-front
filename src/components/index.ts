@@ -1,8 +1,8 @@
 import { Button } from './Button'
-import { Input, Password } from './Input'
+import { Input, Password, InputMui } from './Input'
 import MainWrapper from './MainWrapper'
 import MainHeader from './MainHeader'
-import { Select } from './Select'
+import { Select, SelectMui } from './Select'
 import { CardOptions, colors } from './CardOptions'
 import {
   TableCell,
@@ -15,12 +15,14 @@ import {
 } from './Table'
 import { ToastContainer, toast, showSavedToast, showDeletedToast } from './Toast'
 import Paper from '@mui/material/Paper'
+import { DatePicker } from './DatePicker'
 
 export {
   Button,
   MainHeader,
   MainWrapper,
   Input,
+  InputMui,
   toast,
   showDeletedToast,
   showSavedToast,
@@ -37,4 +39,6 @@ export {
   ActionIcon,
   TableContainer,
   Paper,
+  SelectMui,
+  DatePicker,
 }

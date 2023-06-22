@@ -21,7 +21,7 @@ import {
 } from '@components'
 import { FormControl, Grid, TextField } from '@mui/material'
 
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+const GRADUATE_API = process.env.GRADUATE_API
 
 const Institutions: React.FC = () => {
   const [institutionTypes, setInstitutionTypes] = useState([])

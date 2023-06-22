@@ -21,7 +21,7 @@ import {
 import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
 import { FormControl, Grid, TextField } from '@mui/material'
 
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+const GRADUATE_API = process.env.GRADUATE_API
 
 const Programs: React.FC = () => {
   const [currentProgram, setCurrenProgram] = useState({ id: null, value: '' })

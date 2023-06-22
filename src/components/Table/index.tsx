@@ -6,6 +6,7 @@ import TableBodyComponent from '@mui/material/TableBody'
 import TableContainerComponent from '@mui/material/TableContainer'
 
 import styled from 'styled-components'
+import { IconButton } from '@mui/material'
 
 const TableContainer = TableContainerComponent
 const TableHeader = styled(TableHeadComponent)`
@@ -21,13 +22,14 @@ const TableRow = TableRowComponent
 
 const TableBody = TableBodyComponent
 
-const ActionIcon = styled.button`
-  font-size: 18px;
-  line-height: 24px;
-  cursor: pointer;
-  color: #00000066;
-  border: none;
-  background: transparent;
-`
+// const ActionIcon = styled.button`
+//   font-size: 18px;
+//   line-height: 24px;
+//   cursor: pointer;
+//   color: #00000066;
+//   border: none;
+//   background: transparent;
+// `
+const ActionIcon = IconButton
 
 export { TableHeader, Table, ActionIcon, TableCell, TableRow, TableBody, TableContainer }
