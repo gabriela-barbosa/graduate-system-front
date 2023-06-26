@@ -1,4 +1,4 @@
-import { FormControl, Grid } from '@mui/material'
+import { Box, FormControl, Grid } from '@mui/material'
 import { Subtitle } from './index.style'
 import { Input } from '@components'
 import React from 'react'
@@ -18,37 +18,39 @@ export const PersonalInfo = () => {
         <Subtitle>Informações pessoais</Subtitle>
       </Grid>
       <Grid item xs={12}>
-        <Grid container rowSpacing={3}>
-          <Grid item xs={5}>
-            <FormControl fullWidth>
-              <Input label={'Nome'} name={'graduateName'} />
-            </FormControl>
+        <Box sx={{ paddingLeft: '15px' }}>
+          <Grid container rowSpacing={3}>
+            <Grid item xs={5}>
+              <FormControl fullWidth>
+                <Input label={'Nome'} name={'graduateName'} />
+              </FormControl>
+            </Grid>
+            <Grid item xs={1} />
+            <Grid item xs={5}>
+              <FormControl fullWidth>
+                <Input
+                  label={'E-mail'}
+                  name={'email'}
+                  parseError={({ type }) => {
+                    return getEmailErrorMessageByType(type)
+                  }}
+                  required
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={11}>
+              <FormControl fullWidth>
+                <Input
+                  label={'Casos de Sucesso'}
+                  name={'successCase'}
+                  rows={4}
+                  maxRows={6}
+                  multiline
+                />
+              </FormControl>
+            </Grid>
           </Grid>
-          <Grid item xs={1} />
-          <Grid item xs={5}>
-            <FormControl fullWidth>
-              <Input
-                label={'E-mail'}
-                name={'email'}
-                parseError={({ type }) => {
-                  return getEmailErrorMessageByType(type)
-                }}
-                required
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={11}>
-            <FormControl fullWidth>
-              <Input
-                label={'Casos de Sucesso'}
-                name={'successCase'}
-                rows={4}
-                maxRows={6}
-                multiline
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+        </Box>
       </Grid>
     </Grid>
   )

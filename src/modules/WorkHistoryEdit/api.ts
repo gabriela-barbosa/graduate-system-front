@@ -12,7 +12,7 @@ export const getGraduateInfoAndWorkHistory = async (
     )
     return data
   } catch (error) {
-    toast.error('Erro ao buscar tipos de instituição')
+    toast.error('Erro ao buscar informações do egresso')
     return error
   }
 }

@@ -1,4 +1,5 @@
 import {
+  Box,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -25,6 +26,8 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 interface Props {
   graduateInfo: GraduateWorkHistoriesInfo
   institutionTypes: SelectItem[]
+  institutionalLinks: InstitutionalLinkInfoType
+  setInstitutionalLinks: (institutionalLink: InstitutionalLinkInfoType) => void
 }
 
 interface InstitutionalLinkInfoType {
@@ -175,208 +178,228 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Subtitle>Informações sobre vínculos institucionais</Subtitle>
-        <Button
-          size={'large'}
-          variant="contained"
-          // disabled={hasInstitutionalLink === -1 || hasInstitutionalLink === 0}
-          onClick={() => setIsAddWorkHistoryOpen(true)}
-        >
-          Adicionar
-          <AddRounded />
-        </Button>
+        <Subtitle>
+          Informações sobre vínculos institucionais{' '}
+          <Button
+            sx={{ marginLeft: '20px' }}
+            size={'large'}
+            variant="contained"
+            // disabled={hasInstitutionalLink === -1 || hasInstitutionalLink === 0}
+            onClick={() => setIsAddWorkHistoryOpen(true)}
+          >
+            Adicionar
+            <AddRounded />
+          </Button>
+        </Subtitle>
       </Grid>
       <Grid item xs={12}>
-        <Grid container direction="column" spacing={3}>
-          {/* <Grid item xs={12}> */}
-          {/*  <Grid container spacing={3}> */}
-          {/*    <Grid item alignSelf={'center'}></Grid> */}
-          {/*  </Grid> */}
-          {/* </Grid> */}
-          <Grid item xs={12}>
-            {/* <Accordion> */}
-            {/*  <AccordionSummary */}
-            {/*    expandIcon={<ExpandMoreRounded />} */}
-            {/*    aria-controls="panel1a-content" */}
-            {/*    id="panel1a-header" */}
-            {/*  > */}
-            {/*    <Fields>Histórico</Fields> */}
-            {/*  </AccordionSummary> */}
-            {/*  <AccordionDetails> */}
-
-            {rows?.length !== 0 ? (
-              <GraduatesTable columns={columns} rows={rows} />
-            ) : (
-              <Fields>Nenhum resultado encontrado.</Fields>
-            )}
-            {/*  </AccordionDetails> */}
-            {/* </Accordion> */}
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl>
-              <FormLabel id="labelHasPostDoctorate">
-                Possui vínculo institucional atualmente?
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby={'labelHasPostDoctorate'}
-                name={'hasPostDoctorate'}
-                value={hasInstitutionalLink}
-                onChange={({ target }) => setHasInstitutionalLink(parseInt(target.value))}
-              >
-                <FormControlLabel value={1} control={<Radio />} label={'Sim'} />
-                <FormControlLabel value={0} control={<Radio />} label={'Não'} />
-                <FormControlLabel value={-1} control={<Radio />} label={'Não sei'} />
-              </RadioGroup>
-            </FormControl>
-          </Grid>
-          {hasInstitutionalLink === 1 && (
+        <Box sx={{ paddingLeft: '15px' }}>
+          <Grid container direction="column" spacing={3}>
+            {/* <Grid item xs={12}> */}
+            {/*  <Grid container spacing={3}> */}
+            {/*    <Grid item alignSelf={'center'}></Grid> */}
+            {/*  </Grid> */}
+            {/* </Grid> */}
             <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="currentInstitutionsLabel">Vínculos atuais</InputLabel>
-                <SelectMui
-                  labelId={'currentInstitutionsLabel'}
-                  id={'currentInstitutions'}
-                  name={'currentInstitutions'}
-                  label={'Vínculos atuais'}
-                  value={currentInstitutionalLinks}
-                  renderValue={selected =>
-                    selected
-                      ?.map(item => getSelectText(currentInstitutionalLinksOptions[item]))
-                      .join(', ')
-                  }
-                  multiple
+              {/* <Accordion> */}
+              {/*  <AccordionSummary */}
+              {/*    expandIcon={<ExpandMoreRounded />} */}
+              {/*    aria-controls="panel1a-content" */}
+              {/*    id="panel1a-header" */}
+              {/*  > */}
+              {/*    <Fields>Histórico</Fields> */}
+              {/*  </AccordionSummary> */}
+              {/*  <AccordionDetails> */}
+
+              {rows?.length ? (
+                <GraduatesTable columns={columns} rows={rows} />
+              ) : (
+                <Box>
+                  <Fields>Não há histórico vínculos institucionais.</Fields>
+                </Box>
+              )}
+              {/*  </AccordionDetails> */}
+              {/* </Accordion> */}
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl>
+                <FormLabel id="labelHasInstitutionalLink">
+                  Possui vínculo institucional atualmente?
+                </FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby={'labelHasInstitutionalLink'}
+                  name={'hasInstitutionalLink'}
+                  value={hasInstitutionalLink}
                   onChange={({ target }) => {
-                    const { value } = target
-                    setCurrentInstitutionalLinks(
-                      (typeof value === 'string' ? value.split(',') : value) as any
-                    )
+                    const value = parseInt(target.value)
+                    setHasInstitutionalLink(value)
+                    if (value !== 1) {
+                      setCurrentInstitutionalLinks([])
+                    }
                   }}
                 >
-                  {currentInstitutionalLinksOptions.map((institutionItem, index) => (
-                    <MenuItem key={index} value={index}>
-                      <Checkbox checked={currentInstitutionalLinks.indexOf(index) > -1} />
-                      {getSelectText(institutionItem)}
-                    </MenuItem>
-                  ))}
-                </SelectMui>
+                  <FormControlLabel value={1} control={<Radio />} label={'Sim'} />
+                  <FormControlLabel value={0} control={<Radio />} label={'Não'} />
+                  <FormControlLabel value={-1} control={<Radio />} label={'Não sei'} />
+                </RadioGroup>
               </FormControl>
             </Grid>
-          )}
-          <Modal show={isAddWorkHistoryOpen} onHide={onModalClose}>
-            <Modal.Header closeButton>
-              <Fields>{institutionalLink.id ? 'Editar' : 'Adicionar'} Vínculo Institucional</Fields>
-            </Modal.Header>
-            <Modal.Body>
-              <Grid container spacing={3}>
+            {hasInstitutionalLink === 1 &&
+              (currentInstitutionalLinksOptions?.length ? (
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <InputMui
-                      value={institutionalLink.institutionName}
-                      onChange={event =>
-                        setInstitutionalLink({
-                          ...institutionalLink,
-                          institutionName: event.target.value,
-                        })
-                      }
-                      name={'institutionName'}
-                      label={'Nome da instituição*'}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel id="institutionType">Tipo de Instituição*</InputLabel>
+                    <InputLabel id="currentInstitutionsLabel">Vínculos atuais</InputLabel>
                     <SelectMui
-                      labelId={'institutionTypeLabel'}
-                      id={'institutionType'}
-                      name={'institutionType'}
-                      label={'Tipo de Instituição*'}
-                      value={institutionalLink.institutionTypeId || ''}
-                      onChange={event => {
-                        if (event.target.value)
-                          setInstitutionalLink({
-                            ...institutionalLink,
-                            institutionTypeId: event.target.value as string,
-                          })
+                      labelId={'currentInstitutionsLabel'}
+                      id={'currentInstitutions'}
+                      name={'currentInstitutions'}
+                      label={'Vínculos atuais'}
+                      value={currentInstitutionalLinks}
+                      renderValue={selected =>
+                        selected
+                          ?.map(item => getSelectText(currentInstitutionalLinksOptions[item]))
+                          .join(', ')
+                      }
+                      multiple
+                      onChange={({ target }) => {
+                        const { value } = target
+                        setCurrentInstitutionalLinks(
+                          (typeof value === 'string' ? value.split(',') : value) as any
+                        )
                       }}
                     >
-                      {institutionTypes.map(institutionItem => (
-                        <MenuItem key={institutionItem.id} value={institutionItem.id}>
-                          {institutionItem.label}
+                      {currentInstitutionalLinksOptions.map((institutionItem, index) => (
+                        <MenuItem key={index} value={index}>
+                          <Checkbox checked={currentInstitutionalLinks.indexOf(index) > -1} />
+                          {getSelectText(institutionItem)}
                         </MenuItem>
                       ))}
                     </SelectMui>
                   </FormControl>
                 </Grid>
+              ) : (
                 <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputMui
-                      value={institutionalLink.position}
-                      onChange={event =>
-                        setInstitutionalLink({
-                          ...institutionalLink,
-                          position: event.target.value,
-                        })
-                      }
-                      name={'position'}
-                      label={'Cargo'}
-                    />
-                  </FormControl>
+                  <Fields>Adicione um vínculo institucional sem data de término.</Fields>
                 </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <DatePicker
-                      format={'DD/MM/YYYY'}
-                      label={'Data de início*'}
-                      value={institutionalLink.startedAt}
-                      disableFuture
-                      onChange={(startedAt: Dayjs) => {
-                        setInstitutionalLink({
-                          ...institutionalLink,
-                          startedAt,
-                        })
-                      }}
-                    />
-                  </FormControl>
+              ))}
+            <Modal show={isAddWorkHistoryOpen} onHide={onModalClose}>
+              <Modal.Header closeButton>
+                <Fields>
+                  {institutionalLink.id ? 'Editar' : 'Adicionar'} Vínculo Institucional
+                </Fields>
+              </Modal.Header>
+              <Modal.Body>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputMui
+                        value={institutionalLink.institutionName}
+                        onChange={event =>
+                          setInstitutionalLink({
+                            ...institutionalLink,
+                            institutionName: event.target.value,
+                          })
+                        }
+                        name={'institutionName'}
+                        label={'Nome da instituição*'}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputLabel id="institutionType">Tipo de Instituição*</InputLabel>
+                      <SelectMui
+                        labelId={'institutionTypeLabel'}
+                        id={'institutionType'}
+                        name={'institutionType'}
+                        label={'Tipo de Instituição*'}
+                        value={institutionalLink.institutionTypeId || ''}
+                        onChange={event => {
+                          if (event.target.value)
+                            setInstitutionalLink({
+                              ...institutionalLink,
+                              institutionTypeId: event.target.value as string,
+                            })
+                        }}
+                      >
+                        {institutionTypes.map(institutionItem => (
+                          <MenuItem key={institutionItem.id} value={institutionItem.id}>
+                            {institutionItem.label}
+                          </MenuItem>
+                        ))}
+                      </SelectMui>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputMui
+                        value={institutionalLink.position}
+                        onChange={event =>
+                          setInstitutionalLink({
+                            ...institutionalLink,
+                            position: event.target.value,
+                          })
+                        }
+                        name={'position'}
+                        label={'Cargo'}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <DatePicker
+                        format={'DD/MM/YYYY'}
+                        label={'Data de início*'}
+                        value={institutionalLink.startedAt}
+                        disableFuture
+                        onChange={(startedAt: Dayjs) => {
+                          setInstitutionalLink({
+                            ...institutionalLink,
+                            startedAt,
+                          })
+                        }}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <DatePicker
+                        format={'DD/MM/YYYY'}
+                        label={'Data de término'}
+                        value={institutionalLink.endedAt}
+                        disableFuture
+                        onChange={(endedAt: Dayjs) => {
+                          setInstitutionalLink({
+                            ...institutionalLink,
+                            endedAt,
+                          })
+                        }}
+                      />
+                    </FormControl>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <DatePicker
-                      format={'DD/MM/YYYY'}
-                      label={'Data de término'}
-                      value={institutionalLink.endedAt}
-                      disableFuture
-                      onChange={(endedAt: Dayjs) => {
-                        setInstitutionalLink({
-                          ...institutionalLink,
-                          endedAt,
-                        })
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Modal.Body>
-            <Modal.Footer>
-              <Tooltip
-                title={'Preencha os campos obrigatórios'}
-                disableHoverListener={checkIfInstitutionalLinkInfoIsValid}
-              >
-                <span>
-                  <Button
-                    size={'large'}
-                    variant={'contained'}
-                    disabled={!checkIfInstitutionalLinkInfoIsValid}
-                    onClick={() => handleSave()}
-                  >
-                    Salvar
-                  </Button>
-                </span>
-              </Tooltip>
-            </Modal.Footer>
-          </Modal>
-        </Grid>
+              </Modal.Body>
+              <Modal.Footer>
+                <Tooltip
+                  title={'Preencha os campos obrigatórios'}
+                  disableHoverListener={checkIfInstitutionalLinkInfoIsValid}
+                >
+                  <span>
+                    <Button
+                      size={'large'}
+                      variant={'contained'}
+                      disabled={!checkIfInstitutionalLinkInfoIsValid}
+                      onClick={() => handleSave()}
+                    >
+                      Salvar
+                    </Button>
+                  </span>
+                </Tooltip>
+              </Modal.Footer>
+            </Modal>
+          </Grid>
+        </Box>
       </Grid>
     </Grid>
   )

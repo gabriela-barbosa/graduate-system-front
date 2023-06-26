@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button, MainWrapper, toast } from '@components'
-import { Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Role, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -37,7 +37,7 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
 
   const router = useRouter()
 
-  const { user } = useAuth()
+  const { user, currentRole } = useAuth()
 
   const { graduateId } = router.query
 
@@ -154,8 +154,6 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
                       cnpqLevels={cnpqLevels}
                       graduateInfo={graduateInfo}
                       currentRole={user?.currentRole}
-                      hasCNPQScholarship={hasCNPQScholarship}
-                      setHasCNPQScholarship={setHasCNPQScholarship}
                       institutionTypes={institutionTypes}
                       hasPostDoctorate={hasPostDoctorate}
                       setHasPostDoctorate={setHasPostDoctorate}
@@ -164,15 +162,18 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
                   </Grid>
                   <Grid item xs={12} alignSelf={'center'}>
                     <Grid container justifyContent={'center'} columnSpacing={3}>
-                      <Grid item>
-                        <Button
-                          size={'large'}
-                          variant="outlined"
-                          onClick={() => router.push(`/egressos`)}
-                        >
-                          Voltar
-                        </Button>
-                      </Grid>
+                      {currentRole !== Role.GRADUATE ? (
+                        <Grid item>
+                          <Button
+                            size={'large'}
+                            variant="outlined"
+                            onClick={() => router.push(`/egressos`)}
+                          >
+                            Voltar
+                          </Button>
+                        </Grid>
+                      ) : null}
+
                       <Grid item>
                         <Button size={'large'} variant="contained" type="submit">
                           Enviar
