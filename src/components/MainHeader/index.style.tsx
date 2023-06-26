@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { rem } from 'polished'
-import { theme } from '../../styles/theme'
+import { theme } from '@styles/theme'
 
 export const Header = styled.header`
   height: 90px;

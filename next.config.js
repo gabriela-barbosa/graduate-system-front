@@ -7,4 +7,10 @@ module.exports = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  env: {
+    GRADUATE_API: process.env.GRADUATE_API,
+  },
+  devIndicators: {
+    buildActivity: false,
+  },
 }

@@ -3,6 +3,8 @@ export enum Theme {
   white = 'white',
 }
 
+export const USER_TOKEN_NAME = 'user.token'
+
 export enum Role {
   ADMIN = 'ADMIN',
   GRADUATE = 'GRADUATE',

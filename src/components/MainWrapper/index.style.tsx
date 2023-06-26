@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Theme } from '../../utils/enums'
+import { Theme } from '@utils/enums'
 
 const theme = {
   gray: {

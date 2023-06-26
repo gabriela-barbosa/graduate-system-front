@@ -6,7 +6,7 @@ import React from 'react'
 import 'react-toastify/dist/ReactToastify.css'
 import { Role, RoleTranslation } from '@utils/enums'
 
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+const GRADUATE_API = process.env.GRADUATE_API
 
 interface Props {
   show: boolean

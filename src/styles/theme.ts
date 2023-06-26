@@ -10,3 +10,14 @@ export const theme = createTheme({
   },
   components: {},
 })
+// export const theme = createTheme({
+//   palette: {
+//     mode: 'light',
+//     primary: {
+//       main: '#51be78',
+//     },
+//     secondary: {
+//       main: '#3c3c3c',
+//     },
+//   },
+// })

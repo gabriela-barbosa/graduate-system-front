@@ -12,16 +12,16 @@ import {
   ActionIcon,
   Table,
   TableHeader,
-  TBody,
-  TD,
-  TR,
+  TableBody,
+  TableCell,
+  TableRow,
   MainWrapper,
   toast,
 } from '@components'
 import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
 import { FormControl, Grid, TextField } from '@mui/material'
 
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+const GRADUATE_API = process.env.GRADUATE_API
 
 const Programs: React.FC = () => {
   const [currentProgram, setCurrenProgram] = useState({ id: null, value: '' })
@@ -124,22 +124,22 @@ const Programs: React.FC = () => {
             <Grid item xs={12} height={510}>
               <Table>
                 <TableHeader>
-                  <TR>
-                    <TD>
+                  <TableRow>
+                    <TableCell>
                       <Fields>Nome do Programa </Fields>
-                    </TD>
-                    <TD>
+                    </TableCell>
+                    <TableCell>
                       <Fields />
-                    </TD>
-                  </TR>
+                    </TableCell>
+                  </TableRow>
                 </TableHeader>
-                <TBody>
+                <TableBody>
                   {programs?.map(program => (
-                    <TR key={program.id}>
-                      <TD>
+                    <TableRow key={program.id}>
+                      <TableCell>
                         <Subtitle>{program.initials}</Subtitle>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <ActionIcon>
                           <FontAwesomeIcon
                             onClick={() => handlerOpenEdit(program.id, program.initials)}
@@ -151,10 +151,10 @@ const Programs: React.FC = () => {
                             icon={faTrashAlt}
                           />
                         </ActionIcon>
-                      </TD>
-                    </TR>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </TBody>
+                </TableBody>
               </Table>
             </Grid>
             <Grid item xs={12}>

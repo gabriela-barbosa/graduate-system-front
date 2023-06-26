@@ -11,19 +11,19 @@ import {
   Table,
   TableHeader,
   ToastContainer,
-  TBody,
-  TD,
-  TR,
+  TableBody,
+  TableCell,
+  TableRow,
 } from '@components'
 import { RoleTranslation, Theme } from '@utils/enums'
 import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
 import { Grid, Pagination } from '@mui/material'
-import { PaginationType } from '../GraduatesList/types'
+import { PaginationType } from '../Egressos/types'
 import EditAddUserModal from '../UserList/EditAddUserModal'
 import { showErrorToast } from '@components/Toast'
-import { User } from '@context/authContext'
+import { User } from '@context/AuthContext'
 
-const GRADUATE_API = process.env.NEXT_PUBLIC_GRADUATE_API
+const GRADUATE_API = process.env.GRADUATE_API
 
 const pageSize = 10
 
@@ -91,48 +91,48 @@ const EmailConfig = () => {
             <Grid item xs={12} minHeight={510}>
               <Table>
                 <TableHeader>
-                  <TR>
-                    <TD>
+                  <TableRow>
+                    <TableCell>
                       <Fields>Nome</Fields>
-                    </TD>
-                    <TD>
+                    </TableCell>
+                    <TableCell>
                       <Fields>Email</Fields>
-                    </TD>
-                    <TD>
+                    </TableCell>
+                    <TableCell>
                       <Fields>Papel do Usuário</Fields>
-                    </TD>
+                    </TableCell>
                     <td>
                       <Fields></Fields>
                     </td>
-                  </TR>
+                  </TableRow>
                 </TableHeader>
-                <TBody>
+                <TableBody>
                   {users?.map(user => (
-                    <TR key={user.id}>
-                      <TD>
+                    <TableRow key={user.id}>
+                      <TableCell>
                         <Subtitle>{user.name}</Subtitle>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <Subtitle>{user.email}</Subtitle>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <Fields>
                           {user.roles.length === 1
                             ? RoleTranslation[user.roles[0]]
                             : RoleTranslation.multiple}
                         </Fields>
-                      </TD>
-                      <TD>
+                      </TableCell>
+                      <TableCell>
                         <ActionIcon>
                           <FontAwesomeIcon
                             onClick={() => onClickEdit(user.id)}
                             icon={faPencilAlt}
                           />
                         </ActionIcon>
-                      </TD>
-                    </TR>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </TBody>
+                </TableBody>
               </Table>
             </Grid>
             <Grid item xs={12}>
