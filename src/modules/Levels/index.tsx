@@ -24,8 +24,11 @@ import { FormControl, Grid, TextField } from '@mui/material'
 const GRADUATE_API = process.env.GRADUATE_API
 
 const Levels: React.FC = () => {
-  const [cnpqLevels, setCnpqLevels] = useState([])
-  const [currentLevel, setCurrentLevel] = useState({ id: null, value: '' })
+  const [cnpqLevels, setCnpqLevels] = useState<{ id: string; level: string }[]>([])
+  const [currentLevel, setCurrentLevel] = useState<{
+    id: null | string
+    value: string
+  }>({ id: null, value: '' })
   const [show, setShow] = useState(false)
   const router = useRouter()
 

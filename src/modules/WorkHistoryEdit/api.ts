@@ -1,6 +1,7 @@
 import { toast } from '@components'
 import { AxiosInstance } from 'axios'
 import { CNPQLevelInfo, GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
+import { SelectItem } from '@utils/types'
 
 export const getGraduateInfoAndWorkHistory = async (
   apiClient: AxiosInstance,
@@ -17,7 +18,7 @@ export const getGraduateInfoAndWorkHistory = async (
   }
 }
 
-export const getInstitutionTypes = async (apiClient: AxiosInstance) => {
+export const getInstitutionTypes = async (apiClient: AxiosInstance): Promise<SelectItem[]> => {
   try {
     const { data } = await apiClient.get(`/v1/institution/type`)
 
@@ -31,19 +32,21 @@ export const getInstitutionTypes = async (apiClient: AxiosInstance) => {
   }
 }
 
-export const getCNPQLevels = async (apiClient: AxiosInstance) => {
-  const { data, status } = await apiClient.get<CNPQLevelInfo[]>(`/v1/cnpq_levels`)
-  if (status >= 400 && status < 600) {
+export const getCNPQLevels = async (apiClient: AxiosInstance): Promise<SelectItem[]> => {
+  try {
+    const { data } = await apiClient.get<CNPQLevelInfo[]>(`/v1/cnpq_levels`)
+
+    return [
+      { id: 0, label: 'Nenhuma bolsa selecionada' },
+      ...data.map(({ name, id }) => ({ id, label: name })),
+    ]
+  } catch (error) {
     toast.error('Erro ao buscar tipos de bolsa CNPQ')
-    return data
+    return error
   }
-  return [
-    { id: 0, label: 'Nenhuma bolsa selecionada' },
-    ...data.map(({ name, id }) => ({ id, label: name })),
-  ]
 }
 
-export const getCourses = async (apiClient: AxiosInstance) => {
+export const getCourses = async (apiClient: AxiosInstance): Promise<SelectItem[]> => {
   const { data, status } = await apiClient.get(`/v1/courses`)
   if (status >= 400 && status < 600) {
     toast.error('Erro ao buscar cursos')

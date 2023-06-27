@@ -51,7 +51,7 @@ const GRADUATE_API = process.env.GRADUATE_API
 const pageSize = 10
 
 const EmailConfig = () => {
-  const [emails, setEmails] = useState([])
+  const [emails, setEmails] = useState<Email[]>([])
   const [pagination, setPagination] = useState<PaginationType>({ page: 0, size: 0, total: 0 })
   const [previousEmail, setPreviousEmail] = useState<Email>({
     buttonText: '',
@@ -126,7 +126,7 @@ const EmailConfig = () => {
       isGraduateEmail: false,
       name: '',
       title: '',
-      id: null,
+      id: undefined,
     })
   }
 
@@ -225,7 +225,7 @@ const EmailConfig = () => {
                             icon={faPencilAlt}
                           />
                           <FontAwesomeIcon
-                            onClick={() => deleteEmail(email.id)}
+                            onClick={() => email.id && deleteEmail(email.id)}
                             className="trash-icon"
                             icon={faTrashAlt}
                           />

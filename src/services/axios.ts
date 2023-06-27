@@ -4,7 +4,7 @@ import { parseCookies } from 'nookies'
 
 const GRADUATE_API = process.env.GRADUATE_API
 
-export function getAPIClient(ctx?: unknown) {
+export function getAPIClient(ctx?: any) {
   const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
 
   console.log(token)

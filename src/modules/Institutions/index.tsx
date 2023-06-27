@@ -24,8 +24,14 @@ import { FormControl, Grid, TextField } from '@mui/material'
 const GRADUATE_API = process.env.GRADUATE_API
 
 const Institutions: React.FC = () => {
-  const [institutionTypes, setInstitutionTypes] = useState([])
-  const [currentInstitution, setCurrentInstitution] = useState({ id: null, value: '' })
+  const [institutionTypes, setInstitutionTypes] = useState<{ id: string; name: string }[]>([])
+  const [currentInstitution, setCurrentInstitution] = useState<{
+    id: null | string
+    value: string
+  }>({
+    id: null,
+    value: '',
+  })
   const [show, setShow] = useState(false)
   const router = useRouter()
 

@@ -31,9 +31,8 @@ interface Props {
 }
 
 const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => {
-  const [hasInstitutionalLink, setHasInstitutionalLink] = useState<boolean | null>(null)
-  const [hasCNPQScholarship, setHasCNPQScholarship] = useState<boolean | null>(null)
-  const [hasPostDoctorate, setHasPostDoctorate] = useState<boolean | null>(null)
+  const [hasCNPQScholarship] = useState<boolean | null>(null)
+  const [hasPostDoctorate] = useState<boolean | null>(null)
 
   const router = useRouter()
 
@@ -56,9 +55,6 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
     const {
       email,
       successCase,
-      institutionName,
-      institutionType,
-      position,
       postDoctorateName,
       postDoctorateType,
       cnpqId,
@@ -83,7 +79,7 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
         postDoctorateName || postDoctorateType
           ? { name: postDoctorateName, type: postDoctorateType }
           : graduateInfo?.postDoctorate
-    if (hasCNPQScholarship) body.cnpqLevelId = cnpqId ?? graduateInfo?.cnpqLevelId
+    if (hasCNPQScholarship) body.cnpqLevelId = cnpqId ?? graduateInfo?.cnpqScholarships.length
     if (email !== graduateInfo.email) {
       body.newEmail = email
     }
@@ -144,9 +140,6 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
                     <InstitutionalLinkInfo
                       graduateInfo={graduateInfo}
                       institutionTypes={institutionTypes}
-                      hasInstitutionalLink={hasInstitutionalLink}
-                      setHasInstitutionalLink={setHasInstitutionalLink}
-                      handleSetValue={handleSetValue}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -155,8 +148,7 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
                       graduateInfo={graduateInfo}
                       currentRole={user?.currentRole}
                       institutionTypes={institutionTypes}
-                      hasPostDoctorate={hasPostDoctorate}
-                      setHasPostDoctorate={setHasPostDoctorate}
+                      // setHasPostDoctorate={setHasPostDoctorate}
                       handleSetValue={handleSetValue}
                     />
                   </Grid>

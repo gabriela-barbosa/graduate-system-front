@@ -14,23 +14,26 @@ import React, { useEffect, useState } from 'react'
 import { getCNPQLevels, getCourses, getInstitutionTypes } from '../WorkHistoryEdit/api'
 import { Input } from '@components'
 import { Controller } from 'react-hook-form'
+import { getAPIClient } from '../../services/axios'
+import { SelectItem } from '@utils/types'
 
 const GraduateInfo = ({ control }) => {
-  const [institutionTypes, setInstitutionTypes] = useState([])
-  const [cnpqLevels, setCNPQLevels] = useState([])
-  const [courses, setCourses] = useState([])
+  const [institutionTypes, setInstitutionTypes] = useState<SelectItem[]>([])
+  const [cnpqLevels, setCNPQLevels] = useState<SelectItem[]>([])
+  const [, setCourses] = useState<SelectItem[]>([])
 
-  const [hasObject, setHasObject] = useState({
-    hasPostDoctorate: null,
-    hasCNPQScholarship: null,
-  })
+  // const [hasObject] = useState({
+  //   hasPostDoctorate: null,
+  //   hasCNPQScholarship: null,
+  // })
 
-  const { hasPostDoctorate, hasCNPQScholarship } = hasObject
+  // const { hasPostDoctorate, hasCNPQScholarship } = hasObject
+  const apiClient = getAPIClient()
 
   useEffect(() => {
-    getInstitutionTypes().then(types => setInstitutionTypes(types))
-    getCNPQLevels().then(levels => setCNPQLevels(levels))
-    getCourses().then(courses => setCourses(courses))
+    getInstitutionTypes(apiClient).then(types => setInstitutionTypes(types))
+    getCNPQLevels(apiClient).then(levels => setCNPQLevels(levels))
+    getCourses(apiClient).then(courses => setCourses(courses))
   }, [])
 
   return (

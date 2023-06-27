@@ -11,19 +11,24 @@ import {
 import { Fields } from '@styles/index.style'
 
 type Align = 'inherit' | 'left' | 'center' | 'right' | 'justify'
+
 interface ColumnDetail {
   name: string
   align?: Align
   width?: string
 }
+
+interface RowDetails {
+  body?: string | ReactElement
+  align?: Align
+  width?: string
+}
+
 interface Props {
   columns: ColumnDetail[]
-  rows: {
-    body: string | ReactElement
-    align?: Align
-    width?: string
-  }[][]
+  rows: RowDetails[][]
 }
+
 const GraduateList = ({ columns, rows }: Props) => {
   const isString = item => typeof item === 'string'
 

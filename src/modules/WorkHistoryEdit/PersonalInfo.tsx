@@ -10,6 +10,8 @@ export const PersonalInfo = () => {
         return 'Insira um emails válido.'
       case 'required':
         return 'Digite o emails.'
+      default:
+        return 'Campo inválido'
     }
   }
   return (

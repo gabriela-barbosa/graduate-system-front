@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { MainWrapper, Input, Select, Button, ActionIcon } from '@components'
-import { Role, Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Theme, USER_TOKEN_NAME } from '@utils/enums'
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
@@ -13,17 +13,14 @@ import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { useAuth } from '@context/AuthProvider'
 import { ListGraduatesFilters, PaginationType } from '@modules/Egressos/types'
 import GraduatesTable from '@modules/Egressos/GraduatesTable'
 import { parseCookies } from 'nookies'
-import { api } from '../../services/api'
 import { getAPIClient } from '../../services/axios'
 import { AxiosInstance } from 'axios'
+import { getInstitutionTypes } from '@modules/WorkHistoryEdit'
 
 const pageSize = 10
-
-const GRADUATE_API = process.env.GRADUATE_API
 
 const status = {
   PENDING: 'Pendente',
@@ -32,54 +29,80 @@ const status = {
   UNKNOWN: 'Desconhecido',
 }
 
+const isValid = (value?: string) => value && value !== ''
+
+const getFilledFilters = (filters?: ListGraduatesFilters) => {
+  const { name, institutionType, institutionName } = filters ?? {}
+  const arrayFilter: string[][] = []
+  if (isValid(name)) arrayFilter.push(['name', name as string])
+  // eslint-disable-next-line eqeqeq
+  if (institutionType && institutionType !== '0')
+    arrayFilter.push(['institutionType', institutionType])
+  if (isValid(institutionName)) arrayFilter.push(['institutionName', institutionName as string])
+  return arrayFilter
+}
+
+interface GraduatesListDetails {
+  graduates: any[] | NonNullable<unknown>
+  meta: PaginationType
+}
+
+const getGraduates = async (
+  apiClient: AxiosInstance,
+  page = 1,
+  filters?: ListGraduatesFilters
+): Promise<GraduatesListDetails> => {
+  try {
+    const filledFilters = getFilledFilters(filters)
+    filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])
+    const { data } = await apiClient.get('/v1/graduates?' + new URLSearchParams(filledFilters))
+
+    const { data: graduates, meta } = data
+    return {
+      graduates,
+      meta,
+    }
+  } catch (error) {
+    toast.error('Erro ao buscar egressos.')
+    return {
+      graduates: {},
+      meta: {} as PaginationType,
+    }
+  }
+}
+
 const GraduateList = ({ meta, graduates, institutionTypes }) => {
-  const [graduatesOld, setGraduates] = useState([])
-  const [pagination, setPagination] = useState<PaginationType>()
+  const apiClient = getAPIClient()
+
+  const [graduatesList, setGraduatesList] = useState(graduates)
+  const [pagination, setPagination] = useState<PaginationType>(meta)
   const defaultInstitutionType = { id: 0, label: 'Nenhum tipo de instituição selecionado' }
   const router = useRouter()
-  const { user } = useAuth()
 
   const formContext = useForm()
   const { getValues, reset } = formContext
 
-  const isValid = (value?: string) => value && value !== ''
-
-  const getFilledFilters = (filters?: ListGraduatesFilters) => {
-    const { name, institutionType, institutionName } = filters ?? {}
-    const arrayFilter = []
-    if (isValid(name)) arrayFilter.push(['name', name])
-    // eslint-disable-next-line eqeqeq
-    if (institutionType && institutionType !== '0')
-      arrayFilter.push(['institutionType', institutionType])
-    if (isValid(institutionName)) arrayFilter.push(['institutionName', institutionName])
-    return arrayFilter
-  }
-  const getGraduates = async (page: number, filters?: ListGraduatesFilters) => {
-    const filledFilters = getFilledFilters(filters)
-    filledFilters.push(
-      ['page', `${page - 1}`],
-      ['pageSize', `${pageSize}`],
-      ['currentRole', user?.currentRole]
-    )
-    const response = await fetch(
-      `${GRADUATE_API}/v1/graduates?` + new URLSearchParams(filledFilters),
-      {
-        credentials: 'include',
-      }
-    )
-    if (response.status === 200) {
-      const result = await response.json()
-      setGraduates(result.data)
-      setPagination(result.meta)
-    }
-  }
+  // const getGraduates = async (page: number, filters?: ListGraduatesFilters) => {
+  //   const filledFilters = getFilledFilters(filters)
+  //   filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])
+  //   const response = await fetch(
+  //     `${GRADUATE_API}/v1/graduates?` + new URLSearchParams(filledFilters),
+  //     {
+  //       credentials: 'include',
+  //     }
+  //   )
+  //   if (response.status === 200) {
+  //     const result = await response.json()
+  //     setGraduates(result.data)
+  //     setPagination(result.meta)
+  //   }
+  // }
 
   const onSend = async (data: ListGraduatesFilters) => {
-    getGraduates(1, data)
+    const { graduates: graduatesSend, meta: metaSend } = await getGraduates(apiClient, 1, data)
+    setGraduatesList(graduatesSend)
+    setPagination(metaSend)
   }
-  useEffect(() => {
-    getGraduates(1, null)
-  }, [])
 
   const onClickEdit = graduate => {
     router.push(`/egressos/${graduate.userId}`)
@@ -87,12 +110,20 @@ const GraduateList = ({ meta, graduates, institutionTypes }) => {
 
   const onChangePagination = async (event, value) => {
     const filters = getValues() as ListGraduatesFilters
-    await getGraduates(value, filters)
+    const { graduates: graduatesPagination, meta: metaPagination } = await getGraduates(
+      apiClient,
+      value,
+      filters
+    )
+    setGraduatesList(graduatesPagination)
+    setPagination(metaPagination)
   }
 
   const onClickClean = async () => {
     reset()
-    await getGraduates(1, null)
+    const { graduates: graduatesClean, meta: metaClean } = await getGraduates(apiClient, 1)
+    setGraduatesList(graduatesClean)
+    setPagination(metaClean)
   }
 
   const columns = [
@@ -104,7 +135,7 @@ const GraduateList = ({ meta, graduates, institutionTypes }) => {
     { name: 'Editar', width: '10%' },
   ]
 
-  const rows = graduates.map(graduate => {
+  const rows = graduatesList.map(graduate => {
     return [
       {
         body: graduate.name,
@@ -224,39 +255,6 @@ const GraduateList = ({ meta, graduates, institutionTypes }) => {
   )
 }
 
-const getInstitutionTypes = async (apiClient: AxiosInstance) => {
-  const { data, status } = await apiClient.get(`/v1/institution/type`)
-
-  if (status >= 400 && status < 600) {
-    toast.error('Erro ao buscar tipos de insituição')
-    return
-  }
-
-  return data.map(({ name, id }) => ({ id, label: name }))
-}
-
-const getGraduates = async (apiClient: AxiosInstance) => {
-  const { data, status } = await apiClient.get(
-    '/v1/graduates?' +
-      new URLSearchParams({
-        page: '0',
-        pageSize: `${pageSize}`,
-      })
-  )
-  if (status === 200) {
-    const { data: graduates, meta } = data
-    return {
-      graduates,
-      meta,
-    }
-  }
-
-  return {
-    graduates: {},
-    meta: {},
-  }
-}
-
 export async function getServerSideProps(ctx) {
   const apiClient = getAPIClient(ctx)
   const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
@@ -270,9 +268,11 @@ export async function getServerSideProps(ctx) {
     }
   }
 
-  const promisses = [getGraduates(apiClient), getInstitutionTypes(apiClient)]
+  const promises = [getGraduates(apiClient), getInstitutionTypes(apiClient)]
 
-  const [{ graduates, meta }, institutionTypes] = await Promise.all(promisses)
+  const [graduatesResponse, institutionTypes] = await Promise.all(promises)
+
+  const { graduates, meta } = graduatesResponse as GraduatesListDetails
 
   return {
     props: {

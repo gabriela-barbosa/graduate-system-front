@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import { Subtitle } from './index.style'
 import React, { useState } from 'react'
-import { ActionIcon, Button, DatePicker, Input, InputMui, Select, SelectMui } from '@components'
+import { ActionIcon, Button, DatePicker, Input, Select, SelectMui } from '@components'
 import { GraduateWorkHistoriesInfo, Option } from './types'
 import { Role } from '@utils/enums'
 import { RadioButtonGroup } from 'react-hook-form-mui'
@@ -215,7 +215,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                           name={'currentScholarships'}
                           label={'Bolsas atuais'}
                           value={currentScholarships}
-                          renderValue={selected =>
+                          renderValue={(selected: never[]) =>
                             selected
                               ?.map(item => getSelectText(currentScholarshipsOptions[item]))
                               .join(', ')
@@ -224,7 +224,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                           onChange={({ target }) => {
                             const { value } = target
                             setCurrentScholarships(
-                              (typeof value === 'string' ? value.split(',') : value) as any
+                              (typeof value === 'string' ? value.split(',') : value) as never
                             )
                           }}
                         >

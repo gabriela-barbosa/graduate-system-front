@@ -39,6 +39,8 @@ const Home = () => {
         return 'Insira um email válido.'
       case 'required':
         return 'Digite o email.'
+      default:
+        return 'Campo inválido.'
     }
   }
 

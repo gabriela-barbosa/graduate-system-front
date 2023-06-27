@@ -24,8 +24,11 @@ import { FormControl, Grid, TextField } from '@mui/material'
 const GRADUATE_API = process.env.GRADUATE_API
 
 const Programs: React.FC = () => {
-  const [currentProgram, setCurrenProgram] = useState({ id: null, value: '' })
-  const [programs, setPrograms] = useState([])
+  const [currentProgram, setCurrenProgram] = useState<{
+    id: null | string
+    value: string
+  }>({ id: null, value: '' })
+  const [programs, setPrograms] = useState<{ id: string; initials: string }[]>([])
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)

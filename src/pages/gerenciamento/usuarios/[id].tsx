@@ -13,10 +13,6 @@ import GraduateInfo from '@modules/User/GraduateInfo'
 
 const GRADUATE_API = process.env.GRADUATE_API
 
-interface Props {
-  user: User
-}
-
 const UserDetail = () => {
   const router = useRouter()
 
@@ -34,7 +30,7 @@ const UserDetail = () => {
       credentials: 'include',
       body: JSON.stringify(user),
     }
-    const result = await fetch(`${GRADUATE_API}/v1/register`, myInit as RequestInit)
+    await fetch(`${GRADUATE_API}/v1/register`, myInit as RequestInit)
     // if (result && result.status < 400) {
     // } else {
     // }
@@ -43,23 +39,23 @@ const UserDetail = () => {
     defaultValues: useMemo(() => {
       if (user) {
         const currentUser = user
-        if (user.graduate?.postDoctorate) {
+        if (currentUser.graduate?.postDoctorate) {
           currentUser.graduate.hasPostDoctorate = true
-        } else if (user.graduate?.postDoctorate == null) {
+        } else if (currentUser.graduate && currentUser.graduate?.postDoctorate == null) {
           currentUser.graduate.hasPostDoctorate = 'unknown'
         }
 
-        if (user.graduate?.cnpqScholarship.length) {
+        if (currentUser.graduate?.cnpqScholarship.length) {
           currentUser.graduate.hasCNPQScholarship = true
-        } else if (user.graduate?.postDoctorate == null) {
+        } else if (currentUser.graduate && currentUser.graduate?.postDoctorate == null) {
           currentUser.graduate.hasPostDoctorate = 'unknown'
         }
 
-        if (user.graduate?.hasFinishedDoctorateOnUFF === null) {
+        if (currentUser.graduate?.hasFinishedDoctorateOnUFF === null) {
           currentUser.graduate.hasFinishedDoctorateOnUFF = 'unknown'
         }
 
-        if (user.graduate?.hasFinishedMasterDegreeOnUFF === null) {
+        if (currentUser.graduate?.hasFinishedMasterDegreeOnUFF === null) {
           currentUser.graduate.hasFinishedMasterDegreeOnUFF = 'unknown'
         }
         console.log(currentUser)
@@ -67,7 +63,7 @@ const UserDetail = () => {
       }
     }, [user]),
   })
-  const { reset, control, getValues } = formContext
+  const { reset, control } = formContext
 
   const getUser = async id => {
     if (id !== 'criar') {
@@ -138,5 +134,23 @@ const UserDetail = () => {
     </MainWrapper>
   )
 }
-
 export default UserDetail
+
+// export async function getServerSideProps(ctx) {
+//   const { id } = ctx.query
+//
+//
+//   const apiClient = getAPIClient(ctx)
+//
+//   const promises = [getCourses(apiClient), getInstitutionTypes(apiClient), getCNPQLevels(apiClient)]
+//
+//   const [courses, institutionTypes, cnpqLevels] = await Promise.all(promises)
+//
+//   return {
+//     props: {
+//       courses,
+//       institutionTypes,
+//       cnpqLevels,
+//     },
+//   }
+// }

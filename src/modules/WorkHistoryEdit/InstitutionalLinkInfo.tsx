@@ -26,8 +26,7 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 interface Props {
   graduateInfo: GraduateWorkHistoriesInfo
   institutionTypes: SelectItem[]
-  institutionalLinks: InstitutionalLinkInfoType
-  setInstitutionalLinks: (institutionalLink: InstitutionalLinkInfoType) => void
+  // setInstitutionalLinks: (institutionalLink: InstitutionalLinkInfoType) => void
 }
 
 interface InstitutionalLinkInfoType {
@@ -256,7 +255,7 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
                       name={'currentInstitutions'}
                       label={'Vínculos atuais'}
                       value={currentInstitutionalLinks}
-                      renderValue={selected =>
+                      renderValue={(selected: never[]) =>
                         selected
                           ?.map(item => getSelectText(currentInstitutionalLinksOptions[item]))
                           .join(', ')
@@ -265,7 +264,7 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
                       onChange={({ target }) => {
                         const { value } = target
                         setCurrentInstitutionalLinks(
-                          (typeof value === 'string' ? value.split(',') : value) as any
+                          (typeof value === 'string' ? value.split(',') : value) as never
                         )
                       }}
                     >
