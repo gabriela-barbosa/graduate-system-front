@@ -9,62 +9,79 @@ import {
   MenuItem,
   Radio,
   RadioGroup,
-  Tooltip,
 } from '@mui/material'
 import { Subtitle } from './index.style'
 import React, { useState } from 'react'
-import { ActionIcon, Button, DatePicker, Input, Select, SelectMui } from '@components'
+import { ActionIcon, Button, DatePicker, InputMui, Paper, Select, SelectMui } from '@components'
 import { GraduateWorkHistoriesInfo, Option } from './types'
 import { Role } from '@utils/enums'
-import { RadioButtonGroup } from 'react-hook-form-mui'
 import { SelectItem } from '@utils/types'
 import GraduatesTable from '@modules/Egressos/GraduatesTable'
-import { Fields } from '@styles/index.style'
-import { Modal } from 'react-bootstrap'
+import { Fields, Label } from '@styles/index.style'
 import dayjs, { Dayjs } from 'dayjs'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import { AddRounded } from '@mui/icons-material'
 import { useAuth } from '@context/AuthProvider'
+import { Control, Controller, useController } from 'react-hook-form'
+import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
 
 interface Props {
   graduateInfo: GraduateWorkHistoriesInfo
   cnpqLevels: SelectItem[]
   institutionTypes: Option[]
-  handleSetValue: (event: unknown, setHasCNPQScholarship: () => void) => void
-  currentRole?: Role
+  control: Control<any>
 }
 
-interface CNPQScholarshipInfoType {
-  id?: string | null
-  levelId?: string | null
-  startedAt?: Dayjs | null
-  endedAt?: Dayjs | null
-}
-
-export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Props) => {
+export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, control }: Props) => {
   const { currentRole } = useAuth()
+  const isCurrentUserGraduate = currentRole === Role.GRADUATE
 
   const { cnpqScholarships: historyCNPQScholarships } = graduateInfo
 
-  const cnpqScholarshipDefaultState: CNPQScholarshipInfoType = {
-    id: null,
-    levelId: null,
-    startedAt: null,
-    endedAt: null,
-  }
-  const [hasCNPQScholarship, setHasCNPQScholarship] = useState<number>(1)
-  const [hasPostDoctorate, setHasPostDoctorate] = useState<number>(1)
   const [isAddCNPQScholarshipOpen, setIsAddCNPQScholarshipOpen] = useState<boolean>(false)
-  const [cnpqScholarship, setCNPQScholarship] = useState<CNPQScholarshipInfoType>({
-    ...cnpqScholarshipDefaultState,
-  })
-  const [currentScholarships, setCurrentScholarships] = useState<any[]>([])
+  const [currentCNPQScholarshipsSelected, setCurrentCNPQScholarshipsSelected] = useState<number[]>(
+    []
+  )
 
-  const [cnpqScholarships, setCNPQScholarships] = useState<CNPQScholarshipInfoType[]>([])
+  const {
+    field: { value: cnpqScholarships, onChange: setCNPQScholarships },
+  } = useController({ control, name: 'cnpqScholarships' })
 
   const currentScholarshipsOptions = [...cnpqScholarships, ...historyCNPQScholarships].filter(
     scholarship => !scholarship.endedAt || scholarship.endedAt === 'null'
   )
+
+  const {
+    field: { onChange: setCurrentCNPQScholarships },
+  } = useController({ control, name: 'currentCNPQScholarships' })
+
+  const {
+    field: { value: hasCurrentCNPQScholarship },
+  } = useController({
+    control,
+    name: 'hasCurrentCNPQScholarship',
+    rules: {
+      validate: value => {
+        if (value === 1)
+          return currentCNPQScholarshipsSelected?.length === currentScholarshipsOptions?.length
+        if (value === 0) return currentScholarshipsOptions?.length === 0
+        return true
+      },
+    },
+  })
+
+  const {
+    field: { value: hasPostDoctorate },
+  } = useController({
+    control,
+    name: 'hasPostDoctorate',
+    rules: {
+      validate: value => {
+        if (value === 1) if (value === 0) return currentScholarshipsOptions?.length === 0
+        return true
+      },
+    },
+  })
 
   const getSelectText = scholarship => {
     return `${
@@ -73,17 +90,6 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
       ? dayjs(scholarship.startedAt)
       : scholarship.startedAt
     ).format('DD/MM/YYYY')}`
-  }
-
-  const onModalClose = () => {
-    setIsAddCNPQScholarshipOpen(false)
-    setCNPQScholarship({ ...cnpqScholarshipDefaultState })
-  }
-
-  const handleSave = () => {
-    console.log('cnpqScholarships', cnpqScholarship)
-    setCNPQScholarships(scholarships => [...scholarships, cnpqScholarship])
-    onModalClose()
   }
 
   const rows = [
@@ -111,7 +117,9 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
         body: (
           <ActionIcon
             onClick={() => {
-              setCNPQScholarships(cnpq => cnpq.filter((_, i) => i !== index))
+              setCurrentCNPQScholarshipsSelected([])
+              setCurrentCNPQScholarships([])
+              setCNPQScholarships(cnpqScholarships.filter((_, i) => i !== index))
             }}
           >
             <DeleteForeverRoundedIcon />
@@ -147,8 +155,6 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
     { name: 'Ações', width: '10%' },
   ]
 
-  const checkIfCNPQScholarshipIsValid = !!(cnpqScholarship.levelId && cnpqScholarship.startedAt)
-
   return (
     <Grid container spacing={4}>
       <Grid item xs={12}>
@@ -175,9 +181,11 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                   {rows?.length ? (
                     <GraduatesTable columns={columns} rows={rows} />
                   ) : (
-                    <Box>
-                      <Fields>Não há histórico de bolsas.</Fields>
-                    </Box>
+                    <Paper variant="outlined" sx={{ borderRadius: '8px', borderStyle: 'dashed' }}>
+                      <Box sx={{ padding: 2 }}>
+                        <Label>Não há histórico de bolsas.</Label>
+                      </Box>
+                    </Paper>
                   )}
                 </Grid>
                 <Grid item xs={12}>
@@ -185,26 +193,38 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                     <FormLabel id="labelHasCNPQScholarship">
                       Possui Bolsa de Produtividade CNPQ atualmente?
                     </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby={'labelHasCNPQScholarship'}
-                      name={'hasCNPQScholarship'}
-                      value={hasCNPQScholarship}
-                      onChange={({ target }) => {
-                        const value = parseInt(target.value)
-                        setHasCNPQScholarship(value)
-                        if (value !== 1) {
-                          setCurrentScholarships([])
-                        }
-                      }}
-                    >
-                      <FormControlLabel value={1} control={<Radio />} label={'Sim'} />
-                      <FormControlLabel value={0} control={<Radio />} label={'Não'} />
-                      <FormControlLabel value={-1} control={<Radio />} label={'Não sei'} />
-                    </RadioGroup>
+                    <Controller
+                      name={'hasCurrentCNPQScholarship'}
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <RadioGroup
+                          row
+                          aria-labelledby={'labelHasCNPQScholarship'}
+                          name={'hasCurrentCNPQScholarship'}
+                          value={value}
+                          onChange={event => {
+                            const value = parseInt(event.target.value)
+                            onChange(value)
+                            if (value !== 1) {
+                              setCurrentCNPQScholarships([])
+                              setCurrentCNPQScholarshipsSelected([])
+                            }
+                          }}
+                        >
+                          <FormControlLabel value={1} control={<Radio />} label={'Sim'} />
+                          <FormControlLabel value={0} control={<Radio />} label={'Não'} />
+                          <FormControlLabel
+                            hidden={isCurrentUserGraduate}
+                            value={-1}
+                            control={<Radio />}
+                            label={'Não sei'}
+                          />
+                        </RadioGroup>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
-                {hasCNPQScholarship === 1 &&
+                {hasCurrentCNPQScholarship === 1 &&
                   (currentScholarshipsOptions?.length ? (
                     <Grid item xs={12}>
                       <FormControl fullWidth>
@@ -214,23 +234,28 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                           id={'currentScholarships'}
                           name={'currentScholarships'}
                           label={'Bolsas atuais'}
-                          value={currentScholarships}
+                          value={currentCNPQScholarshipsSelected}
                           renderValue={(selected: never[]) =>
                             selected
                               ?.map(item => getSelectText(currentScholarshipsOptions[item]))
                               .join(', ')
                           }
                           multiple
-                          onChange={({ target }) => {
-                            const { value } = target
-                            setCurrentScholarships(
+                          onChange={({ target: { value } }) => {
+                            const cnpqScholarshipUpdated = (value as number[]).map(
+                              item => currentScholarshipsOptions[item]
+                            )
+                            setCurrentCNPQScholarships(cnpqScholarshipUpdated)
+                            setCurrentCNPQScholarshipsSelected(
                               (typeof value === 'string' ? value.split(',') : value) as never
                             )
                           }}
                         >
                           {currentScholarshipsOptions.map((institutionItem, index) => (
                             <MenuItem key={index} value={index}>
-                              <Checkbox checked={currentScholarships.indexOf(index) > -1} />
+                              <Checkbox
+                                checked={currentCNPQScholarshipsSelected.indexOf(index) > -1}
+                              />
                               {getSelectText(institutionItem)}
                             </MenuItem>
                           ))}
@@ -239,7 +264,9 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                     </Grid>
                   ) : (
                     <Grid item xs={12}>
-                      <Fields>Adicione um registro de bolsa sem data de término.</Fields>
+                      <Label color={'#cb0000'}>
+                        Adicione um registro de bolsa sem data de término.
+                      </Label>
                     </Grid>
                   ))}
               </Grid>
@@ -258,28 +285,55 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                 <Grid item xs={12}>
                   <FormControl>
                     <FormLabel id="labelHasPostDoctorate">Possui pós-doutorado?</FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby={'labelHasPostDoctorate'}
+                    <Controller
                       name={'hasPostDoctorate'}
-                      value={hasPostDoctorate}
-                      onChange={({ target }) => {
-                        const value = parseInt(target.value)
-                        setHasPostDoctorate(value)
-                      }}
-                    >
-                      <FormControlLabel value={1} control={<Radio />} label={'Sim'} />
-                      <FormControlLabel value={0} control={<Radio />} label={'Não'} />
-                      <FormControlLabel value={-1} control={<Radio />} label={'Não sei'} />
-                    </RadioGroup>
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <RadioGroup
+                          row
+                          aria-labelledby={'labelHasPostDoctorate'}
+                          name={'hasPostDoctorate'}
+                          value={value}
+                          onChange={({ target }) => {
+                            const value = parseInt(target.value)
+                            onChange(value)
+                          }}
+                        >
+                          <FormControlLabel value={1} control={<Radio />} label={'Sim'} />
+                          <FormControlLabel value={0} control={<Radio />} label={'Não'} />
+                          <FormControlLabel
+                            hidden={isCurrentUserGraduate}
+                            value={-1}
+                            control={<Radio />}
+                            label={'Não sei'}
+                          />
+                        </RadioGroup>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item xs={5}>
                   <FormControl fullWidth>
-                    <Input
-                      name={'postDoctorateName'}
-                      label={'Nome da instituição'}
-                      disabled={hasPostDoctorate !== 1}
+                    <Controller
+                      name={'postDoctorate.institution.name'}
+                      control={control}
+                      rules={{ required: hasPostDoctorate === 1 }}
+                      render={({ field: { onChange, value }, fieldState: { error } }) => (
+                        <InputMui
+                          label={'Nome da instituição'}
+                          name={'postDoctorate.name'}
+                          // disabled={hasPostDoctorate !== 1}
+                          value={value}
+                          onChange={value => {
+                            onChange(value)
+                            console.log('error name', error, !!error)
+                          }}
+                          // parseError={() => 'Campo obrigatório.'}
+                          error={!!error}
+                          // helperText={error ? 'Campo obrigatório.' : ''}
+                          helperText={error?.message || ''}
+                        />
+                      )}
                     />
                   </FormControl>
                 </Grid>
@@ -291,41 +345,64 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                       name={'postDoctorateType'}
                       label={'Tipo da instituição'}
                       options={institutionTypes}
+                      parseError={() => 'Campo obrigatório.'}
+                      required={hasPostDoctorate === 1}
                     />
                   </FormControl>
                 </Grid>
                 <Grid item xs={5}>
                   <FormControl fullWidth>
-                    <DatePicker
-                      format={'DD/MM/YYYY'}
-                      label={'Data de início*'}
-                      value={cnpqScholarship.startedAt}
-                      disabled={hasPostDoctorate !== 1}
-                      disableFuture
-                      onChange={(startedAt: Dayjs) => {
-                        setCNPQScholarship(scholarship => ({
-                          ...scholarship,
-                          startedAt,
-                        }))
+                    <Controller
+                      name={'postDoctorate.startedAt'}
+                      control={control}
+                      rules={{
+                        required: hasPostDoctorate === 1,
                       }}
+                      render={({ field: { onChange, value }, fieldState: { error } }) => (
+                        <DatePicker
+                          format={'DD/MM/YYYY'}
+                          label={'Data de início'}
+                          value={typeof value === 'string' ? dayjs(value) : value}
+                          disabled={hasPostDoctorate !== 1}
+                          disableFuture
+                          onChange={(startedAt: Dayjs) => {
+                            onChange(startedAt)
+                          }}
+                          slotProps={{
+                            textField: {
+                              error: !!error,
+                              helperText: error ? 'Campo obrigatório.' : '',
+                            },
+                          }}
+                        />
+                      )}
                     />
                   </FormControl>
                 </Grid>
                 <Grid item xs={1} />
                 <Grid item xs={5}>
                   <FormControl fullWidth>
-                    <DatePicker
-                      format={'DD/MM/YYYY'}
-                      label={'Data de término'}
-                      value={cnpqScholarship.endedAt}
-                      disabled={hasPostDoctorate !== 1}
-                      disableFuture
-                      onChange={(endedAt: Dayjs) => {
-                        setCNPQScholarship(scholarship => ({
-                          ...scholarship,
-                          endedAt,
-                        }))
-                      }}
+                    <Controller
+                      name={'postDoctorate.endedAt'}
+                      control={control}
+                      render={({ field: { onChange, value }, fieldState: { error } }) => (
+                        <DatePicker
+                          format={'DD/MM/YYYY'}
+                          label={'Data de término'}
+                          value={typeof value === 'string' ? dayjs(value) : value}
+                          disabled={hasPostDoctorate !== 1}
+                          disableFuture
+                          onChange={(endedAt: Dayjs) => {
+                            onChange(endedAt)
+                          }}
+                          slotProps={{
+                            textField: {
+                              error: !!error,
+                              helperText: error ? 'Campo obrigatório.' : '',
+                            },
+                          }}
+                        />
+                      )}
                     />
                   </FormControl>
                 </Grid>
@@ -333,39 +410,47 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
                   <>
                     <Grid item xs={12}>
                       <FormControl>
-                        <RadioButtonGroup
-                          label={'Concluiu o doutorado no PGC/UFF?'}
-                          row
+                        <FormLabel id="labelHasPostDoctorate">
+                          Concluiu o doutorado no PGC/UFF?
+                        </FormLabel>
+                        <Controller
                           name={'hasFinishedDoctorateOnUFF'}
-                          options={[
-                            {
-                              id: 'true',
-                              label: 'Sim',
-                            },
-                            {
-                              id: 'false',
-                              label: 'Não',
-                            },
-                          ]}
+                          control={control}
+                          render={({ field: { onChange, value } }) => (
+                            <RadioGroup
+                              row
+                              aria-labelledby={'labelHasFinishedDoctorateOnUFF'}
+                              name={'hasFinishedDoctorateOnUFF'}
+                              value={value}
+                              onChange={onChange}
+                            >
+                              <FormControlLabel value={'true'} control={<Radio />} label={'Sim'} />
+                              <FormControlLabel value={'false'} control={<Radio />} label={'Não'} />
+                            </RadioGroup>
+                          )}
                         />
                       </FormControl>
                     </Grid>
                     <Grid item xs={12}>
                       <FormControl>
-                        <RadioButtonGroup
-                          label={'Concluiu o mestrado no PGC ou CAA - UFF ?'}
-                          row
+                        <FormLabel id="labelHasFinishedDoctorateOnUFF">
+                          Concluiu o mestrado no PGC ou CAA - UFF ?
+                        </FormLabel>
+                        <Controller
                           name={'hasFinishedMasterDegreeOnUFF'}
-                          options={[
-                            {
-                              id: 'true',
-                              label: 'Sim',
-                            },
-                            {
-                              id: 'false',
-                              label: 'Não',
-                            },
-                          ]}
+                          control={control}
+                          render={({ field: { onChange, value } }) => (
+                            <RadioGroup
+                              aria-labelledby={'labelHasFinishedDoctorateOnUFF'}
+                              row
+                              name={'hasFinishedMasterDegreeOnUFF'}
+                              value={value}
+                              onChange={onChange}
+                            >
+                              <FormControlLabel value={'true'} control={<Radio />} label={'Sim'} />
+                              <FormControlLabel value={'false'} control={<Radio />} label={'Não'} />
+                            </RadioGroup>
+                          )}
                         />
                       </FormControl>
                     </Grid>
@@ -376,89 +461,13 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes }: Pro
           </Grid>
         </Grid>
       </Grid>
-      <Modal show={isAddCNPQScholarshipOpen} onHide={onModalClose}>
-        <Modal.Header closeButton>
-          <Fields>{cnpqScholarship.id ? 'Editar' : 'Adicionar'} Bolsa de Produtividade CNPQ</Fields>
-        </Modal.Header>
-        <Modal.Body>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="labelCNPQLevel">Nível da Bolsa*</InputLabel>
-                <SelectMui
-                  labelId={'labelCNPQLevel'}
-                  id={'cnpqLevel'}
-                  name={'cnpqLevel'}
-                  label={'Nível da Bolsa*'}
-                  value={cnpqScholarship.levelId || ''}
-                  onChange={event => {
-                    if (event.target.value)
-                      setCNPQScholarship(scholarship => ({
-                        ...scholarship,
-                        levelId: event.target.value as string,
-                      }))
-                  }}
-                >
-                  {cnpqLevels.map(level => (
-                    <MenuItem key={level.id} value={level.id}>
-                      {level.label}
-                    </MenuItem>
-                  ))}
-                </SelectMui>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <DatePicker
-                  format={'DD/MM/YYYY'}
-                  label={'Data de início*'}
-                  value={cnpqScholarship.startedAt}
-                  disableFuture
-                  onChange={(startedAt: Dayjs) => {
-                    setCNPQScholarship(scholarship => ({
-                      ...scholarship,
-                      startedAt,
-                    }))
-                  }}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <DatePicker
-                  format={'DD/MM/YYYY'}
-                  label={'Data de término'}
-                  value={cnpqScholarship.endedAt}
-                  disableFuture
-                  onChange={(endedAt: Dayjs) => {
-                    setCNPQScholarship(scholarship => ({
-                      ...scholarship,
-                      endedAt,
-                    }))
-                  }}
-                />
-              </FormControl>
-            </Grid>
-          </Grid>
-        </Modal.Body>
-        <Modal.Footer>
-          <Tooltip
-            title={'Preencha os campos obrigatórios'}
-            disableHoverListener={checkIfCNPQScholarshipIsValid}
-          >
-            <span>
-              <Button
-                size={'large'}
-                variant={'contained'}
-                disabled={!checkIfCNPQScholarshipIsValid}
-                onClick={() => handleSave()}
-              >
-                Salvar
-              </Button>
-            </span>
-          </Tooltip>
-        </Modal.Footer>
-      </Modal>
+      <CNPQScholarshipsModal
+        cnpqScholarships={cnpqScholarships}
+        setCNPQScholarships={setCNPQScholarships}
+        cnpqLevels={cnpqLevels}
+        isAddCNPQScholarshipOpen={isAddCNPQScholarshipOpen}
+        setIsAddCNPQScholarshipOpen={setIsAddCNPQScholarshipOpen}
+      />
     </Grid>
   )
 }

@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { Button, MainWrapper, toast } from '@components'
+import React, { useEffect, useMemo } from 'react'
+import { Button, MainWrapper, showSavedToast, ToastContainer } from '@components'
 import { Role, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
@@ -10,63 +10,134 @@ import { PageWrapper, Title } from '@styles/index.style'
 import { Grid } from '@mui/material'
 import { FormContainer } from 'react-hook-form-mui'
 import {
-  PersonalInfo,
   AcademicInfo,
-  getInstitutionTypes,
-  getGraduateInfoAndWorkHistory,
-  GraduateWorkHistoriesInfo,
+  Fields,
   getCNPQLevels,
+  getGraduateInfoAndWorkHistory,
+  getInstitutionTypes,
+  GraduateWorkHistoriesInfo,
   InstitutionalLinkInfo,
+  PersonalInfo,
 } from '@modules/WorkHistoryEdit'
 import { getAPIClient } from '../../services/axios'
 import { parseCookies } from 'nookies'
 import { SelectItem } from '@utils/types'
-
-const GRADUATE_API = process.env.GRADUATE_API
+import { showErrorToast } from '@components/Toast'
 
 interface Props {
   graduateInfo: GraduateWorkHistoriesInfo
   institutionTypes: SelectItem[]
   cnpqLevels: SelectItem[]
+  hasCurrentWorkHistory: number
+  hasCurrentCNPQScholarship: number
+  hasPostDoctorate: number
 }
 
-const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => {
-  const [hasCNPQScholarship] = useState<boolean | null>(null)
-  const [hasPostDoctorate] = useState<boolean | null>(null)
+const GraduateInfo = ({
+  graduateInfo,
+  institutionTypes,
+  cnpqLevels,
+  hasCurrentCNPQScholarship,
+  hasPostDoctorate,
+  hasCurrentWorkHistory,
+}: Props) => {
+  const isWorkHistoryPending = graduateInfo.pendingFields.indexOf('workHistory') !== -1
+  const isCNPQScholarshipPending = graduateInfo.pendingFields.indexOf('cnpqScholarship') !== -1
+  const isPostDoctoratePending = graduateInfo.pendingFields.indexOf('postDoctorate') !== -1
 
   const router = useRouter()
 
-  const { user, currentRole } = useAuth()
+  const { currentRole } = useAuth()
 
-  const { graduateId } = router.query
+  // const { graduateId } = router.query
 
   const formContext = useForm({
     defaultValues: useMemo(() => {
-      return graduateInfo
+      return {
+        ...graduateInfo,
+        workHistories: [],
+        hasCurrentWorkHistory,
+        postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
+        hasCurrentCNPQScholarship,
+        hasPostDoctorate,
+        institutionalLinks: [],
+        currentInstitutionalLinks: [],
+        cnpqScholarships: [],
+        currentCNPQScholarships: [],
+      }
     }, [graduateInfo]),
   })
-  const { reset } = formContext
+  const { reset, control } = formContext
+
+  // const [
+  //   hasCurrentWorkHistory,
+  //   institutionalLinks,
+  //   hasCurrentCNPQScholarship,
+  //   hasPostDoctorate,
+  //   currentInstitutionalLinks,
+  // ] = watch([
+  //   'hasCurrentWorkHistory',
+  //   'institutionalLinks',
+  //   'hasCurrentCNPQScholarship',
+  //   'hasPostDoctorate',
+  //   'currentInstitutionalLinks',
+  // ])
+
+  const transformNumberToValue = (n: number) => (n === 1 ? true : n === 0 ? false : undefined)
+
+  // console.log('currentInstitutionalLinks', currentInstitutionalLinks)
 
   useEffect(() => {
-    reset(graduateInfo)
+    reset({
+      ...graduateInfo,
+      postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
+      workHistories: [],
+      hasCurrentWorkHistory: isWorkHistoryPending ? -1 : 1,
+      hasCurrentCNPQScholarship: isCNPQScholarshipPending ? -1 : 1,
+      hasPostDoctorate: isPostDoctoratePending ? -1 : 1,
+      institutionalLinks: [],
+      currentInstitutionalLinks: [],
+      cnpqScholarships: [],
+      currentCNPQScholarships: [],
+    })
   }, [graduateInfo])
 
   const onSend = async data => {
+    console.log('passei aqui', data)
     const {
+      graduateId,
+      graduateName,
       email,
-      successCase,
-      postDoctorateName,
+      postDoctorate,
       postDoctorateType,
-      cnpqId,
+      successCase,
+      cnpqScholarships,
       hasFinishedDoctorateOnUFF,
       hasFinishedMasterDegreeOnUFF,
+      hasCurrentWorkHistory,
+      hasCurrentCNPQScholarship,
+      hasPostDoctorate,
+      institutionalLinks,
+      // currentInstitutionalLinks,
+      // currentCNPQScholarships,
     } = data
 
-    console.warn(data)
-
-    const body: any = {
+    const body = {
+      graduateName,
       email,
       successCase,
+      workHistories: institutionalLinks,
+      cnpqScholarships,
+      postDoctorate: {
+        ...postDoctorate,
+        institution: {
+          ...postDoctorate.institution,
+          typeId: postDoctorateType,
+        },
+      },
+      hasCurrentCNPQScholarship: transformNumberToValue(hasCurrentCNPQScholarship),
+      hasPostDoctorate: transformNumberToValue(hasPostDoctorate),
+      hasCurrentWorkHistory: transformNumberToValue(hasCurrentWorkHistory),
       hasFinishedDoctorateOnUFF: hasFinishedDoctorateOnUFF
         ? hasFinishedDoctorateOnUFF === 'true'
         : graduateInfo?.hasFinishedDoctorateOnUFF,
@@ -74,53 +145,53 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
         ? hasFinishedMasterDegreeOnUFF === 'true'
         : graduateInfo?.hasFinishedMasterDegreeOnUFF,
     }
-    if (hasPostDoctorate)
-      body.postDoctorate =
-        postDoctorateName || postDoctorateType
-          ? { name: postDoctorateName, type: postDoctorateType }
-          : graduateInfo?.postDoctorate
-    if (hasCNPQScholarship) body.cnpqLevelId = cnpqId ?? graduateInfo?.cnpqScholarships.length
-    if (email !== graduateInfo.email) {
-      body.newEmail = email
+
+    const apiClient = getAPIClient()
+
+    try {
+      await apiClient.post(`v1/work-history?graduateId=${graduateId}`, { ...body })
+      showSavedToast()
+    } catch (err) {
+      showErrorToast('Ocorreu algum erro.')
     }
 
-    const myInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(body),
-    }
-
-    const result = await fetch(
-      `${GRADUATE_API}/v1/work-history?graduateId=${graduateId}`,
-      myInit as RequestInit
-    )
-    if (result.status === 201 || result.status === 204) {
-      toast.success('Salvo com sucesso!')
-    } else {
-      toast.error('Ocorreu algum problema.')
-    }
+    // const myInit = {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   credentials: 'include',
+    //   body: JSON.stringify(body),
+    // }
+    //
+    // const result = await fetch(
+    //   `${GRADUATE_API}/v1/work-history?graduateId=${graduateId}`,
+    //   myInit as RequestInit
+    // )
+    // if (result.status === 201 || result.status === 204) {
+    //   toast.success('Salvo com sucesso!')
+    // } else {
+    //   toast.error('Ocorreu algum problema.')
+    // }
   }
 
-  const handleGetOnChangeValue = ({ target }) => {
-    const { value } = target
-    switch (value) {
-      case 'true':
-        return true
-      case 'false':
-        return false
-      default:
-        return null
-    }
-  }
+  // const handleGetOnChangeValue = ({ target }) => {
+  //   const { value } = target
+  //   switch (value) {
+  //     case 'true':
+  //       return true
+  //     case 'false':
+  //       return false
+  //     default:
+  //       return null
+  //   }
+  // }
 
-  const handleSetValue = (event, setFunction) => {
-    const value = handleGetOnChangeValue(event)
-    setFunction(value)
-  }
+  // const handleSetValue = (event, setFunction) => {
+  //   const value = handleGetOnChangeValue(event)
+  //   setFunction(value)
+  // }
 
   return (
     <MainWrapper themeName={Theme.white}>
@@ -138,18 +209,17 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
                   </Grid>
                   <Grid item xs={12}>
                     <InstitutionalLinkInfo
+                      control={control}
                       graduateInfo={graduateInfo}
                       institutionTypes={institutionTypes}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <AcademicInfo
+                      control={control}
                       cnpqLevels={cnpqLevels}
                       graduateInfo={graduateInfo}
-                      currentRole={user?.currentRole}
                       institutionTypes={institutionTypes}
-                      // setHasPostDoctorate={setHasPostDoctorate}
-                      handleSetValue={handleSetValue}
                     />
                   </Grid>
                   <Grid item xs={12} alignSelf={'center'}>
@@ -178,6 +248,7 @@ const GraduateInfo = ({ graduateInfo, institutionTypes, cnpqLevels }: Props) => 
             </Grid>
           </Grid>
         </Grid>
+        <ToastContainer />
       </PageWrapper>
     </MainWrapper>
   )
@@ -205,11 +276,24 @@ export async function getServerSideProps(ctx) {
 
   const [graduateInfo, institutionTypes, cnpqLevels] = await Promise.all(promises)
 
+  const graduateInfoParsed = graduateInfo as GraduateWorkHistoriesInfo
+
+  const getIfHasField = (field: Fields) => {
+    return graduateInfoParsed.pendingFields.includes(field)
+      ? -1
+      : graduateInfoParsed.emptyFields.includes(field)
+      ? 0
+      : 1
+  }
+
   return {
     props: {
       graduateInfo,
       institutionTypes,
       cnpqLevels,
+      hasCurrentCNPQScholarship: getIfHasField(Fields.CNPQ_SCHOLARSHIP),
+      hasPostDoctorate: getIfHasField(Fields.POST_DOCTORATE),
+      hasCurrentWorkHistory: getIfHasField(Fields.WORK_HISTORY),
     },
   }
 }

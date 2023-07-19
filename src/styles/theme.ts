@@ -6,7 +6,11 @@ export const theme = createTheme({
     primary: teal,
     secondary: cyan,
     background: { default: '#121214' },
-    text: {},
+    text: {
+      primary: '#212121',
+      secondary: '#757575',
+    },
+    divider: '#BDBDBD',
   },
   components: {},
 })

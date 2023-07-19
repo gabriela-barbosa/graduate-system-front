@@ -80,17 +80,22 @@ export const Title = styled.h1`
 export const PageWrapper = styled(Grid)`
   padding: 20px 0 50px 50px;
 `
+export const Label = styled.p`
+  padding-top: 5px;
+  padding-bottom: 15px;
+  font-size: 16px;
+  line-height: 24px;
 
-export const Label = styled.label`
-  position: absolute;
-  top: 16px;
-  left: 20px;
-  transition: all 0.3s ease;
-  opacity: 0;
-  color: ${theme.palette.primary.main};
-  font-family: ${fontFamily};
-  font-size: 12px;
-  line-height: 14px;
+  color: ${({ color = theme.palette.text.secondary }) => color};
+`
+export const ErrorMessage = styled.p`
+  padding-left: 24px;
+  padding-top: 5px;
+  padding-bottom: 15px;
+  font-size: 15px;
+  line-height: 24px;
+
+  color: #cb0000;
 `
 
 export const Error = styled.p`
@@ -119,13 +124,10 @@ const statusColor = {
   UNKNOWN: '#808080D3',
 }
 
-export const Fields = styled.h1`
+export const Fields = styled.p`
   padding-top: 5px;
   padding-bottom: 15px;
-  font-family: ${fontFamily};
-  font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 24px;
 
   color: ${({ status }: { status?: string }) =>

@@ -2,8 +2,12 @@ import { Box, FormControl, Grid } from '@mui/material'
 import { Subtitle } from './index.style'
 import { Input } from '@components'
 import React from 'react'
+import { useAuth } from '@context/AuthProvider'
+import { Role } from '@utils/enums'
 
 export const PersonalInfo = () => {
+  const { currentRole } = useAuth()
+  const isCurrentUserGraduate = currentRole === Role.GRADUATE
   const getEmailErrorMessageByType = type => {
     switch (type) {
       case 'pattern':
@@ -33,24 +37,19 @@ export const PersonalInfo = () => {
                 <Input
                   label={'E-mail'}
                   name={'email'}
-                  parseError={({ type }) => {
-                    return getEmailErrorMessageByType(type)
-                  }}
+                  parseError={({ type }) => getEmailErrorMessageByType(type)}
                   required
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={11}>
-              <FormControl fullWidth>
-                <Input
-                  label={'Casos de Sucesso'}
-                  name={'successCase'}
-                  rows={4}
-                  maxRows={6}
-                  multiline
-                />
-              </FormControl>
-            </Grid>
+
+            {!isCurrentUserGraduate && (
+              <Grid item xs={11}>
+                <FormControl fullWidth>
+                  <Input label={'Casos de Sucesso'} name={'successCase'} rows={4} multiline />
+                </FormControl>
+              </Grid>
+            )}
           </Grid>
         </Box>
       </Grid>

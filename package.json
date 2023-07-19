@@ -32,6 +32,7 @@
     "bootstrap": "^5.2.2",
     "dayjs": "^1.11.8",
     "eslint-config-next": "^13.4.6",
+    "lodash": "^4.17.21",
     "next": "^13.4.6",
     "nextjs-progressbar": "^0.0.16",
     "nookies": "^2.5.2",

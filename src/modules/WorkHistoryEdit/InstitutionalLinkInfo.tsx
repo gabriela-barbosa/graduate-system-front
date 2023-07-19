@@ -9,23 +9,27 @@ import {
   MenuItem,
   Radio,
   RadioGroup,
-  Tooltip,
 } from '@mui/material'
 import { Subtitle } from './index.style'
-import { Button, SelectMui, DatePicker, InputMui, ActionIcon } from '@components'
+import { Button, SelectMui, ActionIcon, Paper } from '@components'
 import React, { useState } from 'react'
 import { AddRounded } from '@mui/icons-material'
 import GraduatesTable from '@modules/Egressos/GraduatesTable'
-import { Fields } from '@styles/index.style'
-import { Modal } from 'react-bootstrap'
+import { ErrorMessage, Fields, Label } from '@styles/index.style'
 import { GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
 import { SelectItem } from '@utils/types'
 import dayjs, { Dayjs } from 'dayjs'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
+import { Control, Controller, useController } from 'react-hook-form'
+import { InstitutionalLinkModal } from '@modules/WorkHistoryEdit/InstitutionalLinkModal'
+import { Role } from '@utils/enums'
+import { useAuth } from '@context/AuthProvider'
 
 interface Props {
   graduateInfo: GraduateWorkHistoriesInfo
   institutionTypes: SelectItem[]
+  control: Control<any>
+  // institutionalLinks: InstitutionalLinkInfoType[]
   // setInstitutionalLinks: (institutionalLink: InstitutionalLinkInfoType) => void
 }
 
@@ -38,33 +42,65 @@ interface InstitutionalLinkInfoType {
   endedAt?: Dayjs | null
 }
 
-export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props) => {
+export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control }: Props) => {
   const { workHistories } = graduateInfo
+  const { currentRole } = useAuth()
+  const isCurrentUserGraduate = currentRole === Role.GRADUATE
 
-  const institutionalLinkDefaultState: InstitutionalLinkInfoType = {
-    id: null,
-    position: null,
-    institutionTypeId: null,
-    institutionName: null,
-    startedAt: null,
-    endedAt: null,
-  }
   const [isAddWorkHistoryOpen, setIsAddWorkHistoryOpen] = useState<boolean>(false)
-  const [institutionalLink, setInstitutionalLink] = useState<InstitutionalLinkInfoType>({
-    ...institutionalLinkDefaultState,
-  })
-  const [hasInstitutionalLink, setHasInstitutionalLink] = useState<number>(1)
 
-  const [institutionalLinks, setInstitutionalLinks] = useState<InstitutionalLinkInfoType[]>([])
-  const [currentInstitutionalLinks, setCurrentInstitutionalLinks] = useState<any[]>([])
+  const [currentInstitutionalLinksSelected, setCurrentInstitutionalLinksSelected] = useState<
+    number[]
+  >([])
+
+  const {
+    field: { onChange: setInstitutionalLinks, value: institutionalLinks },
+  } = useController({ control, name: 'institutionalLinks' })
+
+  const {
+    field: { onChange: setCurrentInstitutionalLinks },
+  } = useController({ control, name: 'currentInstitutionalLinks' })
+
+  const currentInstitutionalLinksOptions = [
+    ...workHistories.map(({ institution, ...rest }) => ({
+      ...rest,
+      institutionName: institution.name,
+      institutionTypeId: institution.typeId,
+    })),
+    ...institutionalLinks,
+  ].filter(link => !link.endedAt || link.endedAt === 'null')
+
+  const {
+    field: { value: hasCurrentWorkHistory },
+    fieldState: { error },
+  } = useController({
+    control,
+    name: 'hasCurrentWorkHistory',
+    rules: {
+      validate: value => {
+        if (value === 1)
+          return (
+            currentInstitutionalLinksSelected?.length === currentInstitutionalLinksOptions?.length
+          )
+        if (value === 0) return currentInstitutionalLinksOptions?.length === 0
+        return true
+      },
+    },
+  })
+
+  // useEffect(() => {
+  //   console.log('useEffect', currentInstitutionalLinksOptions)
+  //   setCurrentInstitutionalLinks(currentInstitutionalLinksOptions[0])
+  //   setCurrentInstitutionalLinksSelected(currentInstitutionalLinksOptions.map((wh, index) => index))
+  // }, [])
 
   const rows = [
     ...institutionalLinks.map((link, index) => [
-      { body: <Fields status={'UPDATED'}>{link.institutionName}</Fields> },
+      { body: <Fields status={'UPDATED'}>{link.institution.name}</Fields> },
       {
         body: (
           <Fields status={'UPDATED'}>
-            {institutionTypes.find(type => type.id === link.institutionTypeId)?.label}
+            {institutionTypes.find(type => type.id === link.institution.typeId)?.label}
           </Fields>
         ),
       },
@@ -83,7 +119,10 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
         body: (
           <ActionIcon
             onClick={() => {
-              setInstitutionalLinks(linkList => linkList.filter((_, i) => i !== index))
+              setCurrentInstitutionalLinks([])
+              setCurrentInstitutionalLinksSelected([])
+              setInstitutionalLinks(institutionalLinks.filter((item, i) => i !== index))
+              // setInstitutionalLinks(linkList => linkList.filter((_, i) => i !== index))
             }}
           >
             <DeleteForeverRoundedIcon />
@@ -95,13 +134,16 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
     ...workHistories.map(wh => [
       { body: wh.institution.name },
       { body: wh.institution.typeName },
-      { body: wh.position },
+      { body: wh.position ?? '-' },
       {
         body:
           !wh.startedAt || wh.startedAt === 'null' ? '-' : dayjs(wh.startedAt).format('DD/MM/YYYY'),
       },
       {
         body: !wh.endedAt || wh.endedAt === 'null' ? '-' : dayjs(wh.endedAt).format('DD/MM/YYYY'),
+      },
+      {
+        body: '-',
       },
     ]),
   ]
@@ -125,26 +167,6 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
     { name: 'Ações', width: '10%' },
   ]
 
-  const currentInstitutionalLinksOptions = [
-    ...workHistories.map(({ institution, ...rest }) => ({
-      ...rest,
-      institutionName: institution.name,
-      institutionTypeId: institution.typeId,
-    })),
-    ...institutionalLinks,
-  ].filter(link => !link.endedAt || link.endedAt === 'null')
-
-  const onModalClose = () => {
-    setIsAddWorkHistoryOpen(false)
-    setInstitutionalLink({ ...institutionalLinkDefaultState })
-  }
-
-  const handleSave = () => {
-    console.log('workHistories', workHistories)
-    setInstitutionalLinks(links => [...links, institutionalLink])
-    onModalClose()
-  }
-
   // const editInstitutionalLink = selectedInstitution => {
   //   const { id, institution, position, startedAt, endedAt } = selectedInstitution
   //   console.log(selectedInstitution)
@@ -158,12 +180,6 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
   //   })
   //   setIsAddWorkHistoryOpen(true)
   // }
-
-  const checkIfInstitutionalLinkInfoIsValid = !!(
-    institutionalLink.institutionTypeId &&
-    institutionalLink.institutionName &&
-    institutionalLink.startedAt
-  )
 
   const getSelectText = institutionItem => {
     return `${institutionItem.institutionName} -${
@@ -183,7 +199,7 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
             sx={{ marginLeft: '20px' }}
             size={'large'}
             variant="contained"
-            // disabled={hasInstitutionalLink === -1 || hasInstitutionalLink === 0}
+            // disabled={hasCurrentWorkHistory === -1 || hasCurrentWorkHistory === 0}
             onClick={() => setIsAddWorkHistoryOpen(true)}
           >
             Adicionar
@@ -209,42 +225,56 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
               {/*    <Fields>Histórico</Fields> */}
               {/*  </AccordionSummary> */}
               {/*  <AccordionDetails> */}
-
               {rows?.length ? (
                 <GraduatesTable columns={columns} rows={rows} />
               ) : (
-                <Box>
-                  <Fields>Não há histórico vínculos institucionais.</Fields>
-                </Box>
+                <Paper variant="outlined" sx={{ borderRadius: '8px', borderStyle: 'dashed' }}>
+                  <Box sx={{ padding: 2 }}>
+                    <Label>Não há histórico vínculos institucionais.</Label>
+                  </Box>
+                </Paper>
               )}
               {/*  </AccordionDetails> */}
               {/* </Accordion> */}
             </Grid>
             <Grid item xs={12}>
               <FormControl>
-                <FormLabel id="labelHasInstitutionalLink">
+                <FormLabel id="labelHasWorkHistory">
                   Possui vínculo institucional atualmente?
                 </FormLabel>
-                <RadioGroup
-                  row
-                  aria-labelledby={'labelHasInstitutionalLink'}
-                  name={'hasInstitutionalLink'}
-                  value={hasInstitutionalLink}
-                  onChange={({ target }) => {
-                    const value = parseInt(target.value)
-                    setHasInstitutionalLink(value)
-                    if (value !== 1) {
-                      setCurrentInstitutionalLinks([])
-                    }
-                  }}
-                >
-                  <FormControlLabel value={1} control={<Radio />} label={'Sim'} />
-                  <FormControlLabel value={0} control={<Radio />} label={'Não'} />
-                  <FormControlLabel value={-1} control={<Radio />} label={'Não sei'} />
-                </RadioGroup>
+                <Controller
+                  name={'hasCurrentWorkHistory'}
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <RadioGroup
+                      row
+                      aria-labelledby={'labelHasWorkHistory'}
+                      name={'hasCurrentWorkHistory'}
+                      value={value}
+                      onChange={event => {
+                        const value = parseInt(event.target.value)
+                        onChange(value)
+                        if (value !== 1) {
+                          setCurrentInstitutionalLinks([])
+                          setCurrentInstitutionalLinksSelected([])
+                        }
+                      }}
+                    >
+                      <FormControlLabel value={1} control={<Radio />} label={'Sim'} />
+                      <FormControlLabel value={0} control={<Radio />} label={'Não'} />
+                      <FormControlLabel
+                        hidden={isCurrentUserGraduate}
+                        value={-1}
+                        control={<Radio />}
+                        label={'Não sei'}
+                      />
+                    </RadioGroup>
+                  )}
+                />
               </FormControl>
             </Grid>
-            {hasInstitutionalLink === 1 &&
+
+            {hasCurrentWorkHistory === 1 &&
               (currentInstitutionalLinksOptions?.length ? (
                 <Grid item xs={12}>
                   <FormControl fullWidth>
@@ -254,23 +284,33 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
                       id={'currentInstitutions'}
                       name={'currentInstitutions'}
                       label={'Vínculos atuais'}
-                      value={currentInstitutionalLinks}
-                      renderValue={(selected: never[]) =>
-                        selected
+                      value={currentInstitutionalLinksSelected}
+                      renderValue={(selected: never[]) => {
+                        return selected
                           ?.map(item => getSelectText(currentInstitutionalLinksOptions[item]))
                           .join(', ')
-                      }
+                      }}
                       multiple
-                      onChange={({ target }) => {
-                        const { value } = target
-                        setCurrentInstitutionalLinks(
+                      onChange={({ target: { value } }) => {
+                        console.log('onChange', value)
+
+                        const institutionalLinksUpdated = (value as number[]).map(
+                          item => currentInstitutionalLinksOptions[item]
+                        )
+
+                        console.log('institutionalLinksUpdated', institutionalLinksUpdated)
+                        setCurrentInstitutionalLinks(institutionalLinksUpdated)
+
+                        setCurrentInstitutionalLinksSelected(
                           (typeof value === 'string' ? value.split(',') : value) as never
                         )
                       }}
                     >
                       {currentInstitutionalLinksOptions.map((institutionItem, index) => (
                         <MenuItem key={index} value={index}>
-                          <Checkbox checked={currentInstitutionalLinks.indexOf(index) > -1} />
+                          <Checkbox
+                            checked={currentInstitutionalLinksSelected.indexOf(index) > -1}
+                          />
                           {getSelectText(institutionItem)}
                         </MenuItem>
                       ))}
@@ -279,124 +319,24 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes }: Props)
                 </Grid>
               ) : (
                 <Grid item xs={12}>
-                  <Fields>Adicione um vínculo institucional sem data de término.</Fields>
+                  <Label color={'#cb0000'}>
+                    Adicione um vínculo institucional sem data de término e selecione.
+                  </Label>
                 </Grid>
               ))}
-            <Modal show={isAddWorkHistoryOpen} onHide={onModalClose}>
-              <Modal.Header closeButton>
-                <Fields>
-                  {institutionalLink.id ? 'Editar' : 'Adicionar'} Vínculo Institucional
-                </Fields>
-              </Modal.Header>
-              <Modal.Body>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <InputMui
-                        value={institutionalLink.institutionName}
-                        onChange={event =>
-                          setInstitutionalLink({
-                            ...institutionalLink,
-                            institutionName: event.target.value,
-                          })
-                        }
-                        name={'institutionName'}
-                        label={'Nome da instituição*'}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <InputLabel id="institutionType">Tipo de Instituição*</InputLabel>
-                      <SelectMui
-                        labelId={'institutionTypeLabel'}
-                        id={'institutionType'}
-                        name={'institutionType'}
-                        label={'Tipo de Instituição*'}
-                        value={institutionalLink.institutionTypeId || ''}
-                        onChange={event => {
-                          if (event.target.value)
-                            setInstitutionalLink({
-                              ...institutionalLink,
-                              institutionTypeId: event.target.value as string,
-                            })
-                        }}
-                      >
-                        {institutionTypes.map(institutionItem => (
-                          <MenuItem key={institutionItem.id} value={institutionItem.id}>
-                            {institutionItem.label}
-                          </MenuItem>
-                        ))}
-                      </SelectMui>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <InputMui
-                        value={institutionalLink.position}
-                        onChange={event =>
-                          setInstitutionalLink({
-                            ...institutionalLink,
-                            position: event.target.value,
-                          })
-                        }
-                        name={'position'}
-                        label={'Cargo'}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <DatePicker
-                        format={'DD/MM/YYYY'}
-                        label={'Data de início*'}
-                        value={institutionalLink.startedAt}
-                        disableFuture
-                        onChange={(startedAt: Dayjs) => {
-                          setInstitutionalLink({
-                            ...institutionalLink,
-                            startedAt,
-                          })
-                        }}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <DatePicker
-                        format={'DD/MM/YYYY'}
-                        label={'Data de término'}
-                        value={institutionalLink.endedAt}
-                        disableFuture
-                        onChange={(endedAt: Dayjs) => {
-                          setInstitutionalLink({
-                            ...institutionalLink,
-                            endedAt,
-                          })
-                        }}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Modal.Body>
-              <Modal.Footer>
-                <Tooltip
-                  title={'Preencha os campos obrigatórios'}
-                  disableHoverListener={checkIfInstitutionalLinkInfoIsValid}
-                >
-                  <span>
-                    <Button
-                      size={'large'}
-                      variant={'contained'}
-                      disabled={!checkIfInstitutionalLinkInfoIsValid}
-                      onClick={() => handleSave()}
-                    >
-                      Salvar
-                    </Button>
-                  </span>
-                </Tooltip>
-              </Modal.Footer>
-            </Modal>
+            {error && (
+              <ErrorMessage>
+                Selecione os vínculos institucionais atuais e/ou adicione uma data de término nos
+                não selecionados.
+              </ErrorMessage>
+            )}
+            <InstitutionalLinkModal
+              institutionalLinks={institutionalLinks}
+              setInstitutionalLinks={setInstitutionalLinks}
+              institutionTypes={institutionTypes}
+              isAddWorkHistoryOpen={isAddWorkHistoryOpen}
+              setIsAddWorkHistoryOpen={setIsAddWorkHistoryOpen}
+            />
           </Grid>
         </Box>
       </Grid>

@@ -28,25 +28,30 @@ interface InstitutionInfo {
 
 interface PostDoctorateInfo {
   id: string
-  name: string
   institution: InstitutionInfo
   startedAt: string
-  endedAt: string
+  endedAt: string | null
 }
 
 interface CNPQScholarshipInfo {
   id: string
   levelId: string
   startedAt: string
-  endedAt: string
+  endedAt: string | null
 }
 
 interface WorkHistoryInfo {
   id: string
   institution: InstitutionInfo
   startedAt: string
-  endedAt: string
+  endedAt: string | null
   position?: string
+}
+
+enum Fields {
+  WORK_HISTORY = 'workHistory',
+  CNPQ_SCHOLARSHIP = 'cnpqScholarship',
+  POST_DOCTORATE = 'postDoctorate',
 }
 
 interface GraduateWorkHistoriesInfo {
@@ -59,6 +64,8 @@ interface GraduateWorkHistoriesInfo {
   successCase?: string
   cnpqScholarships: CNPQScholarshipInfo[]
   workHistories: WorkHistoryInfo[]
+  pendingFields: string[]
+  emptyFields: string[]
 }
 
 interface CNPQLevelInfo {
@@ -74,3 +81,5 @@ export type {
   CNPQLevelInfo,
   WorkHistoryInfo,
 }
+
+export { Fields }

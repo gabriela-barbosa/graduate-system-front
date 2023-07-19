@@ -15,19 +15,20 @@ import { Box, FormControl } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { Password } from '@components/Input'
 import { redirectAccordingRole } from '@utils/functions'
+import Head from 'next/head'
 
 styled(FormInputGroup)`
   width: 320px;
 `
 const Home = () => {
   const formContext = useForm()
-  const { user, signIn } = useAuth()
+  const { user, signIn, currentRole } = useAuth()
 
   const router = useRouter()
 
   useEffect(() => {
-    if (user) redirectAccordingRole(user, router)
-  }, [user])
+    if (currentRole && user) redirectAccordingRole(currentRole, user.id, router)
+  }, [currentRole])
 
   const onSubmit = async body => {
     await signIn(body)
@@ -46,6 +47,9 @@ const Home = () => {
 
   return (
     <>
+      <Head>
+        <title>Sistema Egressos</title>
+      </Head>
       <MainWrapper hasHeader={false} themeName={Theme.gray} hasContent={false}>
         <Image
           alt={'Fotografia do IC UFF'}

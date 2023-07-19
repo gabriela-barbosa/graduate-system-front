@@ -43,7 +43,7 @@ const getFilledFilters = (filters?: ListGraduatesFilters) => {
 }
 
 interface GraduatesListDetails {
-  graduates: any[] | NonNullable<unknown>
+  graduates: any[]
   meta: PaginationType
 }
 
@@ -65,7 +65,7 @@ const getGraduates = async (
   } catch (error) {
     toast.error('Erro ao buscar egressos.')
     return {
-      graduates: {},
+      graduates: [],
       meta: {} as PaginationType,
     }
   }
@@ -135,7 +135,7 @@ const GraduateList = ({ meta, graduates, institutionTypes }) => {
     { name: 'Editar', width: '10%' },
   ]
 
-  const rows = graduatesList.map(graduate => {
+  const rows = graduatesList?.map(graduate => {
     return [
       {
         body: graduate.name,
@@ -274,9 +274,10 @@ export async function getServerSideProps(ctx) {
 
   const { graduates, meta } = graduatesResponse as GraduatesListDetails
 
+  console.log(graduates)
   return {
     props: {
-      graduates,
+      graduates: graduates ?? [],
       meta,
       institutionTypes,
     },

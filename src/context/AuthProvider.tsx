@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
       const { data } = await apiClient.post<User>('v1/user/current_role', { currentRole })
       const currentUser = { ...user, currentRole: data.currentRole } as User
       setUser(currentUser)
-      await redirectAccordingRole(currentUser, router)
+      await redirectAccordingRole(currentRole, currentUser.id, router)
     } catch (error) {}
   }
 
@@ -64,6 +64,7 @@ const AuthProvider = ({ children }) => {
       credentials: 'include',
     }
     await fetch(`${GRADUATE_API}/v1/logout`, myInit)
+    setCookie(undefined, USER_TOKEN_NAME, '')
     await router.push('/')
     setUser(null)
   }
@@ -93,7 +94,8 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const { [USER_TOKEN_NAME]: token } = parseCookies()
 
-    if (token) {
+    if (token || token === '') {
+      console.log('entrei no if token', token)
       getUser()
     }
   }, [])

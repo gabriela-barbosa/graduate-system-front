@@ -1,13 +1,16 @@
-import { User } from '@context/AuthContext'
 import { Role } from '@utils/enums'
 import { NextRouter } from 'next/router'
-import { RolesByPaths } from '@utils/types'
 
-export const redirectAccordingRole = async (user: User, router: NextRouter) => {
-  const currentRole = user?.currentRole
+export const redirectAccordingRole = async (
+  currentRole: Role,
+  userId: string,
+  router: NextRouter
+) => {
+  console.log(currentRole)
   if (currentRole === Role.PROFESSOR || currentRole === Role.ADMIN) {
+    console.log('entrei no if currentRole', currentRole)
     await router.push('/egressos')
     return
   }
-  if (currentRole === Role.GRADUATE) await router.push(`/egressos/${user.id}`)
+  if (currentRole === Role.GRADUATE) await router.push(`/egressos/${userId}`)
 }

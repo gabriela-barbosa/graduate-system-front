@@ -41,7 +41,6 @@ const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props)
   const handleSubmit = async event => {
     event.preventDefault()
     const { name, email, roles } = event.target
-    console.log(roles.value)
     const user = {
       id,
       name: name.value,

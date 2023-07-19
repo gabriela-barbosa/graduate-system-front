@@ -9,7 +9,7 @@ const RoutingComponent = ({ Component, pageProps }) => {
   const router = useRouter()
 
   const allowPage = () => {
-    console.log('passei aqui', router.pathname, currentRole)
+    console.log('allowPage', currentRole)
     if (router.pathname.startsWith('/')) return true
     if (
       router.pathname.match(

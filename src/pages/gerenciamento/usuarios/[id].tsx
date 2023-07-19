@@ -58,7 +58,6 @@ const UserDetail = () => {
         if (currentUser.graduate?.hasFinishedMasterDegreeOnUFF === null) {
           currentUser.graduate.hasFinishedMasterDegreeOnUFF = 'unknown'
         }
-        console.log(currentUser)
         return currentUser
       }
     }, [user]),

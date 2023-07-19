@@ -11,6 +11,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { FormControl, IconButton, InputLabel, MenuItem } from '@mui/material'
 import { SelectMui } from '@components'
+import Head from 'next/head'
 
 const MainHeader: React.FC = () => {
   const { user, currentRole, logout, updateCurrentRole } = useAuth()
@@ -20,6 +21,9 @@ const MainHeader: React.FC = () => {
 
   return (
     <Header>
+      <Head>
+        <title>Sistema Egressos</title>
+      </Head>
       <Cabecalho>
         <Grid container spacing={2}>
           <Grid xs alignSelf="center">
