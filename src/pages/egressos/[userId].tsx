@@ -109,7 +109,6 @@ const GraduateInfo = ({
       graduateName,
       email,
       postDoctorate,
-      postDoctorateType,
       successCase,
       cnpqScholarships,
       hasFinishedDoctorateOnUFF,
@@ -128,13 +127,7 @@ const GraduateInfo = ({
       successCase,
       workHistories: institutionalLinks,
       cnpqScholarships,
-      postDoctorate: {
-        ...postDoctorate,
-        institution: {
-          ...postDoctorate.institution,
-          typeId: postDoctorateType,
-        },
-      },
+      postDoctorate: hasPostDoctorate === 1 ? postDoctorate : null,
       hasCurrentCNPQScholarship: transformNumberToValue(hasCurrentCNPQScholarship),
       hasPostDoctorate: transformNumberToValue(hasPostDoctorate),
       hasCurrentWorkHistory: transformNumberToValue(hasCurrentWorkHistory),
@@ -274,7 +267,17 @@ export async function getServerSideProps(ctx) {
     getCNPQLevels(apiClient),
   ]
 
-  const [graduateInfo, institutionTypes, cnpqLevels] = await Promise.all(promises)
+  const response = await Promise.all(promises)
+
+  const someResult = response.some(item => 'response' in item && item.response?.status === 403)
+  if (someResult)
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  const [graduateInfo, institutionTypes, cnpqLevels] = response
 
   const graduateInfoParsed = graduateInfo as GraduateWorkHistoriesInfo
 

@@ -1,12 +1,12 @@
 import { toast } from '@components'
-import { AxiosInstance } from 'axios'
+import { AxiosError, AxiosInstance } from 'axios'
 import { CNPQLevelInfo, GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
 import { SelectItem } from '@utils/types'
 
 export const getGraduateInfoAndWorkHistory = async (
   apiClient: AxiosInstance,
   graduateId: string
-): Promise<GraduateWorkHistoriesInfo> => {
+): Promise<GraduateWorkHistoriesInfo | AxiosError> => {
   try {
     const { data } = await apiClient.get<GraduateWorkHistoriesInfo>(
       `/v1/work-history?userId=${graduateId}`
@@ -18,7 +18,9 @@ export const getGraduateInfoAndWorkHistory = async (
   }
 }
 
-export const getInstitutionTypes = async (apiClient: AxiosInstance): Promise<SelectItem[]> => {
+export const getInstitutionTypes = async (
+  apiClient: AxiosInstance
+): Promise<SelectItem[] | AxiosError> => {
   try {
     const { data } = await apiClient.get(`/v1/institution/type`)
 
@@ -32,7 +34,9 @@ export const getInstitutionTypes = async (apiClient: AxiosInstance): Promise<Sel
   }
 }
 
-export const getCNPQLevels = async (apiClient: AxiosInstance): Promise<SelectItem[]> => {
+export const getCNPQLevels = async (
+  apiClient: AxiosInstance
+): Promise<SelectItem[] | AxiosError> => {
   try {
     const { data } = await apiClient.get<CNPQLevelInfo[]>(`/v1/cnpq_levels`)
 
@@ -46,7 +50,7 @@ export const getCNPQLevels = async (apiClient: AxiosInstance): Promise<SelectIte
   }
 }
 
-export const getCourses = async (apiClient: AxiosInstance): Promise<SelectItem[]> => {
+export const getCourses = async (apiClient: AxiosInstance): Promise<SelectItem[] | AxiosError> => {
   const { data, status } = await apiClient.get(`/v1/courses`)
   if (status >= 400 && status < 600) {
     toast.error('Erro ao buscar cursos')

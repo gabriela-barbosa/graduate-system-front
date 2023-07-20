@@ -16,8 +16,10 @@ import { Input } from '@components'
 import { Controller } from 'react-hook-form'
 import { getAPIClient } from '../../services/axios'
 import { SelectItem } from '@utils/types'
+import { useRouter } from 'next/router'
 
 const GraduateInfo = ({ control }) => {
+  const router = useRouter()
   const [institutionTypes, setInstitutionTypes] = useState<SelectItem[]>([])
   const [cnpqLevels, setCNPQLevels] = useState<SelectItem[]>([])
   const [, setCourses] = useState<SelectItem[]>([])
@@ -30,10 +32,23 @@ const GraduateInfo = ({ control }) => {
   // const { hasPostDoctorate, hasCNPQScholarship } = hasObject
   const apiClient = getAPIClient()
 
+  const redirectToLoginIfError = response => {
+    if ('response' in response) router.push('/')
+  }
+
   useEffect(() => {
-    getInstitutionTypes(apiClient).then(types => setInstitutionTypes(types))
-    getCNPQLevels(apiClient).then(levels => setCNPQLevels(levels))
-    getCourses(apiClient).then(courses => setCourses(courses))
+    getInstitutionTypes(apiClient).then(response => {
+      redirectToLoginIfError(response)
+      setInstitutionTypes(response as SelectItem[])
+    })
+    getCNPQLevels(apiClient).then(response => {
+      redirectToLoginIfError(response)
+      setCNPQLevels(response as SelectItem[])
+    })
+    getCourses(apiClient).then(response => {
+      redirectToLoginIfError(response)
+      setCourses(response as SelectItem[])
+    })
   }, [])
 
   return (

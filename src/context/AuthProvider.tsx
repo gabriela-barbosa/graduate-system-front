@@ -118,7 +118,7 @@ const AuthProvider = ({ children }) => {
       setCookie(undefined, USER_TOKEN_NAME, token)
       api.defaults.headers.Cookie = `${USER_TOKEN_NAME}=${token}`
       setUser(user)
-      if (currentRole === Role.PROFESSOR || currentRole === Role.ADMIN) {
+      if (user.currentRole === Role.PROFESSOR || user.currentRole === Role.ADMIN) {
         await router.push('/egressos')
       } else {
         await router.push(`/egressos/${user.id}`)

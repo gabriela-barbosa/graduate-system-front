@@ -71,7 +71,14 @@ const getGraduates = async (
   }
 }
 
-const GraduateList = ({ meta, graduates, institutionTypes }) => {
+interface Props {
+  graduates: any[]
+  institutionTypes: any[]
+  meta: any
+}
+
+const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) => {
+  console.log('crlhhhhhhhhhhh')
   const apiClient = getAPIClient()
 
   const [graduatesList, setGraduatesList] = useState(graduates)
@@ -255,33 +262,51 @@ const GraduateList = ({ meta, graduates, institutionTypes }) => {
   )
 }
 
-export async function getServerSideProps(ctx) {
-  const apiClient = getAPIClient(ctx)
-  const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
-
-  if (!token) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
-  const promises = [getGraduates(apiClient), getInstitutionTypes(apiClient)]
-
-  const [graduatesResponse, institutionTypes] = await Promise.all(promises)
-
-  const { graduates, meta } = graduatesResponse as GraduatesListDetails
-
-  console.log(graduates)
-  return {
-    props: {
-      graduates: graduates ?? [],
-      meta,
-      institutionTypes,
-    },
-  }
-}
+// export async function getServerSideProps(ctx) {
+//   console.log('entrei no server side')
+//
+//   const apiClient = getAPIClient(ctx)
+//
+//   const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
+//   console.log('token', token)
+//   if (!token) {
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false,
+//       },
+//     }
+//   }
+//
+//   const promises = [getGraduates(apiClient), getInstitutionTypes(apiClient)]
+//
+//   console.log('criei promises')
+//
+//   const responses = await Promise.all(promises)
+//
+//   console.log('retornei promises')
+//
+//   const someResult = responses.some(item => 'response' in item && item.response?.status === 403)
+//   if (someResult)
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false,
+//       },
+//     }
+//
+//   const [graduatesResponse, institutionTypes] = responses
+//
+//   const { graduates, meta } = graduatesResponse as GraduatesListDetails
+//
+//   console.log(graduates)
+//   return {
+//     props: {
+//       graduates: graduates ?? [],
+//       meta,
+//       institutionTypes,
+//     },
+//   }
+// }
 
 export default GraduateList

@@ -61,14 +61,9 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
     field: { onChange: setCurrentInstitutionalLinks },
   } = useController({ control, name: 'currentInstitutionalLinks' })
 
-  const currentInstitutionalLinksOptions = [
-    ...workHistories.map(({ institution, ...rest }) => ({
-      ...rest,
-      institutionName: institution.name,
-      institutionTypeId: institution.typeId,
-    })),
-    ...institutionalLinks,
-  ].filter(link => !link.endedAt || link.endedAt === 'null')
+  const currentInstitutionalLinksOptions = [...workHistories, ...institutionalLinks].filter(
+    link => !link.endedAt || link.endedAt === 'null'
+  )
 
   const {
     field: { value: hasCurrentWorkHistory },
@@ -182,7 +177,8 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
   // }
 
   const getSelectText = institutionItem => {
-    return `${institutionItem.institutionName} -${
+    console.warn('select text', institutionItem)
+    return `${institutionItem.institution.name} -${
       institutionItem.position ? ` ${institutionItem.position} -` : ''
     } ${(typeof institutionItem.startedAt === 'string'
       ? dayjs(institutionItem.startedAt)

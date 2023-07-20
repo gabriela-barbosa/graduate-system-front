@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { Subtitle } from './index.style'
 import React, { useState } from 'react'
-import { ActionIcon, Button, DatePicker, InputMui, Paper, Select, SelectMui } from '@components'
+import { ActionIcon, Button, DatePicker, InputMui, Paper, SelectMui } from '@components'
 import { GraduateWorkHistoriesInfo, Option } from './types'
 import { Role } from '@utils/enums'
 import { SelectItem } from '@utils/types'
@@ -322,6 +322,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                         <InputMui
                           label={'Nome da instituição'}
                           name={'postDoctorate.name'}
+                          disabled={hasPostDoctorate !== 1}
                           // disabled={hasPostDoctorate !== 1}
                           value={value}
                           onChange={value => {
@@ -340,14 +341,38 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                 <Grid item xs={1} />
                 <Grid item xs={5}>
                   <FormControl fullWidth>
-                    <Select
-                      disabled={hasPostDoctorate !== 1}
-                      name={'postDoctorateType'}
-                      label={'Tipo da instituição'}
-                      options={institutionTypes}
-                      parseError={() => 'Campo obrigatório.'}
-                      required={hasPostDoctorate === 1}
+                    <InputLabel htmlFor={'labelPostDocType'}>Tipo da Instituição</InputLabel>
+                    <Controller
+                      control={control}
+                      name={'postDoctorate.institution.typeId'}
+                      rules={{
+                        required: hasPostDoctorate === 1,
+                        validate: value => hasPostDoctorate !== 1 || value !== 0,
+                      }}
+                      render={({ field: { value, ...rest } }) => (
+                        <SelectMui
+                          {...rest}
+                          value={value ?? 0}
+                          label={'Tipo da Instituição'}
+                          labelId={'labelPostDocType'}
+                          disabled={hasPostDoctorate !== 1}
+                        >
+                          {institutionTypes.map(type => (
+                            <MenuItem key={type.id} value={type.id}>
+                              {type.label}
+                            </MenuItem>
+                          ))}
+                        </SelectMui>
+                      )}
                     />
+                    {/* <Select */}
+                    {/*  disabled={hasPostDoctorate !== 1} */}
+                    {/*  name={'postDoctorateType'} */}
+                    {/*  label={'Tipo da instituição'} */}
+                    {/*  options={institutionTypes} */}
+                    {/*  parseError={() => 'Campo obrigatório.'} */}
+                    {/*  required={hasPostDoctorate === 1} */}
+                    {/* /> */}
                   </FormControl>
                 </Grid>
                 <Grid item xs={5}>
