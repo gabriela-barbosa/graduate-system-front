@@ -50,7 +50,7 @@ const GraduateList = ({ columns, rows }: Props) => {
         </TableHeader>
 
         <TableBody>
-          {rows.map((row, index) => (
+          {rows?.map((row, index) => (
             <TableRow key={index}>
               {row.map((field, i) => (
                 <TableCell key={`${index}-${i}`} align={field.align ?? 'left'} width={field.width}>
