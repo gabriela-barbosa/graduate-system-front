@@ -1,4 +1,4 @@
-import { ToastContainer as Toast, toast } from 'react-toastify'
+import { ToastContainer as Toast, toast, TypeOptions } from 'react-toastify'
 
 import React from 'react'
 
@@ -16,8 +16,9 @@ const ToastContainer = () => (
   ></Toast>
 )
 
-const showSavedToast = () => toast('Salvo com sucesso!')
-const showDeletedToast = () => toast('Deletado com sucesso!')
-const showErrorToast = errorMessage => toast.error(errorMessage)
+const showSavedToast = () => toast.success('Salvo com sucesso!')
+const showDeletedToast = () => toast.success('Deletado com sucesso!')
+const showErrorToast = (errorMessage: string) => toast.error(errorMessage)
+const showToast = (errorMessage: string, type?: TypeOptions) => toast(errorMessage, { type })
 
-export { ToastContainer, toast, showSavedToast, showDeletedToast, showErrorToast }
+export { ToastContainer, toast, showSavedToast, showDeletedToast, showErrorToast, showToast }

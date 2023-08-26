@@ -13,12 +13,13 @@ import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { ListGraduatesFilters, PaginationType } from '@modules/Egressos/types'
+import { ListGraduatesFilters } from '@modules/Egressos/types'
 import GraduatesTable from '@modules/Egressos/GraduatesTable'
 import { parseCookies } from 'nookies'
 import { getAPIClient } from '../../services/axios'
 import { AxiosInstance } from 'axios'
 import { getInstitutionTypes } from '@modules/WorkHistoryEdit'
+import { PaginationType } from '@modules/Commons/types'
 
 const pageSize = 10
 
@@ -78,7 +79,6 @@ interface Props {
 }
 
 const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) => {
-  console.log('crlhhhhhhhhhhh')
   const apiClient = getAPIClient()
 
   const [graduatesList, setGraduatesList] = useState(graduates)

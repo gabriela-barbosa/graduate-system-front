@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useRouter } from 'next/router'
 import 'react-toastify/dist/ReactToastify.css'
@@ -11,15 +9,10 @@ import {
   MainWrapper,
   showDeletedToast,
   showSavedToast,
-  Table,
-  TableHeader,
   ToastContainer,
-  TableBody,
-  TableCell,
-  TableRow,
 } from '@components'
-import { Theme } from '@utils/enums'
-import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
+import { Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Fields, PageWrapper, Title } from '@styles/index.style'
 import {
   Checkbox,
   FormControl,
@@ -32,27 +25,27 @@ import {
   RadioGroup,
   TextField,
 } from '@mui/material'
-import { PaginationType } from '@modules/Egressos/types'
-import { toast } from 'react-toastify'
-
-interface Email {
-  id?: string
-  title: string
-  name: string
-  content: string
-  buttonText: string
-  buttonURL: string
-  isGraduateEmail: boolean
-  active: boolean
-}
-
-const GRADUATE_API = process.env.GRADUATE_API
+import { getAPIClient } from '../../../services/axios'
+import { parseCookies } from 'nookies'
+import { deleteEmail, getEmails, saveEmail, updateEmail } from '@modules/Emails/api'
+import { Email } from '@modules/Emails/types'
+import { PaginationType } from '@modules/Commons/types'
+import EditRoundedIcon from '@mui/icons-material/EditRounded'
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
+import GraduatesTable from '@modules/Egressos/GraduatesTable'
+import { showErrorToast } from '@components/Toast'
 
 const pageSize = 10
 
-const EmailConfig = () => {
-  const [emails, setEmails] = useState<Email[]>([])
-  const [pagination, setPagination] = useState<PaginationType>({ page: 0, size: 0, total: 0 })
+interface Props {
+  emails: Email[]
+  meta: PaginationType
+}
+
+const EmailConfig = ({ emails, meta }: Props) => {
+  const apiClient = getAPIClient()
+  const [emailsList, setEmailsList] = useState<Email[]>(emails)
+  const [pagination, setPagination] = useState<PaginationType>(meta)
   const [previousEmail, setPreviousEmail] = useState<Email>({
     buttonText: '',
     buttonURL: '',
@@ -80,44 +73,11 @@ const EmailConfig = () => {
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
-  const onClickBack = () => {
+  const handleClickBack = () => {
     router.push('/gerenciamento')
   }
-  const getEmails = async page => {
-    const response = await fetch(
-      `${GRADUATE_API}/v1/emails?` +
-        new URLSearchParams({ page: (page - 1).toString(), pageSize: pageSize.toString() }),
-      { credentials: 'include' } as RequestInit
-    )
-    if (response.status < 400) {
-      const { data, meta } = await response.json()
-      setEmails(data)
-      setPagination(meta)
-    }
-  }
-  const onChangePagination = async (event, value) => {
-    await getEmails(value)
-  }
 
-  const deleteEmail = async (id: string) => {
-    const myInit = {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    }
-    const response = await fetch(`${GRADUATE_API}/v1/email/${id}`, myInit as RequestInit)
-    if (response.status < 400) {
-      await getEmails(1)
-      showDeletedToast()
-      return
-    }
-    toast('Ocorreu um problema na deleção!')
-  }
-
-  const setCurrentEmailEmpty = () => {
+  const cleanEmailFields = () => {
     setCurrentEmail({
       active: false,
       buttonText: '',
@@ -130,55 +90,90 @@ const EmailConfig = () => {
     })
   }
 
-  const handleSaveEmail = async () => {
-    const myInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(currentEmail),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/email`, myInit as RequestInit)
-    if (result) {
-      await getEmails(1)
-      showSavedToast()
-      setShow(false)
-      setCurrentEmailEmpty()
+  const handleChangePagination = async (page: number) => {
+    try {
+      const { data, meta } = await getEmails(apiClient, pageSize, page)
+      setEmailsList(data)
+      setPagination(meta)
+    } catch (error) {
+      showErrorToast('Erro ao trocar de página')
     }
   }
 
-  const handleUpdateInstitution = async () => {
-    const myInit = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(currentEmail),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/email/${id}`, myInit as RequestInit)
-    if (result) {
-      await getEmails(1)
-      showSavedToast()
-      setShow(false)
-      setCurrentEmailEmpty()
+  const handleDeleteEmail = async (id: string) => {
+    try {
+      await deleteEmail(apiClient, id)
+      showDeletedToast()
+      await router.replace(router.asPath)
+    } catch (error) {
+      showErrorToast('Ocorreu um problema na deleção!')
     }
   }
 
-  const handlerOpenEdit = current => {
+  const handleSaveEmail = async (email: Email) => {
+    try {
+      await saveEmail(apiClient, email)
+      showSavedToast()
+      setShow(false)
+      cleanEmailFields()
+      await router.replace(router.asPath)
+    } catch (error) {
+      showErrorToast('Ocorreu um problema ao salvar.')
+    }
+  }
+
+  const handleUpdateInstitution = async (email: Email) => {
+    try {
+      await updateEmail(apiClient, email)
+      showSavedToast()
+      setShow(false)
+      cleanEmailFields()
+      await router.replace(router.asPath)
+    } catch (error) {
+      showErrorToast('Ocorreu um problema ao atualizar email.')
+    }
+  }
+
+  const handleOpenEdit = (current: Email) => {
     setShow(true)
     setCurrentEmail(current)
     setPreviousEmail(current)
   }
 
-  useEffect(() => {
-    ;(async () => {
-      await getEmails(1)
-    })()
-  }, [])
+  const columns = [
+    { name: 'Nome' },
+    { name: 'Tipo do Email' },
+    { name: 'Status' },
+    { name: 'Ações' },
+  ]
+
+  const rows = emailsList?.map(email => {
+    return [
+      {
+        body: email.name,
+      },
+      {
+        body: email.isGraduateEmail ? 'Egresso' : 'Orientador',
+      },
+      {
+        body: email.active ? 'Ativo' : 'Inativo',
+      },
+      {
+        body: (
+          <section>
+            <ActionIcon onClick={() => handleOpenEdit(email)}>
+              <EditRoundedIcon />
+            </ActionIcon>
+            {email.id && (
+              <ActionIcon onClick={() => handleDeleteEmail(email.id as string)}>
+                <DeleteForeverRoundedIcon />
+              </ActionIcon>
+            )}
+          </section>
+        ),
+      },
+    ]
+  })
 
   return (
     <>
@@ -188,60 +183,15 @@ const EmailConfig = () => {
             <Grid item xs={12}>
               <Title>Atualizar Informações do Email</Title>
             </Grid>
-            <Grid item xs={12} height={510}>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableCell>
-                      <Fields>Nome</Fields>
-                    </TableCell>
-                    <TableCell>
-                      <Fields>Tipo do Email</Fields>
-                    </TableCell>
-                    <TableCell>
-                      <Fields>Status</Fields>
-                    </TableCell>
-                    <td>
-                      <Fields></Fields>
-                    </td>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {emails?.map(email => (
-                    <TableRow key={email.id}>
-                      <TableCell>
-                        <Subtitle>{email.name}</Subtitle>
-                      </TableCell>
-                      <TableCell>
-                        <Subtitle>{email.isGraduateEmail ? 'Egresso' : 'Orientador'}</Subtitle>
-                      </TableCell>
-                      <TableCell>
-                        <Fields>{email.active ? 'Ativo' : 'Inativo'}</Fields>
-                      </TableCell>
-                      <TableCell>
-                        <ActionIcon>
-                          <FontAwesomeIcon
-                            onClick={() => handlerOpenEdit(email)}
-                            icon={faPencilAlt}
-                          />
-                          <FontAwesomeIcon
-                            onClick={() => email.id && deleteEmail(email.id)}
-                            className="trash-icon"
-                            icon={faTrashAlt}
-                          />
-                        </ActionIcon>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <Grid item xs={12}>
+              <GraduatesTable columns={columns} rows={rows} />
             </Grid>
             <Grid item xs={12}>
               {pagination && (
                 <Pagination
                   count={Math.ceil(pagination.total / pageSize)}
                   page={pagination.page + 1}
-                  onChange={onChangePagination}
+                  onChange={event => handleChangePagination(event.target as unknown as number)}
                 />
               )}
             </Grid>
@@ -252,7 +202,7 @@ const EmailConfig = () => {
                     size={'large'}
                     variant={'contained'}
                     onClick={() => {
-                      setCurrentEmailEmpty()
+                      cleanEmailFields()
                       handleShow()
                     }}
                   >
@@ -260,7 +210,7 @@ const EmailConfig = () => {
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                  <Button size={'large'} variant={'outlined'} onClick={handleClickBack}>
                     Voltar
                   </Button>
                 </Grid>
@@ -396,7 +346,9 @@ const EmailConfig = () => {
           <Button
             size={'large'}
             variant={'contained'}
-            onClick={id ? handleUpdateInstitution : handleSaveEmail}
+            onClick={() =>
+              id ? handleUpdateInstitution(currentEmail) : handleSaveEmail(currentEmail)
+            }
           >
             Salvar
           </Button>
@@ -404,6 +356,27 @@ const EmailConfig = () => {
       </Modal>
     </>
   )
+}
+
+export async function getServerSideProps(ctx) {
+  const apiClient = getAPIClient(ctx)
+  const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+  const { data, meta } = await getEmails(apiClient, pageSize)
+
+  return {
+    props: {
+      emails: data ?? [],
+      meta: meta ?? {},
+    },
+  }
 }
 
 export default EmailConfig

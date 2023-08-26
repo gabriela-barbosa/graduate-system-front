@@ -1,44 +1,43 @@
-import React, { useEffect, useState } from 'react'
-import { Theme } from '@utils/enums'
+import React, { useState } from 'react'
+import { Theme, USER_TOKEN_NAME } from '@utils/enums'
 import 'react-toastify/dist/ReactToastify.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { Modal } from 'react-bootstrap'
 import { useRouter } from 'next/router'
-import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
+import { Fields, PageWrapper, Title } from '@styles/index.style'
 import {
   ActionIcon,
   Button,
   MainWrapper,
   showDeletedToast,
   showSavedToast,
-  Table,
-  TableHeader,
-  TableBody,
-  TableCell,
   ToastContainer,
-  TableRow,
 } from '@components'
 import { FormControl, Grid, TextField } from '@mui/material'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import GraduatesTable from '@modules/Egressos/GraduatesTable'
+import { getAPIClient } from '../../../services/axios'
+import { parseCookies } from 'nookies'
+import {
+  deleteInstitutionType,
+  getInstitutionTypes,
+  saveInstitutionType,
+  updateInstitutionType,
+} from '@modules/Institutions/api'
+import { showErrorToast } from '@components/Toast'
+import { InstitutionType } from '@modules/Institutions/types'
 
-const GRADUATE_API = process.env.GRADUATE_API
+interface Props {
+  institutionTypes: InstitutionType[]
+}
 
-const Institutions: React.FC = () => {
-  const [institutionTypes, setInstitutionTypes] = useState<{ id: string; name: string }[]>([])
-  const [currentInstitution, setCurrentInstitution] = useState<{
-    id: null | string
-    value: string
-  }>({
-    id: null,
-    value: '',
+const Institutions = ({ institutionTypes }: Props) => {
+  const apiClient = getAPIClient()
+  const [currentInstitution, setCurrentInstitution] = useState<InstitutionType>({
+    name: '',
   })
   const [show, setShow] = useState(false)
   const router = useRouter()
-
-  const { id, value } = currentInstitution
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -46,78 +45,44 @@ const Institutions: React.FC = () => {
     router.push('/gerenciamento')
   }
 
-  const getInstitutionTypes = async () => {
-    const response = await fetch(`${GRADUATE_API}/v1/institution/type`, {
-      credentials: 'include',
-    } as RequestInit)
-    const result = await response.json()
-    setInstitutionTypes(result)
-  }
-
-  const deleteInstitutionType = async (id: string) => {
-    const myInit = {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    }
-    const response = await fetch(`${GRADUATE_API}/v1/institution/type/${id}`, myInit as RequestInit)
-    if (response.status < 400) {
-      await getInstitutionTypes()
+  const handleDeleteInstitutionType = async (id: string) => {
+    try {
+      await deleteInstitutionType(apiClient, id)
+      router.replace(router.asPath)
       showDeletedToast()
+    } catch (error) {
+      showErrorToast('Ocorreu um erro ao deletar tipo de instituição.')
     }
   }
 
-  const handleSaveInstitution = async () => {
-    const myInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ name: value }),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/institution/type`, myInit as RequestInit)
-    if (result) {
-      await getInstitutionTypes()
+  const handleSaveInstitution = async (institutionType: InstitutionType) => {
+    try {
+      await saveInstitutionType(apiClient, institutionType)
+      router.replace(router.asPath)
       showSavedToast()
       setShow(false)
-      setCurrentInstitution({ id: null, value: '' })
+      setCurrentInstitution({ id: undefined, name: '' })
+    } catch (error) {
+      showErrorToast('Ocorreu um erro ao salvar tipo de instituição.')
     }
   }
 
-  const handleUpdateInstitution = async () => {
-    const myInit = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ name: value }),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/institution/type/${id}`, myInit as RequestInit)
-    if (result) {
-      await getInstitutionTypes()
+  const handleUpdateInstitution = async (institutionType: InstitutionType) => {
+    try {
+      await updateInstitutionType(apiClient, institutionType)
+      router.replace(router.asPath)
       showSavedToast()
       setShow(false)
-      setCurrentInstitution({ id: null, value: '' })
+      setCurrentInstitution({ id: undefined, name: '' })
+    } catch (error) {
+      showErrorToast('Ocorreu um erro ao atualizar tipo de instituição.')
     }
   }
 
-  const handlerOpenEdit = (id: string, value: string) => {
+  const handlerOpenEdit = (id: string, name: string) => {
     setShow(true)
-    setCurrentInstitution({ id, value })
+    setCurrentInstitution({ id, name })
   }
-
-  useEffect(() => {
-    ;(async () => {
-      await getInstitutionTypes()
-    })()
-  }, [])
 
   const columns = [
     {
@@ -133,10 +98,10 @@ const Institutions: React.FC = () => {
     {
       body: (
         <section>
-          <ActionIcon onClick={() => handlerOpenEdit(program.id, program.name)}>
+          <ActionIcon onClick={() => handlerOpenEdit(program.id as string, program.name)}>
             <EditRoundedIcon />
           </ActionIcon>
-          <ActionIcon onClick={() => deleteInstitutionType(program.id)}>
+          <ActionIcon onClick={() => handleDeleteInstitutionType(program.id as string)}>
             <DeleteForeverRoundedIcon />
           </ActionIcon>
         </section>
@@ -162,7 +127,7 @@ const Institutions: React.FC = () => {
                     size={'large'}
                     variant={'contained'}
                     onClick={() => {
-                      setCurrentInstitution({ id: null, value: '' })
+                      setCurrentInstitution({ id: undefined, name: '' })
                       handleShow()
                     }}
                   >
@@ -183,17 +148,17 @@ const Institutions: React.FC = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Fields>{id ? 'Editar' : 'Adicionar'} Instituição</Fields>
+          <Fields>{currentInstitution.id ? 'Editar' : 'Adicionar'} Instituição</Fields>
         </Modal.Header>
         <Modal.Body>
           <FormControl fullWidth>
             <TextField
-              value={value}
+              value={currentInstitution.name}
               required
               name={'institution'}
               label={'Instituição'}
               onChange={({ target }) =>
-                setCurrentInstitution({ ...currentInstitution, value: target.value })
+                setCurrentInstitution({ ...currentInstitution, name: target.value })
               }
             />
           </FormControl>
@@ -202,7 +167,11 @@ const Institutions: React.FC = () => {
           <Button
             size={'large'}
             variant={'contained'}
-            onClick={id ? handleUpdateInstitution : handleSaveInstitution}
+            onClick={() =>
+              currentInstitution.id
+                ? handleUpdateInstitution(currentInstitution)
+                : handleSaveInstitution(currentInstitution)
+            }
           >
             Salvar
           </Button>
@@ -210,6 +179,26 @@ const Institutions: React.FC = () => {
       </Modal>
     </>
   )
+}
+
+export async function getServerSideProps(ctx) {
+  const apiClient = getAPIClient(ctx)
+  const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+  const types = await getInstitutionTypes(apiClient)
+
+  return {
+    props: {
+      institutionTypes: types ?? [],
+    },
+  }
 }
 
 export default Institutions
