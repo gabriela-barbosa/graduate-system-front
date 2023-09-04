@@ -19,7 +19,7 @@ import { ListGraduatesFilters } from '@modules/Egressos/types'
 import GraduatesTable from '@modules/Egressos/GraduatesTable'
 import { parseCookies } from 'nookies'
 import { getAPIClient } from '../../services/axios'
-import { AxiosInstance } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import { getInstitutionTypes } from '@modules/WorkHistoryEdit'
 import { PaginationType } from '@modules/Commons/types'
 
@@ -58,8 +58,9 @@ const getGraduates = async (
   try {
     const filledFilters = getFilledFilters(filters)
     filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])
-    const { data } = await apiClient.get('/v1/graduates?' + new URLSearchParams(filledFilters))
-
+    const { data } = await axios.get('/v1/graduates?' + new URLSearchParams(filledFilters), {
+      withCredentials: true,
+    })
     const { data: graduates, meta } = data
     return {
       graduates,
