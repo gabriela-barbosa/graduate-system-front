@@ -6,7 +6,9 @@ import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 
-import { FormControl, Grid, Pagination } from '@mui/material'
+import Pagination from '@mui/material/Pagination'
+import Grid from '@mui/material/Grid'
+import FormControl from '@mui/material/FormControl'
 
 import { useRouter } from 'next/router'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
@@ -262,51 +264,51 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
   )
 }
 
-// export async function getServerSideProps(ctx) {
-//   console.log('entrei no server side')
-//
-//   const apiClient = getAPIClient(ctx)
-//
-//   const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
-//   console.log('token', token)
-//   if (!token) {
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false,
-//       },
-//     }
-//   }
-//
-//   const promises = [getGraduates(apiClient), getInstitutionTypes(apiClient)]
-//
-//   console.log('criei promises')
-//
-//   const responses = await Promise.all(promises)
-//
-//   console.log('retornei promises')
-//
-//   const someResult = responses.some(item => 'response' in item && item.response?.status === 403)
-//   if (someResult)
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false,
-//       },
-//     }
-//
-//   const [graduatesResponse, institutionTypes] = responses
-//
-//   const { graduates, meta } = graduatesResponse as GraduatesListDetails
-//
-//   console.log(graduates)
-//   return {
-//     props: {
-//       graduates: graduates ?? [],
-//       meta,
-//       institutionTypes,
-//     },
-//   }
-// }
+export async function getServerSideProps(ctx) {
+  console.log('entrei no server side')
+
+  const apiClient = getAPIClient(ctx)
+
+  const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
+  console.log('token', token)
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  const promises = [getGraduates(apiClient), getInstitutionTypes(apiClient)]
+
+  console.log('criei promises')
+
+  const responses = await Promise.all(promises)
+
+  console.log('retornei promises')
+
+  const someResult = responses.some(item => 'response' in item && item.response?.status === 403)
+  if (someResult)
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+
+  const [graduatesResponse, institutionTypes] = responses
+
+  const { graduates, meta } = graduatesResponse as GraduatesListDetails
+
+  console.log(graduates)
+  return {
+    props: {
+      graduates: graduates ?? [],
+      meta,
+      institutionTypes,
+    },
+  }
+}
 
 export default GraduateList

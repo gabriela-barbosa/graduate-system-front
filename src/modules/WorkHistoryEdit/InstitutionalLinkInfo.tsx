@@ -13,7 +13,7 @@ import {
 import { Subtitle } from './index.style'
 import { Button, SelectMui, ActionIcon, Paper } from '@components'
 import React, { useState } from 'react'
-import { AddRounded } from '@mui/icons-material'
+import AddRounded from '@mui/icons-material/AddRounded'
 import GraduatesTable from '@modules/Egressos/GraduatesTable'
 import { ErrorMessage, Fields, Label } from '@styles/index.style'
 import { GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
