@@ -18,10 +18,10 @@ import {
 import { RoleTranslation, Theme } from '@utils/enums'
 import { Fields, PageWrapper, Subtitle, Title } from '@styles/index.style'
 import { Grid, Pagination } from '@mui/material'
-import { PaginationType } from '../Egressos/types'
 import EditAddUserModal from '../UserList/EditAddUserModal'
 import { showErrorToast } from '@components/Toast'
 import { User } from '@context/AuthContext'
+import { PaginationType } from '@modules/Commons/types'
 
 const GRADUATE_API = process.env.GRADUATE_API
 
