@@ -10,7 +10,6 @@ import { useRouter } from 'next/router'
 import { User } from '@context/AuthContext'
 import { Role, USER_TOKEN_NAME } from '@utils/enums'
 import { parseCookies, setCookie } from 'nookies'
-import { api } from '../services/api'
 import { getAPIClient } from '../services/axios'
 import { redirectAccordingRole } from '@utils/functions'
 
@@ -55,15 +54,6 @@ const AuthProvider = ({ children }) => {
   }
 
   const logout = async () => {
-    const myInit: RequestInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    }
-    await fetch(`${GRADUATE_API}/v1/logout`, myInit)
     setCookie(undefined, USER_TOKEN_NAME, '')
     await router.push('/')
     setUser(null)
@@ -71,9 +61,7 @@ const AuthProvider = ({ children }) => {
 
   async function getUser() {
     try {
-      const response = await fetch(`${GRADUATE_API}/v1/user`, {
-        credentials: 'include',
-      })
+      const response = await fetch(`${GRADUATE_API}/v1/user`)
       const profile = await response.json()
       if (profile.error) {
         setUser(null)
@@ -116,7 +104,7 @@ const AuthProvider = ({ children }) => {
       const { user, token } = await response.json()
 
       setCookie(undefined, USER_TOKEN_NAME, token)
-      api.defaults.headers.Cookie = `${USER_TOKEN_NAME}=${token}`
+
       setUser(user)
       if (user.currentRole === Role.PROFESSOR || user.currentRole === Role.ADMIN) {
         await router.push('/egressos')
