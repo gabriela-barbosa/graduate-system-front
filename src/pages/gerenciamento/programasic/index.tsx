@@ -10,6 +10,8 @@ import { FormControl, Grid, TextField } from '@mui/material'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import GraduatesTable from '@modules/Egressos/GraduatesTable'
+import { getAPIClient } from '../../../services/axios'
+import { PaginationType } from '@modules/Commons/types'
 
 const GRADUATE_API = process.env.GRADUATE_API
 
@@ -18,6 +20,7 @@ const Programs: React.FC = () => {
     id: null | string
     value: string
   }>({ id: null, value: '' })
+  const apiClient = getAPIClient()
   const [programs, setPrograms] = useState<{ id: string; initials: string }[]>([])
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
@@ -34,11 +37,12 @@ const Programs: React.FC = () => {
   const deletedToast = () => toast('Deletado com sucesso!')
 
   const getPrograms = async () => {
-    const response = await fetch(`${GRADUATE_API}/v1/ciprograms`, {
-      credentials: 'include',
-    })
-    const result = await response.json()
-    setPrograms(result)
+    try {
+      const { data } = await apiClient.get('/v1/ciprograms')
+      setPrograms(data)
+    } catch (error) {
+      toast.error('Erro ao buscar programas.')
+    }
   }
 
   const deleteProgram = async (id: string) => {
