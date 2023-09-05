@@ -61,7 +61,12 @@ const AuthProvider = ({ children }) => {
 
   async function getUser() {
     try {
-      const response = await fetch(`${GRADUATE_API}/v1/user`)
+      const { [USER_TOKEN_NAME]: token } = parseCookies()
+      const response = await fetch(`${GRADUATE_API}/v1/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       const profile = await response.json()
       if (profile.error) {
         setUser(null)
