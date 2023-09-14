@@ -32,7 +32,7 @@ import { Email } from '@modules/Emails/types'
 import { PaginationType } from '@modules/Commons/types'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
-import GraduatesTable from '@modules/Egressos/GraduatesTable'
+import GraduatesTable from '@components/Table/CustomTable'
 import { showErrorToast } from '@components/Toast'
 
 const pageSize = 10

@@ -16,7 +16,7 @@ import { ActionIcon, Button, DatePicker, InputMui, Paper, SelectMui } from '@com
 import { GraduateWorkHistoriesInfo, Option } from './types'
 import { Role } from '@utils/enums'
 import { SelectItem } from '@utils/types'
-import GraduatesTable from '@modules/Egressos/GraduatesTable'
+import GraduatesTable from '@components/Table/CustomTable'
 import { Fields, Label } from '@styles/index.style'
 import dayjs, { Dayjs } from 'dayjs'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'

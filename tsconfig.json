@@ -5,6 +5,9 @@
       "@components/*": [
         "src/components/*"
       ],
+      "@services/*": [
+        "src/services/*"
+      ],
       "@api/*": [
         "src/api/*"
       ],

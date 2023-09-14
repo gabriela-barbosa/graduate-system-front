@@ -29,7 +29,7 @@ interface Props {
   rows: RowDetails[][]
 }
 
-const GraduateList = ({ columns, rows }: Props) => {
+const CustomTable = ({ columns, rows }: Props) => {
   const isString = item => typeof item === 'string'
 
   return (
@@ -69,4 +69,4 @@ const GraduateList = ({ columns, rows }: Props) => {
   )
 }
 
-export default GraduateList
+export default CustomTable

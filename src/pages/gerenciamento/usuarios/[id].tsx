@@ -27,7 +27,6 @@ const UserDetail = () => {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
       body: JSON.stringify(user),
     }
     await fetch(`${GRADUATE_API}/v1/register`, myInit as RequestInit)

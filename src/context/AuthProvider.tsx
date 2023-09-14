@@ -100,7 +100,6 @@ const AuthProvider = ({ children }) => {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
       body: JSON.stringify({ email, password }),
     }
     const response: Response = await fetch(`${GRADUATE_API}/v1/login`, myInit)

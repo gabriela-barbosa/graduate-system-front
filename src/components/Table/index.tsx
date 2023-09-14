@@ -4,9 +4,10 @@ import TableCellComponent from '@mui/material/TableCell'
 import TableRowComponent from '@mui/material/TableRow'
 import TableBodyComponent from '@mui/material/TableBody'
 import TableContainerComponent from '@mui/material/TableContainer'
+import IconButton from '@mui/material/IconButton'
 
 import styled from 'styled-components'
-import { IconButton } from '@mui/material'
+import CustomTable from './CustomTable'
 
 const TableContainer = TableContainerComponent
 const TableHeader = styled(TableHeadComponent)`
@@ -32,4 +33,13 @@ const TableBody = TableBodyComponent
 // `
 const ActionIcon = IconButton
 
-export { TableHeader, Table, ActionIcon, TableCell, TableRow, TableBody, TableContainer }
+export {
+  CustomTable,
+  TableHeader,
+  Table,
+  ActionIcon,
+  TableCell,
+  TableRow,
+  TableBody,
+  TableContainer,
+}

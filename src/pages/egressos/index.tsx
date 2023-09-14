@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MainWrapper, Input, Select, Button, ActionIcon } from '@components'
 import { Theme, USER_TOKEN_NAME } from '@utils/enums'
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
@@ -14,14 +14,15 @@ import { useRouter } from 'next/router'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
 import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import { ListGraduatesFilters } from '@modules/Egressos/types'
-import GraduatesTable from '@modules/Egressos/GraduatesTable'
+import GraduatesTable from '@components/Table/CustomTable'
 import { parseCookies } from 'nookies'
 import { getAPIClient } from '../../services/axios'
-import { AxiosInstance } from 'axios'
 import { getInstitutionTypes } from '@modules/WorkHistoryEdit'
 import { PaginationType } from '@modules/Commons/types'
+import { getGraduates } from '@modules/GraduatesList/api'
+import { GraduatesListDetails } from '@modules/GraduatesList/types'
+import { toast } from 'react-toastify'
 
 const pageSize = 10
 
@@ -32,56 +33,14 @@ const status = {
   UNKNOWN: 'Desconhecido',
 }
 
-const isValid = (value?: string) => value && value !== ''
-
-const getFilledFilters = (filters?: ListGraduatesFilters) => {
-  const { name, institutionType, institutionName } = filters ?? {}
-  const arrayFilter: string[][] = []
-  if (isValid(name)) arrayFilter.push(['name', name as string])
-  // eslint-disable-next-line eqeqeq
-  if (institutionType && institutionType !== '0')
-    arrayFilter.push(['institutionType', institutionType])
-  if (isValid(institutionName)) arrayFilter.push(['institutionName', institutionName as string])
-  return arrayFilter
-}
-
-interface GraduatesListDetails {
-  graduates: any[]
-  meta: PaginationType
-}
-
-const getGraduates = async (
-  apiClient: AxiosInstance,
-  page = 1,
-  filters?: ListGraduatesFilters
-): Promise<GraduatesListDetails> => {
-  try {
-    const filledFilters = getFilledFilters(filters)
-    filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])
-    const { data } = await apiClient.get('/v1/graduates?' + new URLSearchParams(filledFilters))
-    const { data: graduates, meta } = data
-    return {
-      graduates,
-      meta,
-    }
-  } catch (error) {
-    toast.error('Erro ao buscar egressos.')
-    return {
-      graduates: [],
-      meta: {} as PaginationType,
-    }
-  }
-}
-
 interface Props {
   graduates: any[]
   institutionTypes: any[]
-  meta: any
+  meta: PaginationType
 }
 
 const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) => {
   const apiClient = getAPIClient()
-
   const [graduatesList, setGraduatesList] = useState(graduates)
   const [pagination, setPagination] = useState<PaginationType>(meta)
   const defaultInstitutionType = { id: 0, label: 'Nenhum tipo de instituição selecionado' }
@@ -90,26 +49,19 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
   const formContext = useForm()
   const { getValues, reset } = formContext
 
-  // const getGraduates = async (page: number, filters?: ListGraduatesFilters) => {
-  //   const filledFilters = getFilledFilters(filters)
-  //   filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])
-  //   const response = await fetch(
-  //     `${GRADUATE_API}/v1/graduates?` + new URLSearchParams(filledFilters),
-  //     {
-  //       credentials: 'include',
-  //     }
-  //   )
-  //   if (response.status === 200) {
-  //     const result = await response.json()
-  //     setGraduates(result.data)
-  //     setPagination(result.meta)
-  //   }
-  // }
+  useEffect(() => {
+    setGraduatesList(graduates)
+    setPagination(meta)
+  }, [graduates, meta])
 
   const onSend = async (data: ListGraduatesFilters) => {
-    const { graduates: graduatesSend, meta: metaSend } = await getGraduates(apiClient, 1, data)
-    setGraduatesList(graduatesSend)
-    setPagination(metaSend)
+    try {
+      const { graduates: graduatesSend, meta: metaSend } = await getGraduates(apiClient, 1, data)
+      setGraduatesList(graduatesSend)
+      setPagination(metaSend)
+    } catch (e) {
+      toast.error('Erro ao buscar egressos.')
+    }
   }
 
   const onClickEdit = graduate => {
@@ -118,20 +70,28 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
 
   const onChangePagination = async (event, value) => {
     const filters = getValues() as ListGraduatesFilters
-    const { graduates: graduatesPagination, meta: metaPagination } = await getGraduates(
-      apiClient,
-      value,
-      filters
-    )
-    setGraduatesList(graduatesPagination)
-    setPagination(metaPagination)
+    try {
+      const { graduates: graduatesPagination, meta: metaPagination } = await getGraduates(
+        apiClient,
+        value,
+        filters
+      )
+      setGraduatesList(graduatesPagination)
+      setPagination(metaPagination)
+    } catch (e) {
+      toast.error('Erro ao buscar egressos.')
+    }
   }
 
   const onClickClean = async () => {
     reset()
-    const { graduates: graduatesClean, meta: metaClean } = await getGraduates(apiClient, 1)
-    setGraduatesList(graduatesClean)
-    setPagination(metaClean)
+    try {
+      const { graduates: graduatesClean, meta: metaClean } = await getGraduates(apiClient, 1)
+      setGraduatesList(graduatesClean)
+      setPagination(metaClean)
+    } catch (e) {
+      toast.error('Erro ao buscar egressos.')
+    }
   }
 
   const columns = [
@@ -195,6 +155,16 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
                     }}
                   >
                     <FormControl fullWidth>
+                      <Input variant="standard" label="Nome do egresso" name="name" />
+                    </FormControl>
+                  </Grid>
+                  <Grid
+                    item
+                    sx={{
+                      width: '350px',
+                    }}
+                  >
+                    <FormControl fullWidth>
                       <Input
                         variant="standard"
                         label="Nome da instituição"
@@ -215,16 +185,6 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
                         label={'Tipo da instituição'}
                         options={[defaultInstitutionType, ...institutionTypes]}
                       />
-                    </FormControl>
-                  </Grid>
-                  <Grid
-                    item
-                    sx={{
-                      width: '350px',
-                    }}
-                  >
-                    <FormControl fullWidth>
-                      <Input variant="standard" label="Nome do egresso" name="name" />
                     </FormControl>
                   </Grid>
                   <Grid item alignSelf={'center'}>
@@ -264,12 +224,8 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
 }
 
 export async function getServerSideProps(ctx) {
-  console.log('entrei no server side')
-
   const apiClient = getAPIClient(ctx)
-
   const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
-  console.log('token', token)
   if (!token) {
     return {
       redirect: {
@@ -280,13 +236,7 @@ export async function getServerSideProps(ctx) {
   }
 
   const promises = [getGraduates(apiClient), getInstitutionTypes(apiClient)]
-
-  console.log('criei promises')
-
   const responses = await Promise.all(promises)
-
-  console.log('retornei promises')
-
   const someResult = responses.some(item => 'response' in item && item.response?.status === 403)
   if (someResult)
     return {

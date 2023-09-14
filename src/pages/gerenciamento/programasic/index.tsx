@@ -9,7 +9,7 @@ import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { FormControl, Grid, TextField } from '@mui/material'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
-import GraduatesTable from '@modules/Egressos/GraduatesTable'
+import GraduatesTable from '@components/Table/CustomTable'
 import { getAPIClient } from '../../../services/axios'
 import { PaginationType } from '@modules/Commons/types'
 

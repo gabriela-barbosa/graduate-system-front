@@ -15,8 +15,7 @@ import {
 import { FormControl, Grid, TextField } from '@mui/material'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
-import GraduatesTable from '@modules/Egressos/GraduatesTable'
-import { getAPIClient } from '../../../services/axios'
+import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import {
   deleteInstitutionType,
@@ -26,6 +25,7 @@ import {
 } from '@modules/Institutions/api'
 import { showErrorToast } from '@components/Toast'
 import { InstitutionType } from '@modules/Institutions/types'
+import { CustomTable } from '@components/Table'
 
 interface Props {
   institutionTypes: InstitutionType[]
@@ -48,7 +48,7 @@ const Institutions = ({ institutionTypes }: Props) => {
   const handleDeleteInstitutionType = async (id: string) => {
     try {
       await deleteInstitutionType(apiClient, id)
-      router.replace(router.asPath)
+      await router.replace(router.asPath)
       showDeletedToast()
     } catch (error) {
       showErrorToast('Ocorreu um erro ao deletar tipo de instituição.')
@@ -58,7 +58,7 @@ const Institutions = ({ institutionTypes }: Props) => {
   const handleSaveInstitution = async (institutionType: InstitutionType) => {
     try {
       await saveInstitutionType(apiClient, institutionType)
-      router.replace(router.asPath)
+      await router.replace(router.asPath)
       showSavedToast()
       setShow(false)
       setCurrentInstitution({ id: undefined, name: '' })
@@ -70,7 +70,7 @@ const Institutions = ({ institutionTypes }: Props) => {
   const handleUpdateInstitution = async (institutionType: InstitutionType) => {
     try {
       await updateInstitutionType(apiClient, institutionType)
-      router.replace(router.asPath)
+      await router.replace(router.asPath)
       showSavedToast()
       setShow(false)
       setCurrentInstitution({ id: undefined, name: '' })
@@ -118,7 +118,7 @@ const Institutions = ({ institutionTypes }: Props) => {
               <Title>Atualizar Tipo de Instituição</Title>
             </Grid>
             <Grid item xs={12}>
-              <GraduatesTable columns={columns} rows={rows} />
+              <CustomTable columns={columns} rows={rows} />
             </Grid>
             <Grid item>
               <Grid container columnSpacing={2}>

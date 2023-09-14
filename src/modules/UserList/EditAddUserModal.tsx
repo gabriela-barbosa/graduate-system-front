@@ -5,8 +5,8 @@ import { Button } from '@components'
 import React from 'react'
 import 'react-toastify/dist/ReactToastify.css'
 import { Role, RoleTranslation } from '@utils/enums'
-
-const GRADUATE_API = process.env.GRADUATE_API
+import { createUpdateUser } from '@modules/UserList/api'
+import { getAPIClient } from '@services/axios'
 
 interface Props {
   show: boolean
@@ -18,26 +18,11 @@ interface Props {
 
 const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props) => {
   const { id } = currentUser
+  const apiClient = getAPIClient()
   const roles = Object.keys(Role).filter(item => {
     return isNaN(Number(item))
   })
-  const createUpdateUser = async user => {
-    const myInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(user),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/register`, myInit as RequestInit)
-    if (result && result.status < 400) {
-      await onSuccess()
-    } else {
-      await onFail()
-    }
-  }
+
   const handleSubmit = async event => {
     event.preventDefault()
     const { name, email, roles } = event.target
@@ -48,7 +33,12 @@ const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props)
       roles: typeof roles.value === 'string' ? roles.value.split(',') : roles.value,
     }
 
-    await createUpdateUser(user)
+    try {
+      await createUpdateUser(apiClient, user)
+      onSuccess()
+    } catch (e) {
+      onFail()
+    }
   }
   return (
     <Modal show={show} onHide={handleClose}>

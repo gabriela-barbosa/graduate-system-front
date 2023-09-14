@@ -6,10 +6,9 @@ export const redirectAccordingRole = async (
   userId: string,
   router: NextRouter
 ) => {
-  console.log(currentRole)
   if (currentRole === Role.PROFESSOR || currentRole === Role.ADMIN) {
-    console.log('entrei no if currentRole', currentRole)
     await router.push('/egressos')
+    // router.replace(router.asPath)
     return
   }
   if (currentRole === Role.GRADUATE) await router.push(`/egressos/${userId}`)

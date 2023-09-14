@@ -13,21 +13,21 @@ import {
   ToastContainer,
 } from '@components'
 import { FormControl, Grid, TextField } from '@mui/material'
-import GraduatesTable from '@modules/Egressos/GraduatesTable'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import { parseCookies } from 'nookies'
-import { getCNPQLevels } from '@modules/Levels/api'
+import { deleteCnpqLevel, getCNPQLevels, saveCNPQ, updateCNPQ } from '@modules/CNPQLevels/api'
 import { CNPQLevelInfo } from '@modules/WorkHistoryEdit'
-import { getAPIClient } from '../../../services/axios'
-
-const GRADUATE_API = process.env.GRADUATE_API
+import { getAPIClient } from '@services/axios'
+import { showErrorToast } from '@components/Toast'
+import { CustomTable } from '@components/Table'
 
 interface Props {
   cnpqLevels: CNPQLevelInfo[]
 }
 
 const Levels: React.FC = ({ cnpqLevels }: Props) => {
+  const apiClient = getAPIClient()
   const [currentLevel, setCurrentLevel] = useState<{
     id: null | string
     value: string
@@ -44,65 +44,39 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
     router.push('/gerenciamento')
   }
 
-  // const getCnpqLevels = async () => {
-  //   const response = await fetch(`${GRADUATE_API}/v1/cnpq_levels`, {
-  //     credentials: 'include',
-  //   })
-  //   const result = await response.json()
-  //   setCnpqLevels(result)
-  // }
-
-  const deleteCnpqLevel = async (id: string) => {
-    const myInit = {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    }
-    const response = await fetch(`${GRADUATE_API}/v1/cnpq_level/${id}`, myInit as RequestInit)
-    if (response.status < 300) {
+  const handleDeleteCnpqLevel = async (id: string) => {
+    try {
+      await deleteCnpqLevel(apiClient, id)
       showDeletedToast()
-      router.replace(router.asPath)
+      await router.replace(router.asPath)
+    } catch (e) {
+      showErrorToast('Erro ao buscar tipos de bolsa CNPQ')
     }
   }
 
-  const handleSaveCnpq = async () => {
-    const myInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ name: value }),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/cnpq_level`, myInit as RequestInit)
-    if (result) {
+  const handleSaveCNPQ = async () => {
+    try {
+      await saveCNPQ(apiClient, value)
       showSavedToast()
       setShow(false)
       setCurrentLevel({ id: null, value: '' })
-      router.replace(router.asPath)
+      await router.replace(router.asPath)
+    } catch (e) {
+      showErrorToast('Não foi possível salvar o nível CNPQ')
     }
   }
 
-  const handleUpdateCnpq = async () => {
-    const myInit = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ name: value }),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/cnpq_level/${id}`, myInit as RequestInit)
-    if (result) {
-      showSavedToast()
-      setShow(false)
-      setCurrentLevel({ id: null, value: '' })
-      router.replace(router.asPath)
+  const handleUpdateCNPQ = async () => {
+    if (id) {
+      try {
+        await updateCNPQ(apiClient, id, value)
+        showSavedToast()
+        setShow(false)
+        setCurrentLevel({ id: null, value: '' })
+        await router.replace(router.asPath)
+      } catch (e) {
+        showErrorToast('Não foi possível atualizar o nível CNPQ')
+      }
     }
   }
 
@@ -128,7 +102,7 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
           <ActionIcon onClick={() => handlerOpenEdit(level.id, level.name)}>
             <EditRoundedIcon />
           </ActionIcon>
-          <ActionIcon onClick={() => deleteCnpqLevel(level.id)}>
+          <ActionIcon onClick={() => handleDeleteCnpqLevel(level.id)}>
             <DeleteForeverRoundedIcon />
           </ActionIcon>
         </section>
@@ -146,7 +120,7 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
             </Grid>
             <ToastContainer />
             <Grid item xs={12}>
-              <GraduatesTable columns={columns} rows={rows} />
+              <CustomTable columns={columns} rows={rows} />
             </Grid>
             <Grid item>
               <Grid container columnSpacing={2}>
@@ -189,7 +163,7 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
           </FormControl>
         </Modal.Body>
         <Modal.Footer>
-          <Button type="submit" onClick={id ? handleUpdateCnpq : handleSaveCnpq}>
+          <Button type="submit" onClick={id ? handleUpdateCNPQ : handleSaveCNPQ}>
             Salvar
           </Button>
         </Modal.Footer>
@@ -209,12 +183,19 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
-  const levels = await getCNPQLevels(apiClient)
-
-  return {
-    props: {
-      cnpqLevels: levels ?? [],
-    },
+  try {
+    const levels = await getCNPQLevels(apiClient)
+    return {
+      props: {
+        cnpqLevels: levels ?? [],
+      },
+    }
+  } catch (e) {
+    return {
+      props: {
+        cnpqLevels: [],
+      },
+    }
   }
 }
 
