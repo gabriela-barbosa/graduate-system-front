@@ -43,7 +43,6 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
   const apiClient = getAPIClient()
   const [graduatesList, setGraduatesList] = useState(graduates)
   const [pagination, setPagination] = useState<PaginationType>(meta)
-  const defaultInstitutionType = { id: 0, label: 'Nenhum tipo de instituição selecionado' }
   const router = useRouter()
 
   const formContext = useForm()
@@ -183,7 +182,7 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
                         variant="standard"
                         name={'institutionType'}
                         label={'Tipo da instituição'}
-                        options={[defaultInstitutionType, ...institutionTypes]}
+                        options={institutionTypes}
                       />
                     </FormControl>
                   </Grid>
@@ -250,7 +249,6 @@ export async function getServerSideProps(ctx) {
 
   const { graduates, meta } = graduatesResponse as GraduatesListDetails
 
-  console.log(graduates)
   return {
     props: {
       graduates: graduates ?? [],

@@ -88,7 +88,6 @@ const AuthProvider = ({ children }) => {
     const { [USER_TOKEN_NAME]: token } = parseCookies()
 
     if (token || token === '') {
-      console.log('entrei no if token', token)
       getUser()
     }
   }, [])

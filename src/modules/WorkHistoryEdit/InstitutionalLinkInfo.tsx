@@ -177,7 +177,6 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
   // }
 
   const getSelectText = institutionItem => {
-    console.warn('select text', institutionItem)
     return `${institutionItem.institution.name} -${
       institutionItem.position ? ` ${institutionItem.position} -` : ''
     } ${(typeof institutionItem.startedAt === 'string'
@@ -288,13 +287,9 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
                       }}
                       multiple
                       onChange={({ target: { value } }) => {
-                        console.log('onChange', value)
-
                         const institutionalLinksUpdated = (value as number[]).map(
                           item => currentInstitutionalLinksOptions[item]
                         )
-
-                        console.log('institutionalLinksUpdated', institutionalLinksUpdated)
                         setCurrentInstitutionalLinks(institutionalLinksUpdated)
 
                         setCurrentInstitutionalLinksSelected(

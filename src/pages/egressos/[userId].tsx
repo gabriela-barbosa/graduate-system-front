@@ -103,7 +103,6 @@ const GraduateInfo = ({
   }, [graduateInfo])
 
   const onSend = async data => {
-    console.log('passei aqui', data)
     const {
       graduateId,
       graduateName,
