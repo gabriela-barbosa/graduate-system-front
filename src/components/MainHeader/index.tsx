@@ -12,6 +12,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { FormControl, IconButton, InputLabel, MenuItem } from '@mui/material'
 import { SelectMui } from '@components'
 import Head from 'next/head'
+import { getHomeUrlAccordingRole } from '@utils/functions'
 
 const MainHeader: React.FC = () => {
   const { user, currentRole, logout, updateCurrentRole } = useAuth()
@@ -29,7 +30,10 @@ const MainHeader: React.FC = () => {
       <Cabecalho>
         <Grid container spacing={2}>
           <Grid xs alignSelf="center">
-            <Link href="/egressos" passHref>
+            <Link
+              href={`${currentRole && user && getHomeUrlAccordingRole(currentRole, user.id)}`}
+              passHref
+            >
               <Image src={logo} width={108} alt="Logo IC-UFF" />
             </Link>
           </Grid>
