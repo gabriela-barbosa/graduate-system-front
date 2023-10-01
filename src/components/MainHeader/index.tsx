@@ -19,6 +19,8 @@ const MainHeader: React.FC = () => {
     Router.push('/gerenciamento')
   }
 
+  const userFirstName = user?.name.replace(/ .*/, '')
+
   return (
     <Header>
       <Head>
@@ -67,7 +69,8 @@ const MainHeader: React.FC = () => {
                 </ProfileIcon>
               </Grid>
               <Grid>
-                <Texto>Olá, {user?.name}!</Texto> <LogoutButton onClick={logout}>Sair</LogoutButton>
+                <Texto>Olá, {userFirstName}!</Texto>{' '}
+                <LogoutButton onClick={logout}>Sair</LogoutButton>
               </Grid>
 
               <Grid>
