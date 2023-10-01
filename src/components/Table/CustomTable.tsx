@@ -8,7 +8,7 @@ import {
   TableContainer,
   Paper,
 } from '@components'
-import { Fields } from '@styles/index.style'
+import { Fields, TypographyTableCell } from '@styles/index.style'
 
 type Align = 'inherit' | 'left' | 'center' | 'right' | 'justify'
 
@@ -53,9 +53,9 @@ const CustomTable = ({ columns, rows }: Props) => {
           {rows?.map((row, index) => (
             <TableRow key={index}>
               {row.map((field, i) => (
-                <TableCell key={`${index}-${i}`} align={field.align ?? 'left'} width={field.width}>
+                <TableCell key={`${index}-${i}`} align={field.align ?? 'left'}>
                   {isString(field.body) ? (
-                    <Fields>{field.body}</Fields>
+                    <TypographyTableCell>{field.body as string}</TypographyTableCell>
                   ) : (
                     <Fragment>{field.body} </Fragment>
                   )}

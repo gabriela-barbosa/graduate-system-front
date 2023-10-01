@@ -1,5 +1,6 @@
+import React from 'react'
 import styled from 'styled-components'
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import { theme } from './theme'
 
 const fontFamily = 'font-family: Roboto, sans-serif'
@@ -133,6 +134,33 @@ export const Fields = styled.p`
   color: ${({ status }: { status?: string }) =>
     status ? statusColor[status] : theme.palette.primary.main};
 `
+
+export const TypographyTableCell = ({
+  children,
+  status,
+  width = '250px',
+}: {
+  children: string
+  status?: string
+  width?: string
+}) => (
+  <Typography
+    sx={{
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      maxWidth: width,
+      borderStyle: 'border-box',
+      paddingTop: '5px',
+      paddingBottom: '15px',
+      fontSize: '16px',
+      lineHeight: '24px',
+      color: status ? statusColor[status] : theme.palette.primary.main,
+    }}
+  >
+    {children}
+  </Typography>
+)
 
 export const Subtitle = styled.h1`
   white-space: nowrap;

@@ -11,7 +11,7 @@ import Grid from '@mui/material/Grid'
 import FormControl from '@mui/material/FormControl'
 
 import { useRouter } from 'next/router'
-import { Fields, PageWrapper, Title } from '@styles/index.style'
+import { Fields, PageWrapper, Title, TypographyTableCell } from '@styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
 import { useForm } from 'react-hook-form'
 import { ListGraduatesFilters } from '@modules/Egressos/types'
@@ -108,7 +108,11 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
         body: graduate.name,
       },
       {
-        body: <Fields status={graduate.status}>{status[graduate.status]}</Fields>,
+        body: (
+          <TypographyTableCell status={graduate.status}>
+            {status[graduate.status]}
+          </TypographyTableCell>
+        ),
       },
       {
         body: graduate.workPlace?.name ?? '-',
