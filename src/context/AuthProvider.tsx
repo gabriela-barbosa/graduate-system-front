@@ -10,7 +10,7 @@ import { useRouter } from 'next/router'
 import { User } from '@context/AuthContext'
 import { Role, USER_TOKEN_NAME } from '@utils/enums'
 import { parseCookies, setCookie } from 'nookies'
-import { getAPIClient } from '../services/axios'
+import { getAPIClient } from '@services/axios'
 import { redirectAccordingRole } from '@utils/functions'
 
 const GRADUATE_API = process.env.GRADUATE_API

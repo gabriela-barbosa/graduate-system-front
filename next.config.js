@@ -3,6 +3,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 module.exports = {
   ...withBundleAnalyzer({}),
+  compiler: {
+    // Enables the styled-components SWC transform
+    styledComponents: true,
+  },
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,

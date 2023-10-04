@@ -1,27 +1,40 @@
-import React, { useEffect, useState } from 'react'
-import { Theme } from '@utils/enums'
+import React, { useState } from 'react'
+import { Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { Modal } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { useRouter } from 'next/router'
-import { Button, ToastContainer, ActionIcon, MainWrapper, toast } from '@components'
+import {
+  Button,
+  ToastContainer,
+  ActionIcon,
+  MainWrapper,
+  showSavedToast,
+  showDeletedToast,
+} from '@components'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
-import { FormControl, Grid, TextField } from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
+
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import GraduatesTable from '@components/Table/CustomTable'
-import { getAPIClient } from '../../../services/axios'
-import { PaginationType } from '@modules/Commons/types'
+import { getAPIClient } from '@services/axios'
+import { showEditedToast, showErrorToast } from '@components/Toast'
+import { deleteProgram, getPrograms, saveProgram, updateProgram } from '@modules/Programs/api'
+import { parseCookies } from 'nookies'
+import { CIProgramInfo } from '@modules/Programs/types'
 
-const GRADUATE_API = process.env.GRADUATE_API
-
-const Programs: React.FC = () => {
+interface Props {
+  programs: CIProgramInfo[]
+}
+const Programs = ({ programs }: Props) => {
   const [currentProgram, setCurrenProgram] = useState<{
     id: null | string
     value: string
   }>({ id: null, value: '' })
   const apiClient = getAPIClient()
-  const [programs, setPrograms] = useState<{ id: string; initials: string }[]>([])
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -33,69 +46,37 @@ const Programs: React.FC = () => {
     router.push('/gerenciamento')
   }
 
-  const savedToast = () => toast('Salvo com sucesso!')
-  const deletedToast = () => toast('Deletado com sucesso!')
-
-  const getPrograms = async () => {
+  const handleDeleteProgram = async (id: string) => {
     try {
-      const { data } = await apiClient.get('/v1/ciprograms')
-      setPrograms(data)
-    } catch (error) {
-      toast.error('Erro ao buscar programas.')
-    }
-  }
-
-  const deleteProgram = async (id: string) => {
-    const myInit = {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    }
-    const response = await fetch(`${GRADUATE_API}/v1/ciprogram/${id}`, myInit as RequestInit)
-    if (response.status < 400) {
-      await getPrograms()
-      deletedToast()
+      await deleteProgram(apiClient, id)
+      showDeletedToast()
+      await router.replace(router.asPath)
+    } catch (e) {
+      showErrorToast('Não foi possível excluir o programa. Tente novamente.')
     }
   }
 
   const handleSaveProgram = async () => {
-    const myInit = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ initials: value }),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/ciprogram`, myInit as RequestInit)
-    if (result) {
-      await getPrograms()
-      savedToast()
+    try {
+      await saveProgram(apiClient, value)
+      showSavedToast()
       setShow(false)
       setCurrenProgram({ id: null, value: '' })
+      await router.replace(router.asPath)
+    } catch (e) {
+      showErrorToast('Não foi possível salvar o programa. Tente novamente.')
     }
   }
 
   const handleUpdateProgram = async () => {
-    const myInit = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ initials: value }),
-    }
-    const result = await fetch(`${GRADUATE_API}/v1/ciprogram/${id}`, myInit as RequestInit)
-    if (result) {
-      savedToast()
+    try {
+      id && (await updateProgram(apiClient, id, value))
+      showEditedToast()
       setShow(false)
       setCurrenProgram({ id: null, value: '' })
-      await getPrograms()
+      await router.replace(router.asPath)
+    } catch (e) {
+      showErrorToast('Não foi possível atualizar o programa. Tente novamente.')
     }
   }
 
@@ -103,12 +84,6 @@ const Programs: React.FC = () => {
     setShow(true)
     setCurrenProgram({ id, value })
   }
-
-  useEffect(() => {
-    ;(async () => {
-      await getPrograms()
-    })()
-  }, [])
 
   const columns = [
     {
@@ -127,7 +102,7 @@ const Programs: React.FC = () => {
           <ActionIcon onClick={() => handlerOpenEdit(program.id, program.initials)}>
             <EditRoundedIcon />
           </ActionIcon>
-          <ActionIcon onClick={() => deleteProgram(program.id)}>
+          <ActionIcon onClick={() => handleDeleteProgram(program.id)}>
             <DeleteForeverRoundedIcon />
           </ActionIcon>
         </section>
@@ -202,6 +177,33 @@ const Programs: React.FC = () => {
       </Modal>
     </>
   )
+}
+
+export async function getServerSideProps(ctx) {
+  const apiClient = getAPIClient(ctx)
+  const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
+  if (!token) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+  try {
+    const programs = await getPrograms(apiClient)
+    return {
+      props: {
+        programs: programs ?? [],
+      },
+    }
+  } catch (e) {
+    return {
+      props: {
+        programs: [],
+      },
+    }
+  }
 }
 
 export default Programs
