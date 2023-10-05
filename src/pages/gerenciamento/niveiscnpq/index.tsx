@@ -19,7 +19,7 @@ import { parseCookies } from 'nookies'
 import { deleteCnpqLevel, getCNPQLevels, saveCNPQ, updateCNPQ } from '@modules/CNPQLevels/api'
 import { CNPQLevelInfo } from '@modules/WorkHistoryEdit'
 import { getAPIClient } from '@services/axios'
-import { showErrorToast } from '@components/Toast'
+import { showEditedToast, showErrorToast } from '@components/Toast'
 import { CustomTable } from '@components/Table'
 
 interface Props {
@@ -70,7 +70,7 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
     if (id) {
       try {
         await updateCNPQ(apiClient, id, value)
-        showSavedToast()
+        showEditedToast()
         setShow(false)
         setCurrentLevel({ id: null, value: '' })
         await router.replace(router.asPath)
