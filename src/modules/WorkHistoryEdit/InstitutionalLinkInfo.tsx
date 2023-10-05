@@ -225,7 +225,7 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
               ) : (
                 <Paper variant="outlined" sx={{ borderRadius: '8px', borderStyle: 'dashed' }}>
                   <Box sx={{ padding: 2 }}>
-                    <Label>Não há histórico vínculos institucionais.</Label>
+                    <Label>Não há histórico de vínculos institucionais.</Label>
                   </Box>
                 </Paper>
               )}
