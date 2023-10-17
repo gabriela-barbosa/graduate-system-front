@@ -25,10 +25,17 @@ import { showEditedToast, showErrorToast } from '@components/Toast'
 import { deleteProgram, getPrograms, saveProgram, updateProgram } from '@modules/Programs/api'
 import { parseCookies } from 'nookies'
 import { CIProgramInfo } from '@modules/Programs/types'
+import { DeleteModal } from '@components/DeleteModal'
 
 interface Props {
   programs: CIProgramInfo[]
 }
+
+interface DeleteItem {
+  id: string | undefined
+  value: string | undefined
+}
+
 const Programs = ({ programs }: Props) => {
   const [currentProgram, setCurrenProgram] = useState<{
     id: null | string
@@ -36,6 +43,8 @@ const Programs = ({ programs }: Props) => {
   }>({ id: null, value: '' })
   const apiClient = getAPIClient()
   const [show, setShow] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [deleteItem, setDeleteItem] = useState<DeleteItem>({ id: undefined, value: undefined })
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
 
@@ -94,15 +103,20 @@ const Programs = ({ programs }: Props) => {
     },
   ]
 
-  const rows = programs?.map(program => [
-    { body: program.initials },
+  const rows = programs?.map(({ initials, id }) => [
+    { body: initials },
     {
       body: (
         <section>
-          <ActionIcon onClick={() => handlerOpenEdit(program.id, program.initials)}>
+          <ActionIcon onClick={() => handlerOpenEdit(id, initials)}>
             <EditRoundedIcon />
           </ActionIcon>
-          <ActionIcon onClick={() => handleDeleteProgram(program.id)}>
+          <ActionIcon
+            onClick={async () => {
+              setDeleteItem({ id, value: initials })
+              setIsDeleteModalOpen(true)
+            }}
+          >
             <DeleteForeverRoundedIcon />
           </ActionIcon>
         </section>
@@ -147,6 +161,14 @@ const Programs = ({ programs }: Props) => {
           </Grid>
         </PageWrapper>
       </MainWrapper>
+
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
+        handleDelete={handleDeleteProgram}
+        id={deleteItem.id}
+        value={deleteItem.value}
+      />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
