@@ -22,14 +22,14 @@ import dayjs, { Dayjs } from 'dayjs'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import AddRounded from '@mui/icons-material/AddRounded'
 import { useAuth } from '@context/AuthProvider'
-import { Control, Controller, FieldValues, useController } from 'react-hook-form'
+import { Controller, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
 
 interface Props {
-  graduateInfo: GraduateWorkHistoriesInfo
   cnpqLevels: SelectItem[]
+  control: any
+  graduateInfo: GraduateWorkHistoriesInfo
   institutionTypes: Option[]
-  control: Control<FieldValues>
 }
 
 export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, control }: Props) => {

@@ -25,21 +25,21 @@ import { SelectItem } from '@utils/types'
 import { showErrorToast } from '@components/Toast'
 
 interface Props {
-  graduateInfo: GraduateWorkHistoriesInfo
-  institutionTypes: SelectItem[]
   cnpqLevels: SelectItem[]
-  hasCurrentWorkHistory: number
+  graduateInfo: GraduateWorkHistoriesInfo
   hasCurrentCNPQScholarship: number
+  hasCurrentWorkHistory: number
   hasPostDoctorate: number
+  institutionTypes: SelectItem[]
 }
 
 const GraduateInfo = ({
-  graduateInfo,
-  institutionTypes,
   cnpqLevels,
+  graduateInfo,
   hasCurrentCNPQScholarship,
-  hasPostDoctorate,
   hasCurrentWorkHistory,
+  hasPostDoctorate,
+  institutionTypes,
 }: Props) => {
   const router = useRouter()
 
@@ -51,15 +51,15 @@ const GraduateInfo = ({
     defaultValues: useMemo(() => {
       return {
         ...graduateInfo,
-        workHistories: [],
-        hasCurrentWorkHistory,
-        postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
-        hasCurrentCNPQScholarship,
-        hasPostDoctorate,
-        institutionalLinks: [],
-        currentInstitutionalLinks: [],
         cnpqScholarships: [],
         currentCNPQScholarships: [],
+        currentInstitutionalLinks: [],
+        hasCurrentCNPQScholarship,
+        hasCurrentWorkHistory,
+        hasPostDoctorate,
+        institutionalLinks: [],
+        postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
+        workHistories: [],
       }
     }, [graduateInfo]),
   })
@@ -86,15 +86,15 @@ const GraduateInfo = ({
   useEffect(() => {
     reset({
       ...graduateInfo,
-      postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
-      workHistories: [],
-      hasCurrentWorkHistory,
-      hasCurrentCNPQScholarship,
-      hasPostDoctorate,
-      institutionalLinks: [],
-      currentInstitutionalLinks: [],
       cnpqScholarships: [],
       currentCNPQScholarships: [],
+      currentInstitutionalLinks: [],
+      hasCurrentCNPQScholarship,
+      hasCurrentWorkHistory,
+      hasPostDoctorate,
+      institutionalLinks: [],
+      postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
+      workHistories: [],
     })
   }, [graduateInfo])
 
@@ -112,19 +112,13 @@ const GraduateInfo = ({
       hasCurrentCNPQScholarship,
       hasPostDoctorate,
       institutionalLinks,
-      // currentInstitutionalLinks,
-      // currentCNPQScholarships,
     } = data
 
     const body = {
-      graduateName,
-      email,
-      successCase,
-      workHistories: institutionalLinks,
       cnpqScholarships,
-      postDoctorate: hasPostDoctorate === 1 ? postDoctorate : null,
+      email,
+      graduateName,
       hasCurrentCNPQScholarship: transformNumberToValue(hasCurrentCNPQScholarship),
-      hasPostDoctorate: transformNumberToValue(hasPostDoctorate),
       hasCurrentWorkHistory: transformNumberToValue(hasCurrentWorkHistory),
       hasFinishedDoctorateOnUFF: hasFinishedDoctorateOnUFF
         ? hasFinishedDoctorateOnUFF === 'true'
@@ -132,6 +126,10 @@ const GraduateInfo = ({
       hasFinishedMasterDegreeOnUFF: hasFinishedMasterDegreeOnUFF
         ? hasFinishedMasterDegreeOnUFF === 'true'
         : graduateInfo?.hasFinishedMasterDegreeOnUFF,
+      hasPostDoctorate: transformNumberToValue(hasPostDoctorate),
+      postDoctorate: hasPostDoctorate === 1 ? postDoctorate : null,
+      successCase,
+      workHistories: institutionalLinks,
     }
 
     const apiClient = getAPIClient()
