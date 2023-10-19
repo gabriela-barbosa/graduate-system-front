@@ -4,16 +4,13 @@ import { GraduatesListDetails } from '@modules/GraduatesList/types'
 
 const pageSize = 10
 
-const isValid = (value?: string) => value && value !== ''
+const isValid = (value?: string) => value && value !== '' && value !== '0'
 
 const getFilledFilters = (filters?: ListGraduatesFilters) => {
-  const { name, institutionType, institutionName } = filters ?? {}
   const arrayFilter: string[][] = []
-  if (isValid(name)) arrayFilter.push(['name', name as string])
-  // eslint-disable-next-line eqeqeq
-  if (institutionType && institutionType !== '0')
-    arrayFilter.push(['institutionType', institutionType])
-  if (isValid(institutionName)) arrayFilter.push(['institutionName', institutionName as string])
+  for (const [key, value] of Object.entries(filters ?? {})) {
+    if (isValid(value)) arrayFilter.push([key, value as string])
+  }
   return arrayFilter
 }
 

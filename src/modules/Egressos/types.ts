@@ -2,6 +2,7 @@ export interface ListGraduatesFilters {
   name: string
   institutionName: string
   institutionType: string
+  advisorName: string
 }
 
 interface WorkHistoryInfo {

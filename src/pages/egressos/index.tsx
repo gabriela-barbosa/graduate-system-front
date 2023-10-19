@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { MainWrapper, Input, Select, Button, ActionIcon } from '@components'
-import { Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { ActionIcon, Button, Input, MainWrapper, Select } from '@components'
+import { Role, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
@@ -24,6 +24,7 @@ import { getGraduates } from '@modules/GraduatesList/api'
 import { GraduatesListDetails } from '@modules/GraduatesList/types'
 import { toast } from 'react-toastify'
 import { SelectItem } from '@utils/types'
+import { useAuth } from '@context/AuthProvider'
 
 const pageSize = 10
 
@@ -44,6 +45,8 @@ const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
   const [graduatesList, setGraduatesList] = useState<Graduate[]>(graduates)
   const [pagination, setPagination] = useState<PaginationType>(meta)
   const router = useRouter()
+  const { currentRole } = useAuth()
+  const isUserAdmin = currentRole === Role.ADMIN
 
   const formContext = useForm()
   const { getValues, reset } = formContext
@@ -97,7 +100,7 @@ const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
     { name: 'Nome' },
     { name: 'Status' },
     { name: 'Último Local de Trabalho' },
-    { name: 'Nome do orientador' },
+    { name: isUserAdmin ? 'Nome do orientador' : 'Tipo de Instituição' },
     { name: 'Último Cargo' },
     { name: 'Editar', width: '10%' },
   ]
@@ -118,7 +121,10 @@ const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
         body: graduate.workPlace?.name ?? '-',
       },
       {
-        body: graduate.advisors.join(', ') ?? '-',
+        body:
+          currentRole === Role.ADMIN
+            ? graduate.advisors.join(', ') ?? '-'
+            : graduate.workPlace?.type ?? '-',
       },
       {
         body: graduate.position ?? '-',
@@ -182,12 +188,16 @@ const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
                     }}
                   >
                     <FormControl fullWidth>
-                      <Select
-                        variant="standard"
-                        name={'institutionType'}
-                        label={'Tipo da instituição'}
-                        options={institutionTypes}
-                      />
+                      {isUserAdmin ? (
+                        <Input variant="standard" label="Nome do orientador" name="advisorName" />
+                      ) : (
+                        <Select
+                          variant="standard"
+                          name={'institutionType'}
+                          label={'Tipo da instituição'}
+                          options={institutionTypes}
+                        />
+                      )}
                     </FormControl>
                   </Grid>
                   <Grid item alignSelf={'center'}>
