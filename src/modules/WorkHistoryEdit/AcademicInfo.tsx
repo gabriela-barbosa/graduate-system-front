@@ -77,8 +77,6 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
     name: 'hasPostDoctorate',
   })
 
-  console.warn(hasPostDoctorate)
-
   const getSelectText = scholarship => {
     return `${
       cnpqLevels.find(type => type.id === scholarship.levelId)?.label
@@ -291,7 +289,6 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                           name={'hasPostDoctorate'}
                           value={value}
                           onChange={({ target }) => {
-                            console.warn('onChange', target.value)
                             const value = parseInt(target.value)
                             onChange(value)
                           }}
@@ -324,7 +321,6 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                           value={value}
                           onChange={value => {
                             onChange(value)
-                            console.log('error name', error, !!error)
                           }}
                           // parseError={() => 'Campo obrigatório.'}
                           error={!!error}
