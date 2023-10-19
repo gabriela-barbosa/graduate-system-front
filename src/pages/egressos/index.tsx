@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { Fields, PageWrapper, Title, TypographyTableCell } from '@styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
 import { useForm } from 'react-hook-form'
-import { ListGraduatesFilters } from '@modules/Egressos/types'
+import { Graduate, HISTORY_STATUS, ListGraduatesFilters } from '@modules/Egressos/types'
 import GraduatesTable from '@components/Table/CustomTable'
 import { parseCookies } from 'nookies'
 import { getAPIClient } from '@services/axios'
@@ -23,25 +23,25 @@ import { PaginationType } from '@modules/Commons/types'
 import { getGraduates } from '@modules/GraduatesList/api'
 import { GraduatesListDetails } from '@modules/GraduatesList/types'
 import { toast } from 'react-toastify'
+import { SelectItem } from '@utils/types'
 
 const pageSize = 10
 
 const status = {
-  PENDING: 'Pendente',
-  UPDATED: 'Atualizado',
-  UPDATED_PARTIALLY: 'Atualizado parcialmente',
-  UNKNOWN: 'Desconhecido',
+  [HISTORY_STATUS.PENDING]: 'Pendente',
+  [HISTORY_STATUS.UPDATED]: 'Atualizado',
+  [HISTORY_STATUS.UPDATED_PARTIALLY]: 'Atualizado parcialmente',
 }
 
 interface Props {
-  graduates: any[]
-  institutionTypes: any[]
+  graduates: Graduate[]
+  institutionTypes: SelectItem[]
   meta: PaginationType
 }
 
-const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) => {
+const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
   const apiClient = getAPIClient()
-  const [graduatesList, setGraduatesList] = useState(graduates)
+  const [graduatesList, setGraduatesList] = useState<Graduate[]>(graduates)
   const [pagination, setPagination] = useState<PaginationType>(meta)
   const router = useRouter()
 
@@ -97,7 +97,7 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
     { name: 'Nome' },
     { name: 'Status' },
     { name: 'Último Local de Trabalho' },
-    { name: 'Tipo de Instituição' },
+    { name: 'Nome do orientador' },
     { name: 'Último Cargo' },
     { name: 'Editar', width: '10%' },
   ]
@@ -118,7 +118,7 @@ const GraduateList = ({ meta, graduates = [], institutionTypes = [] }: Props) =>
         body: graduate.workPlace?.name ?? '-',
       },
       {
-        body: graduate.workPlace?.type ?? '-',
+        body: graduate.advisors.join(', ') ?? '-',
       },
       {
         body: graduate.position ?? '-',
@@ -257,7 +257,7 @@ export async function getServerSideProps(ctx) {
     props: {
       graduates: graduates ?? [],
       meta,
-      institutionTypes,
+      institutionTypes: institutionTypes ?? [],
     },
   }
 }

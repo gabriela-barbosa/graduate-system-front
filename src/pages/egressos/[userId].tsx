@@ -19,7 +19,7 @@ import {
   InstitutionalLinkInfo,
   PersonalInfo,
 } from '@modules/WorkHistoryEdit'
-import { getAPIClient } from '../../services/axios'
+import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { SelectItem } from '@utils/types'
 import { showErrorToast } from '@components/Toast'
@@ -41,10 +41,6 @@ const GraduateInfo = ({
   hasPostDoctorate,
   hasCurrentWorkHistory,
 }: Props) => {
-  const isWorkHistoryPending = graduateInfo.pendingFields.indexOf('workHistory') !== -1
-  const isCNPQScholarshipPending = graduateInfo.pendingFields.indexOf('cnpqScholarship') !== -1
-  const isPostDoctoratePending = graduateInfo.pendingFields.indexOf('postDoctorate') !== -1
-
   const router = useRouter()
 
   const { currentRole } = useAuth()
@@ -92,9 +88,9 @@ const GraduateInfo = ({
       ...graduateInfo,
       postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
       workHistories: [],
-      hasCurrentWorkHistory: isWorkHistoryPending ? -1 : 1,
-      hasCurrentCNPQScholarship: isCNPQScholarshipPending ? -1 : 1,
-      hasPostDoctorate: isPostDoctoratePending ? -1 : 1,
+      hasCurrentWorkHistory,
+      hasCurrentCNPQScholarship,
+      hasPostDoctorate,
       institutionalLinks: [],
       currentInstitutionalLinks: [],
       cnpqScholarships: [],
@@ -288,14 +284,18 @@ export async function getServerSideProps(ctx) {
       : 1
   }
 
+  const hasCurrentCNPQScholarship = getIfHasField(Fields.CNPQ_SCHOLARSHIP)
+  const hasPostDoctorate = getIfHasField(Fields.POST_DOCTORATE)
+  const hasCurrentWorkHistory = getIfHasField(Fields.WORK_HISTORY)
+
   return {
     props: {
       graduateInfo,
       institutionTypes,
       cnpqLevels,
-      hasCurrentCNPQScholarship: getIfHasField(Fields.CNPQ_SCHOLARSHIP),
-      hasPostDoctorate: getIfHasField(Fields.POST_DOCTORATE),
-      hasCurrentWorkHistory: getIfHasField(Fields.WORK_HISTORY),
+      hasCurrentCNPQScholarship,
+      hasPostDoctorate,
+      hasCurrentWorkHistory,
     },
   }
 }

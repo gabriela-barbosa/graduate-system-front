@@ -22,14 +22,14 @@ import dayjs, { Dayjs } from 'dayjs'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import AddRounded from '@mui/icons-material/AddRounded'
 import { useAuth } from '@context/AuthProvider'
-import { Control, Controller, useController } from 'react-hook-form'
+import { Control, Controller, FieldValues, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
 
 interface Props {
   graduateInfo: GraduateWorkHistoriesInfo
   cnpqLevels: SelectItem[]
   institutionTypes: Option[]
-  control: Control<any>
+  control: Control<FieldValues>
 }
 
 export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, control }: Props) => {
@@ -75,13 +75,9 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
   } = useController({
     control,
     name: 'hasPostDoctorate',
-    rules: {
-      validate: value => {
-        if (value === 1) if (value === 0) return currentScholarshipsOptions?.length === 0
-        return true
-      },
-    },
   })
+
+  console.warn(hasPostDoctorate)
 
   const getSelectText = scholarship => {
     return `${
@@ -295,6 +291,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                           name={'hasPostDoctorate'}
                           value={value}
                           onChange={({ target }) => {
+                            console.warn('onChange', target.value)
                             const value = parseInt(target.value)
                             onChange(value)
                           }}

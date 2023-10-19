@@ -26,14 +26,10 @@ import { deleteProgram, getPrograms, saveProgram, updateProgram } from '@modules
 import { parseCookies } from 'nookies'
 import { CIProgramInfo } from '@modules/Programs/types'
 import { DeleteModal } from '@components/DeleteModal'
+import { DeleteItem } from '@components/DeleteModal/types'
 
 interface Props {
   programs: CIProgramInfo[]
-}
-
-interface DeleteItem {
-  id: string | undefined
-  value: string | undefined
 }
 
 const Programs = ({ programs }: Props) => {
@@ -89,6 +85,11 @@ const Programs = ({ programs }: Props) => {
     }
   }
 
+  const onClickDelete = (id: string | undefined, value: string) => {
+    setDeleteItem({ id, value })
+    setIsDeleteModalOpen(true)
+  }
+
   const handlerOpenEdit = (id: string, value: string) => {
     setShow(true)
     setCurrenProgram({ id, value })
@@ -113,8 +114,7 @@ const Programs = ({ programs }: Props) => {
           </ActionIcon>
           <ActionIcon
             onClick={async () => {
-              setDeleteItem({ id, value: initials })
-              setIsDeleteModalOpen(true)
+              onClickDelete(id, initials)
             }}
           >
             <DeleteForeverRoundedIcon />

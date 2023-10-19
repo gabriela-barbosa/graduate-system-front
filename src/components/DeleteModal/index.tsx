@@ -3,6 +3,7 @@ import React from 'react'
 import { Button } from '@components'
 import { Modal } from 'react-bootstrap'
 import { ModalTextField } from '@components/DeleteModal/index.styles'
+import { DeleteItem } from './types'
 
 interface Props {
   isOpen: boolean
@@ -11,7 +12,7 @@ interface Props {
   id: string | undefined
   value: string | undefined
 }
-export const DeleteModal = ({ isOpen, setIsOpen, handleDelete, id, value }: Props) => {
+const DeleteModal = ({ isOpen, setIsOpen, handleDelete, id, value }: Props) => {
   const onModalClose = () => setIsOpen(false)
 
   const handleConfirm = async () => {
@@ -53,3 +54,6 @@ export const DeleteModal = ({ isOpen, setIsOpen, handleDelete, id, value }: Prop
     </Modal>
   )
 }
+
+export { DeleteModal }
+export type { DeleteItem }

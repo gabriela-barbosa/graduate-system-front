@@ -21,6 +21,7 @@ import { CNPQLevelInfo } from '@modules/WorkHistoryEdit'
 import { getAPIClient } from '@services/axios'
 import { showEditedToast, showErrorToast } from '@components/Toast'
 import { CustomTable } from '@components/Table'
+import { DeleteItem, DeleteModal } from '@components/DeleteModal'
 
 interface Props {
   cnpqLevels: CNPQLevelInfo[]
@@ -33,6 +34,9 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
     value: string
   }>({ id: null, value: '' })
   const [show, setShow] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [deleteItem, setDeleteItem] = useState<DeleteItem>({ id: undefined, value: undefined })
+
   const router = useRouter()
 
   const { id, value } = currentLevel
@@ -42,6 +46,11 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
 
   const onClickBack = () => {
     router.push('/gerenciamento')
+  }
+
+  const onClickDelete = (id: string | undefined, value: string) => {
+    setDeleteItem({ id, value })
+    setIsDeleteModalOpen(true)
   }
 
   const handleDeleteCnpqLevel = async (id: string) => {
@@ -94,15 +103,15 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
     },
   ]
 
-  const rows = cnpqLevels?.map(level => [
-    { body: level.name },
+  const rows = cnpqLevels?.map(({ id, name }) => [
+    { body: name },
     {
       body: (
         <section>
-          <ActionIcon onClick={() => handlerOpenEdit(level.id, level.name)}>
+          <ActionIcon onClick={() => handlerOpenEdit(id, name)}>
             <EditRoundedIcon />
           </ActionIcon>
-          <ActionIcon onClick={() => handleDeleteCnpqLevel(level.id)}>
+          <ActionIcon onClick={() => onClickDelete(id, name)}>
             <DeleteForeverRoundedIcon />
           </ActionIcon>
         </section>
@@ -146,6 +155,14 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
           </Grid>
         </PageWrapper>
       </MainWrapper>
+
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
+        handleDelete={handleDeleteCnpqLevel}
+        id={deleteItem.id}
+        value={deleteItem.value}
+      />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

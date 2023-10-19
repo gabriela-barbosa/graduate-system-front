@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { ActionIcon, Button, MainWrapper, showSavedToast, ToastContainer } from '@components'
+import { ActionIcon, Button, Input, MainWrapper, showSavedToast, ToastContainer } from '@components'
 import { RoleTranslation, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { Grid, Pagination } from '@mui/material'
@@ -14,6 +14,12 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import { getUsers } from '@modules/UserList/api'
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
+import FormControl from '@mui/material/FormControl'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
+import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
+import { useForm } from 'react-hook-form'
+import { FormContainer } from 'react-hook-form-mui'
+import { toast } from 'react-toastify'
 
 const pageSize = 10
 
@@ -28,6 +34,8 @@ const UserList = ({ users, meta }: Props) => {
   const [currentUser, setCurrentUser] = useState<User>({} as User)
   const [show, setShow] = useState(false)
   const router = useRouter()
+  const formContext = useForm()
+  const { getValues, reset } = formContext
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -40,9 +48,9 @@ const UserList = ({ users, meta }: Props) => {
     setPagination(meta)
   }, [users, meta])
 
-  const handleGetUsers = async (page: number) => {
+  const handleGetUsers = async (page: number, name?: string) => {
     try {
-      const { meta, data } = await getUsers(apiClient, page, pageSize)
+      const { meta, data } = await getUsers(apiClient, page, pageSize, name)
       setUsersList(data)
       setPagination(meta)
     } catch (e) {
@@ -60,7 +68,8 @@ const UserList = ({ users, meta }: Props) => {
     showErrorToast('Erro ao cadastrar/atualizar usuário')
   }
   const onChangePagination = async (event, value) => {
-    await handleGetUsers(value)
+    const name = getValues('name')
+    await handleGetUsers(value, name)
   }
 
   const setCurrentUserEmpty = () => {
@@ -106,49 +115,81 @@ const UserList = ({ users, meta }: Props) => {
       ),
     },
   ])
+
+  const onSend = async ({ name }) => {
+    try {
+      await handleGetUsers(1, name)
+    } catch (e) {
+      toast.error('Erro ao buscar usuários.')
+    }
+  }
+
+  const onClean = async () => {
+    reset()
+    handleGetUsers(1)
+  }
   return (
     <>
       <MainWrapper themeName={Theme.white} hasContent hasHeader>
-        <PageWrapper>
-          <Grid container rowSpacing={2}>
-            <Grid item xs={12}>
-              <Title>Atualizar Informações de Usuário</Title>
-            </Grid>
-            <Grid item xs={12} minHeight={510}>
-              <CustomTable columns={columns} rows={rows} />
-            </Grid>
-            <Grid item xs={12}>
-              {pagination && (
-                <Pagination
-                  count={Math.ceil(pagination.total / pageSize)}
-                  page={pagination.page + 1}
-                  onChange={onChangePagination}
-                />
-              )}
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container columnSpacing={2}>
-                <Grid item>
-                  <Button
-                    size={'large'}
-                    variant={'contained'}
-                    onClick={() => {
-                      setCurrentUserEmpty()
-                      handleShow()
-                    }}
-                  >
-                    Criar Usuário
+        <PageWrapper spacing={2} container direction="column">
+          <Grid item xs={12}>
+            <Title>Atualizar Informações de Usuário</Title>
+          </Grid>
+          <Grid item xs={12} minHeight={510}>
+            <FormContainer formContext={formContext} onSuccess={onSend}>
+              <Grid container spacing={3}>
+                <Grid item sx={{ width: '350px' }}>
+                  <FormControl fullWidth>
+                    <Input variant="standard" label="Nome do egresso" name="name" />
+                  </FormControl>
+                </Grid>
+                <Grid item alignSelf={'center'}>
+                  <Button size={'large'} variant="contained" type="submit">
+                    <SearchRoundedIcon />
+                  </Button>
+                </Grid>
+                <Grid item alignSelf={'center'}>
+                  <Button size={'large'} variant="outlined" onClick={onClean}>
+                    <ClearRoundedIcon />
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
-                    Voltar
-                  </Button>
+                  <CustomTable columns={columns} rows={rows} />
                 </Grid>
               </Grid>
-            </Grid>
-            <ToastContainer />
+            </FormContainer>
           </Grid>
+          <Grid item xs={12}>
+            {pagination && (
+              <Pagination
+                count={Math.ceil(pagination.total / pageSize)}
+                page={pagination.page + 1}
+                onChange={onChangePagination}
+              />
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container columnSpacing={2}>
+              <Grid item>
+                <Button
+                  size={'large'}
+                  variant={'contained'}
+                  onClick={() => {
+                    setCurrentUserEmpty()
+                    handleShow()
+                  }}
+                >
+                  Criar Usuário
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                  Voltar
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+          <ToastContainer />
         </PageWrapper>
       </MainWrapper>
       <EditAddUserModal

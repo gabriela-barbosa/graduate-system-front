@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Grid, Typography } from '@mui/material'
 import { theme } from './theme'
+import { HISTORY_STATUS } from '@modules/Egressos/types'
 
 const fontFamily = 'font-family: Roboto, sans-serif'
 
@@ -117,12 +118,10 @@ export const Background = styled.div`
 export const Row = styled.div`
   padding-top: 15px;
 `
-
 const statusColor = {
-  PENDING: '#e11818',
-  UPDATED: '#5BAFC9',
-  UPDATED_PARTIALLY: '#DCB552',
-  UNKNOWN: '#808080D3',
+  [HISTORY_STATUS.PENDING]: '#e11818',
+  [HISTORY_STATUS.UPDATED]: '#5BAFC9',
+  [HISTORY_STATUS.UPDATED_PARTIALLY]: '#DCB552',
 }
 
 export const Fields = styled.p`
@@ -135,15 +134,12 @@ export const Fields = styled.p`
     status ? statusColor[status] : theme.palette.primary.main};
 `
 
-export const TypographyTableCell = ({
-  children,
-  status,
-  width = '250px',
-}: {
-  children: string
-  status?: string
+interface TableCellProps {
+  children: React.ReactNode
+  status?: HISTORY_STATUS
   width?: string
-}) => (
+}
+export const TypographyTableCell = ({ children, status, width = '250px' }: TableCellProps) => (
   <Typography
     sx={{
       textOverflow: 'ellipsis',

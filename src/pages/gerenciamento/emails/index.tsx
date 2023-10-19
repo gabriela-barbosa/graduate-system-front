@@ -25,7 +25,7 @@ import {
   RadioGroup,
   TextField,
 } from '@mui/material'
-import { getAPIClient } from '../../../services/axios'
+import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { deleteEmail, getEmails, saveEmail, updateEmail } from '@modules/Emails/api'
 import { Email } from '@modules/Emails/types'
@@ -34,6 +34,7 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import GraduatesTable from '@components/Table/CustomTable'
 import { showErrorToast } from '@components/Toast'
+import { DeleteModal, DeleteItem } from '@components/DeleteModal'
 
 const pageSize = 10
 
@@ -67,6 +68,8 @@ const EmailConfig = ({ emails, meta }: Props) => {
     active: false,
   })
   const [show, setShow] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [deleteItem, setDeleteItem] = useState<DeleteItem>({ id: undefined, value: undefined })
   const router = useRouter()
 
   const { id } = currentEmail
@@ -140,6 +143,11 @@ const EmailConfig = ({ emails, meta }: Props) => {
     setPreviousEmail(current)
   }
 
+  const onClickDelete = (id: string | undefined, value: string) => {
+    setDeleteItem({ id, value })
+    setIsDeleteModalOpen(true)
+  }
+
   const columns = [
     { name: 'Nome' },
     { name: 'Tipo do Email' },
@@ -165,7 +173,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
               <EditRoundedIcon />
             </ActionIcon>
             {email.id && (
-              <ActionIcon onClick={() => handleDeleteEmail(email.id as string)}>
+              <ActionIcon onClick={() => onClickDelete(email.id, email.name)}>
                 <DeleteForeverRoundedIcon />
               </ActionIcon>
             )}
@@ -220,6 +228,14 @@ const EmailConfig = ({ emails, meta }: Props) => {
           </Grid>
         </PageWrapper>
       </MainWrapper>
+
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
+        handleDelete={handleDeleteEmail}
+        id={deleteItem.id}
+        value={deleteItem.value}
+      />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

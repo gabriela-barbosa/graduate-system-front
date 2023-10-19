@@ -26,6 +26,7 @@ import {
 import { showErrorToast } from '@components/Toast'
 import { InstitutionType } from '@modules/Institutions/types'
 import { CustomTable } from '@components/Table'
+import { DeleteItem, DeleteModal } from '@components/DeleteModal'
 
 interface Props {
   institutionTypes: InstitutionType[]
@@ -37,6 +38,9 @@ const Institutions = ({ institutionTypes }: Props) => {
     name: '',
   })
   const [show, setShow] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [deleteItem, setDeleteItem] = useState<DeleteItem>({ id: undefined, value: undefined })
+
   const router = useRouter()
 
   const handleClose = () => setShow(false)
@@ -93,15 +97,20 @@ const Institutions = ({ institutionTypes }: Props) => {
     },
   ]
 
-  const rows = institutionTypes?.map(program => [
-    { body: program.name },
+  const onClickDelete = (id: string | undefined, value: string) => {
+    setDeleteItem({ id, value })
+    setIsDeleteModalOpen(true)
+  }
+
+  const rows = institutionTypes?.map(({ id, name }) => [
+    { body: name },
     {
       body: (
         <section>
-          <ActionIcon onClick={() => handlerOpenEdit(program.id as string, program.name)}>
+          <ActionIcon onClick={() => handlerOpenEdit(id as string, name)}>
             <EditRoundedIcon />
           </ActionIcon>
-          <ActionIcon onClick={() => handleDeleteInstitutionType(program.id as string)}>
+          <ActionIcon onClick={() => onClickDelete(id, name)}>
             <DeleteForeverRoundedIcon />
           </ActionIcon>
         </section>
@@ -145,6 +154,14 @@ const Institutions = ({ institutionTypes }: Props) => {
           </Grid>
         </PageWrapper>
       </MainWrapper>
+
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        setIsOpen={setIsDeleteModalOpen}
+        handleDelete={handleDeleteInstitutionType}
+        id={deleteItem.id}
+        value={deleteItem.value}
+      />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
