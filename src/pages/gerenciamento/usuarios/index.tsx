@@ -27,6 +27,12 @@ interface Props {
   users: User[]
   meta: PaginationType
 }
+
+interface FormInfo {
+  name?: string
+  email?: string
+}
+
 const UserList = ({ users, meta }: Props) => {
   const apiClient = getAPIClient()
   const [usersList, setUsersList] = useState<User[]>(users)
@@ -48,9 +54,9 @@ const UserList = ({ users, meta }: Props) => {
     setPagination(meta)
   }, [users, meta])
 
-  const handleGetUsers = async (page: number, name?: string) => {
+  const handleGetUsers = async (page: number, formInfo?: FormInfo) => {
     try {
-      const { meta, data } = await getUsers(apiClient, page, pageSize, name)
+      const { meta, data } = await getUsers(apiClient, page, pageSize, formInfo)
       setUsersList(data)
       setPagination(meta)
     } catch (e) {
@@ -67,9 +73,9 @@ const UserList = ({ users, meta }: Props) => {
   const onFail = () => {
     showErrorToast('Erro ao cadastrar/atualizar usuário')
   }
-  const onChangePagination = async (event, value) => {
-    const name = getValues('name')
-    await handleGetUsers(value, name)
+  const onChangePagination = async (event: any, value: number) => {
+    const form = getValues()
+    await handleGetUsers(value, form)
   }
 
   const setCurrentUserEmpty = () => {
@@ -116,9 +122,9 @@ const UserList = ({ users, meta }: Props) => {
     },
   ])
 
-  const onSend = async ({ name }) => {
+  const onSend = async (form: FormInfo) => {
     try {
-      await handleGetUsers(1, name)
+      await handleGetUsers(1, form)
     } catch (e) {
       toast.error('Erro ao buscar usuários.')
     }
@@ -126,7 +132,7 @@ const UserList = ({ users, meta }: Props) => {
 
   const onClean = async () => {
     reset()
-    handleGetUsers(1)
+    await handleGetUsers(1)
   }
   return (
     <>
@@ -140,7 +146,12 @@ const UserList = ({ users, meta }: Props) => {
               <Grid container spacing={3}>
                 <Grid item sx={{ width: '350px' }}>
                   <FormControl fullWidth>
-                    <Input variant="standard" label="Nome do egresso" name="name" />
+                    <Input variant="standard" label="Nome" name="name" />
+                  </FormControl>
+                </Grid>
+                <Grid item sx={{ width: '350px' }}>
+                  <FormControl fullWidth>
+                    <Input variant="standard" label="Email" name="email" />
                   </FormControl>
                 </Grid>
                 <Grid item alignSelf={'center'}>

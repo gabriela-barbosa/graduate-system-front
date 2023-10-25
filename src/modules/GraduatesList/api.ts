@@ -21,6 +21,7 @@ export const getGraduates = async (
 ): Promise<GraduatesListDetails> => {
   const filledFilters = getFilledFilters(filters)
   filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])
+  console.log(filledFilters)
   const { data } = await apiClient.get('/v1/graduates?' + new URLSearchParams(filledFilters))
   const { data: graduates, meta } = data
   return {

@@ -3,6 +3,8 @@ export interface ListGraduatesFilters {
   institutionName: string
   institutionType: string
   advisorName: string
+  position: string
+  cnpqLevel: string
 }
 
 interface WorkHistoryInfo {

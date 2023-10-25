@@ -18,7 +18,7 @@ import { Graduate, HISTORY_STATUS, ListGraduatesFilters } from '@modules/Egresso
 import GraduatesTable from '@components/Table/CustomTable'
 import { parseCookies } from 'nookies'
 import { getAPIClient } from '@services/axios'
-import { getInstitutionTypes } from '@modules/WorkHistoryEdit'
+import { getCNPQLevels, getInstitutionTypes } from '@modules/WorkHistoryEdit'
 import { PaginationType } from '@modules/Commons/types'
 import { getGraduates } from '@modules/GraduatesList/api'
 import { GraduatesListDetails } from '@modules/GraduatesList/types'
@@ -38,9 +38,10 @@ interface Props {
   graduates: Graduate[]
   institutionTypes: SelectItem[]
   meta: PaginationType
+  cnpqLevels: SelectItem[]
 }
 
-const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
+const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) => {
   const apiClient = getAPIClient()
   const [graduatesList, setGraduatesList] = useState<Graduate[]>(graduates)
   const [pagination, setPagination] = useState<PaginationType>(meta)
@@ -100,8 +101,9 @@ const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
     { name: 'Nome' },
     { name: 'Status' },
     { name: 'Último Local de Trabalho' },
-    { name: isUserAdmin ? 'Nome do orientador' : 'Tipo de Instituição' },
+    ...(!isUserAdmin ? [{ name: 'Tipo de Instituição' }] : []),
     { name: 'Último Cargo' },
+    ...(isUserAdmin ? [{ name: 'Nome do orientador' }] : []),
     { name: 'Editar', width: '10%' },
   ]
 
@@ -120,15 +122,11 @@ const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
       {
         body: graduate.workPlace?.name ?? '-',
       },
-      {
-        body:
-          currentRole === Role.ADMIN
-            ? graduate.advisors.join(', ') ?? '-'
-            : graduate.workPlace?.type ?? '-',
-      },
+      ...(!isUserAdmin ? [{ body: graduate.workPlace?.type ?? '-' }] : []),
       {
         body: graduate.position ?? '-',
       },
+      ...(isUserAdmin ? [{ body: graduate.advisors.join(', ') ?? '-' }] : []),
       {
         body: (
           <ActionIcon onClick={() => onClickEdit(graduate)}>
@@ -188,18 +186,52 @@ const GraduateList = ({ meta, graduates, institutionTypes }: Props) => {
                     }}
                   >
                     <FormControl fullWidth>
-                      {isUserAdmin ? (
-                        <Input variant="standard" label="Nome do orientador" name="advisorName" />
-                      ) : (
-                        <Select
-                          variant="standard"
-                          name={'institutionType'}
-                          label={'Tipo da instituição'}
-                          options={institutionTypes}
-                        />
-                      )}
+                      <Select
+                        variant="standard"
+                        name={'institutionType'}
+                        label={'Tipo da instituição'}
+                        options={institutionTypes}
+                      />
                     </FormControl>
                   </Grid>
+                  <Grid
+                    item
+                    sx={{
+                      width: '350px',
+                    }}
+                  >
+                    <FormControl fullWidth>
+                      <Input variant="standard" label="Cargo atual" name="position" />
+                    </FormControl>
+                  </Grid>
+                  {isUserAdmin && (
+                    <Grid
+                      item
+                      sx={{
+                        width: '350px',
+                      }}
+                    >
+                      <FormControl fullWidth>
+                        <Input variant="standard" label="Nome do orientador" name="advisorName" />
+                      </FormControl>
+                    </Grid>
+                  )}
+                  <Grid
+                    item
+                    sx={{
+                      width: '350px',
+                    }}
+                  >
+                    <FormControl fullWidth>
+                      <Select
+                        variant="standard"
+                        name={'cnpqLevel'}
+                        label={'Nível da bolsa CNPQ'}
+                        options={cnpqLevels}
+                      />
+                    </FormControl>
+                  </Grid>
+
                   <Grid item alignSelf={'center'}>
                     <Button size={'large'} variant="contained" type="submit">
                       <SearchRoundedIcon />
@@ -248,7 +280,11 @@ export async function getServerSideProps(ctx) {
     }
   }
 
-  const promises = [getGraduates(apiClient), getInstitutionTypes(apiClient)]
+  const promises = [
+    getGraduates(apiClient),
+    getInstitutionTypes(apiClient),
+    getCNPQLevels(apiClient),
+  ]
   const responses = await Promise.all(promises)
   const someResult = responses.some(item => 'response' in item && item.response?.status === 403)
   if (someResult)
@@ -259,7 +295,7 @@ export async function getServerSideProps(ctx) {
       },
     }
 
-  const [graduatesResponse, institutionTypes] = responses
+  const [graduatesResponse, institutionTypes, cnpqLevels] = responses
 
   const { graduates, meta } = graduatesResponse as GraduatesListDetails
 
@@ -268,6 +304,7 @@ export async function getServerSideProps(ctx) {
       graduates: graduates ?? [],
       meta,
       institutionTypes: institutionTypes ?? [],
+      cnpqLevels: cnpqLevels ?? [],
     },
   }
 }

@@ -4,17 +4,24 @@ export const createUpdateUser = async (apiClient: AxiosInstance, user) => {
   await apiClient.post('/v1/register', user)
 }
 
+interface GetUsersFilters {
+  name?: string
+  email?: string
+}
 export const getUsers = async (
   apiClient: AxiosInstance,
   page = 1,
   pageSize = 10,
-  name?: string
+  filters?: GetUsersFilters
 ) => {
+  const { name, email } = filters || {}
   const filledFilters = [
     ['page', `${page - 1}`],
     ['pageSize', `${pageSize}`],
   ]
   name && filledFilters.push(['name', name])
+  email && filledFilters.push(['email', email])
+
   const url = '/v1/users?' + new URLSearchParams(filledFilters)
 
   const { data } = await apiClient.get(url)
