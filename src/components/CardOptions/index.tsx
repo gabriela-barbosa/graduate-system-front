@@ -1,7 +1,8 @@
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import React from 'react'
 import styled from 'styled-components'
 import Image, { StaticImageData } from 'next/image'
+import { theme } from '@styles/theme'
 
 interface Props {
   onClick: () => void
@@ -27,22 +28,24 @@ export const IconImage = ({ src, alt }) => (
 export const colors = {
   red: '#b3404a',
   green: '#3bb54a',
+  darkGreen: '#206128',
   blue: '#4895ff',
   yellow: '#d1b534',
   purple: '#ab45de',
 }
 
 const Card = styled.div`
-  border-left: ${({ color }) => (color ? `3px solid ${color}` : 'white')};
+  border-left: ${`3px solid ${colors.green}`};
   border-radius: 5px;
-  box-shadow: 7px 7px 13px 0 rgba(50, 50, 50, 0.22);
+  box-shadow: 4px 4px 4px 0 rgba(50, 50, 50, 0.22);
   padding: 30px;
   width: 450px;
   height: 260px;
   transition: all 0.3s ease-out;
 
   &:hover {
-    transform: translateY(-5px);
+    border-left: ${`3px solid ${colors.darkGreen}`};
+    transform: translateY(-4px);
     cursor: pointer;
   }
 `
@@ -54,7 +57,7 @@ export const CardOptions = ({ onClick, title, subtitle, icon, color, altImg }: P
         <CardTitle>{title}</CardTitle>
       </Grid>
       <Grid item>
-        <p>{subtitle}</p>
+        <Typography>{subtitle}</Typography>
       </Grid>
       <Grid item>
         <IconImage src={icon} alt={altImg} />
