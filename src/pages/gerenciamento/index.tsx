@@ -13,29 +13,20 @@ import { PageWrapper, Title } from '@styles/index.style'
 import { Grid } from '@mui/material'
 import { CardOptions, colors } from '@components'
 
-enum configOptions {
-  PROGRAM = 'program',
-  INSTITUTION_TYPE = 'institutionType',
-  CNPQ_LEVELS = 'cnpqLevels',
-  CONFIG_EMAIL = 'configEmail',
-  CONFIG_USER = 'configUser',
-  CONFIG_INSTITUTION = 'configInstitution',
-}
-
-const links = {
-  [configOptions.PROGRAM]: 'programasic',
-  [configOptions.INSTITUTION_TYPE]: 'tiposdeinstituicao',
-  [configOptions.CNPQ_LEVELS]: 'niveiscnpq',
-  [configOptions.CONFIG_EMAIL]: 'emails',
-  [configOptions.CONFIG_USER]: 'usuarios',
-  [configOptions.CONFIG_INSTITUTION]: 'instituicoes',
+enum ManagementLinks {
+  PROGRAM = 'programasic',
+  INSTITUTION_TYPE = 'tiposdeinstituicao',
+  CNPQ_LEVELS = 'niveiscnpq',
+  CONFIG_EMAIL = 'emails',
+  CONFIG_USER = 'usuarios',
+  CONFIG_INSTITUTION = 'instituicoes',
 }
 
 const Select: React.FC = () => {
   const router = useRouter()
 
-  const goToPage = (option: configOptions) => {
-    router.push(`gerenciamento/${links[option]}`)
+  const goToPage = (option: ManagementLinks) => {
+    router.push(`gerenciamento/${option}`)
   }
 
   const options = [
@@ -45,7 +36,7 @@ const Select: React.FC = () => {
       icon: money,
       altImg: 'money',
       color: colors.green,
-      onClick: () => goToPage(configOptions.PROGRAM),
+      onClick: () => goToPage(ManagementLinks.PROGRAM),
     },
     {
       title: 'Configurar Instituições',
@@ -53,7 +44,7 @@ const Select: React.FC = () => {
       icon: user,
       altImg: 'user',
       color: colors.purple,
-      onClick: () => goToPage(configOptions.CONFIG_USER),
+      onClick: () => goToPage(ManagementLinks.CONFIG_INSTITUTION),
     },
     {
       title: 'Configurar Tipo de Instituição',
@@ -61,7 +52,7 @@ const Select: React.FC = () => {
       icon: settings,
       altImg: 'settings',
       color: colors.red,
-      onClick: () => goToPage(configOptions.INSTITUTION_TYPE),
+      onClick: () => goToPage(ManagementLinks.INSTITUTION_TYPE),
     },
     {
       title: 'Configurar Níveis CNPQ',
@@ -69,7 +60,7 @@ const Select: React.FC = () => {
       icon: article,
       altImg: 'article',
       color: colors.blue,
-      onClick: () => goToPage(configOptions.CNPQ_LEVELS),
+      onClick: () => goToPage(ManagementLinks.CNPQ_LEVELS),
     },
     {
       title: 'Configurar Conteúdo do Email',
@@ -77,7 +68,7 @@ const Select: React.FC = () => {
       icon: email,
       altImg: 'email',
       color: colors.yellow,
-      onClick: () => goToPage(configOptions.CONFIG_EMAIL),
+      onClick: () => goToPage(ManagementLinks.CONFIG_EMAIL),
     },
     {
       title: 'Configurar Usuários',
@@ -85,7 +76,7 @@ const Select: React.FC = () => {
       icon: user,
       altImg: 'user',
       color: colors.purple,
-      onClick: () => goToPage(configOptions.CONFIG_USER),
+      onClick: () => goToPage(ManagementLinks.CONFIG_USER),
     },
   ]
 

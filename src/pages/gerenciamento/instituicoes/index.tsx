@@ -19,7 +19,6 @@ import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import {
   deleteInstitutionType,
-  getInstitutionTypes,
   saveInstitutionType,
   updateInstitutionType,
 } from '@modules/InstitutionTypes/api'
@@ -27,12 +26,14 @@ import { showErrorToast } from '@components/Toast'
 import { InstitutionType } from '@modules/InstitutionTypes/types'
 import { CustomTable } from '@components/Table'
 import { DeleteItem, DeleteModal } from '@components/DeleteModal'
+import { getInstitutions } from '@modules/Institutions/api'
+import { Institution } from '@modules/Institutions/types'
 
 interface Props {
-  institutionTypes: InstitutionType[]
+  institutions: Institution[]
 }
 
-const Institutions = ({ institutionTypes }: Props) => {
+const Institutions = ({ institutions }: Props) => {
   const apiClient = getAPIClient()
   const [currentInstitution, setCurrentInstitution] = useState<InstitutionType>({
     name: '',
@@ -102,7 +103,7 @@ const Institutions = ({ institutionTypes }: Props) => {
     setIsDeleteModalOpen(true)
   }
 
-  const rows = institutionTypes?.map(({ id, name }) => [
+  const rows = institutions?.map(({ id, name }) => [
     { body: name },
     {
       body: (
@@ -124,7 +125,7 @@ const Institutions = ({ institutionTypes }: Props) => {
         <PageWrapper>
           <Grid container rowSpacing={2}>
             <Grid item xs={12}>
-              <Title>Atualizar Tipo de Instituição</Title>
+              <Title>Atualizar Instituições</Title>
             </Grid>
             <Grid item xs={12}>
               <CustomTable columns={columns} rows={rows} />
@@ -209,11 +210,11 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
-  const types = await getInstitutionTypes(apiClient)
+  const institutions = await getInstitutions(apiClient)
 
   return {
     props: {
-      institutionTypes: types ?? [],
+      institutions: institutions ?? [],
     },
   }
 }
