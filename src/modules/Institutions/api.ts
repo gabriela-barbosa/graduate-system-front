@@ -1,26 +1,40 @@
 import { AxiosInstance } from 'axios'
-import { Email } from '@modules/Emails/types'
-import { InstitutionType } from '@modules/Institutions/types'
+import { Institution, InstitutionFilters } from '@modules/Institutions/types'
 
-export const getInstitutionTypes = async (apiClient: AxiosInstance): Promise<InstitutionType[]> => {
-  const { data } = await apiClient.get<InstitutionType[]>(`/v1/institution/type`)
+export const getInstitutions = async (
+  apiClient: AxiosInstance,
+  page = 1,
+  pageSize = 10,
+  filters?: InstitutionFilters
+): Promise<Institution[]> => {
+  const { name, typeName } = filters || {}
+  const filledFilters = [
+    ['page', `${page - 1}`],
+    ['pageSize', `${pageSize}`],
+  ]
+  name && filledFilters.push(['name', name])
+  typeName && filledFilters.push(['typeName', typeName])
+
+  const { data } = await apiClient.get<Institution[]>(
+    `/v1/institutions?` + new URLSearchParams(filledFilters)
+  )
   return data
 }
 
-export const deleteInstitutionType = async (apiClient: AxiosInstance, id: string) => {
-  await apiClient.delete(`/v1/institution/type/${id}`)
-}
-
-export const saveInstitutionType = async (
-  apiClient: AxiosInstance,
-  institutionType: InstitutionType
-) => {
-  await apiClient.post(`/v1/institution/type`, institutionType)
-}
-
-export const updateInstitutionType = async (
-  apiClient: AxiosInstance,
-  institutionType: InstitutionType
-) => {
-  await apiClient.put(`/v1/institution/type/${institutionType.id}`, institutionType)
-}
+// export const deleteInstitutionType = async (apiClient: AxiosInstance, id: string) => {
+//   await apiClient.delete(`/v1/institution/type/${id}`)
+// }
+//
+// export const saveInstitutionType = async (
+//   apiClient: AxiosInstance,
+//   institutionType: InstitutionType
+// ) => {
+//   await apiClient.post(`/v1/institution/type`, institutionType)
+// }
+//
+// export const updateInstitutionType = async (
+//   apiClient: AxiosInstance,
+//   institutionType: InstitutionType
+// ) => {
+//   await apiClient.put(`/v1/institution/type/${institutionType.id}`, institutionType)
+// }

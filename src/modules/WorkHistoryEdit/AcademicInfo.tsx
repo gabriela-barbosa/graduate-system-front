@@ -1,6 +1,8 @@
 import {
+  Autocomplete,
   Box,
   Checkbox,
+  debounce,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -9,9 +11,10 @@ import {
   MenuItem,
   Radio,
   RadioGroup,
+  TextField,
 } from '@mui/material'
 import { Subtitle } from './index.style'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { ActionIcon, Button, DatePicker, InputMui, Paper, SelectMui } from '@components'
 import { GraduateWorkHistoriesInfo, Option } from './types'
 import { Role } from '@utils/enums'
@@ -24,6 +27,7 @@ import AddRounded from '@mui/icons-material/AddRounded'
 import { useAuth } from '@context/AuthProvider'
 import { Controller, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
+import { getAPIClient } from '@services/axios'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -35,6 +39,7 @@ interface Props {
 export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, control }: Props) => {
   const { currentRole } = useAuth()
   const isCurrentUserGraduate = currentRole === Role.GRADUATE
+  const apiClient = getAPIClient()
 
   const { cnpqScholarships: historyCNPQScholarships } = graduateInfo
 
@@ -148,6 +153,31 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
     },
     { name: 'Ações', width: '10%' },
   ]
+
+  const [options, setOptions] = useState([])
+  const [newInstitutions, setNewInstitutions] = useState([])
+  const previousController = useRef()
+
+  const getData = async searchTerm => {
+    if (previousController.current) {
+      previousController.current.abort()
+    }
+    const controller = new AbortController()
+    const signal = controller.signal
+    previousController.current = controller
+    const { data } = await apiClient.get(`v1/institutions?name=${searchTerm}`)
+
+    setOptions(data.map(institution => ({ name: institution.name, id: institution.id })))
+    setNewInstitutions(data)
+  }
+
+  const onInputChange = (event, value) => {
+    if (value) {
+      getData(value)
+    } else {
+      setOptions([])
+    }
+  }
 
   return (
     <Grid container spacing={4}>
@@ -308,6 +338,16 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                 </Grid>
                 <Grid item xs={5}>
                   <FormControl fullWidth>
+                    <Autocomplete
+                      filterOptions={x => x}
+                      disablePortal
+                      id="autocomplete-search"
+                      onInputChange={debounce(onInputChange, 1000)}
+                      getOptionLabel={option => option.name}
+                      sx={{ width: 300 }}
+                      renderInput={params => <TextField {...params} label="Search an item..." />}
+                      options={options}
+                    />
                     <Controller
                       name={'postDoctorate.institution.name'}
                       control={control}
