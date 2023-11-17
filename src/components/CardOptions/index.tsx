@@ -1,20 +1,19 @@
-import { Grid, Typography } from '@mui/material'
+import { Grid, SvgIconTypeMap, Typography } from '@mui/material'
 import React from 'react'
 import styled from 'styled-components'
-import Image, { StaticImageData } from 'next/image'
-import { theme } from '@styles/theme'
+import Image from 'next/image'
+import { OverridableComponent } from '@mui/types'
 
 interface Props {
   onClick: () => void
   title: string
   subtitle: string
-  icon: StaticImageData
-  altImg: string
-  color: string
+  IconComponent: OverridableComponent<SvgIconTypeMap>
 }
 
 export const CardTitle = styled.h3`
-  color: rgba(11, 105, 81, 0.7);
+  font-weight: normal;
+  color: ${({ theme }) => theme.palette.primary.main};
 `
 const IconWrapper = styled.div`
   padding-top: 10px;
@@ -25,33 +24,24 @@ export const IconImage = ({ src, alt }) => (
   </IconWrapper>
 )
 
-export const colors = {
-  red: '#b3404a',
-  green: '#3bb54a',
-  darkGreen: '#206128',
-  blue: '#4895ff',
-  yellow: '#d1b534',
-  purple: '#ab45de',
-}
-
 const Card = styled.div`
-  border-left: ${`3px solid ${colors.green}`};
+  border-left: 3px solid ${({ theme }) => theme.palette.primary.main};
   border-radius: 5px;
-  box-shadow: 4px 4px 4px 0 rgba(50, 50, 50, 0.22);
+  box-shadow: ${({ theme }) => theme.shadows[4]};
   padding: 30px;
   width: 450px;
   height: 260px;
   transition: all 0.3s ease-out;
 
   &:hover {
-    border-left: ${`3px solid ${colors.darkGreen}`};
+    border-left: 3px solid ${({ theme }) => theme.palette.primary.dark};
     transform: translateY(-4px);
     cursor: pointer;
   }
 `
 
-export const CardOptions = ({ onClick, title, subtitle, icon, color, altImg }: Props) => (
-  <Card color={color} onClick={onClick}>
+export const CardOptions = ({ onClick, title, subtitle, IconComponent }: Props) => (
+  <Card onClick={onClick}>
     <Grid container spacing={1} direction="column">
       <Grid item>
         <CardTitle>{title}</CardTitle>
@@ -60,7 +50,7 @@ export const CardOptions = ({ onClick, title, subtitle, icon, color, altImg }: P
         <Typography>{subtitle}</Typography>
       </Grid>
       <Grid item>
-        <IconImage src={icon} alt={altImg} />
+        <IconComponent sx={{ height: '70px', width: 'auto' }} color={'primary'} />
       </Grid>
     </Grid>
   </Card>

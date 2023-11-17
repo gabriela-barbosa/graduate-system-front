@@ -3,7 +3,7 @@ import { Input, Password, InputMui } from './Input'
 import MainWrapper from './MainWrapper'
 import MainHeader from './MainHeader'
 import { Select, SelectMui } from './Select'
-import { CardOptions, colors } from './CardOptions'
+import { CardOptions } from './CardOptions'
 import {
   TableCell,
   TableBody,
@@ -30,7 +30,6 @@ export {
   ToastContainer,
   Password,
   CardOptions,
-  colors,
   TableCell,
   TableBody,
   TableRow,
