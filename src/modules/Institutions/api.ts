@@ -1,40 +1,40 @@
 import { AxiosInstance } from 'axios'
-import { Institution, InstitutionFilters } from '@modules/Institutions/types'
+import { CreateInstitution, InstitutionFilters, InstitutionsDTO } from '@modules/Institutions/types'
 
 export const getInstitutions = async (
   apiClient: AxiosInstance,
   page = 1,
   pageSize = 10,
   filters?: InstitutionFilters
-): Promise<Institution[]> => {
-  const { name, typeName } = filters || {}
+): Promise<InstitutionsDTO> => {
+  const { name, type } = filters || {}
   const filledFilters = [
     ['page', `${page - 1}`],
     ['pageSize', `${pageSize}`],
   ]
   name && filledFilters.push(['name', name])
-  typeName && filledFilters.push(['typeName', typeName])
+  type && filledFilters.push(['type', type])
 
-  const { data } = await apiClient.get<Institution[]>(
+  const { data } = await apiClient.get<InstitutionsDTO>(
     `/v1/institutions?` + new URLSearchParams(filledFilters)
   )
   return data
 }
 
-// export const deleteInstitutionType = async (apiClient: AxiosInstance, id: string) => {
-//   await apiClient.delete(`/v1/institution/type/${id}`)
-// }
-//
-// export const saveInstitutionType = async (
-//   apiClient: AxiosInstance,
-//   institutionType: InstitutionType
-// ) => {
-//   await apiClient.post(`/v1/institution/type`, institutionType)
-// }
-//
-// export const updateInstitutionType = async (
-//   apiClient: AxiosInstance,
-//   institutionType: InstitutionType
-// ) => {
-//   await apiClient.put(`/v1/institution/type/${institutionType.id}`, institutionType)
-// }
+export const deleteInstitution = async (apiClient: AxiosInstance, id: string) => {
+  await apiClient.delete(`/v1/institution/${id}`)
+}
+
+export const createInstitution = async (
+  apiClient: AxiosInstance,
+  institutionDTO: CreateInstitution
+) => {
+  await apiClient.post(`/v1/institution`, institutionDTO)
+}
+
+export const updateInstitution = async (
+  apiClient: AxiosInstance,
+  institutionDTO: CreateInstitution
+) => {
+  await apiClient.put(`/v1/institution/${institutionDTO.id}`, institutionDTO)
+}

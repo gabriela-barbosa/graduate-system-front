@@ -18,15 +18,14 @@ import { Graduate, HISTORY_STATUS, ListGraduatesFilters } from '@modules/Egresso
 import GraduatesTable from '@components/Table/CustomTable'
 import { parseCookies } from 'nookies'
 import { getAPIClient } from '@services/axios'
-import { getCNPQLevels, getInstitutionTypes } from '@modules/WorkHistoryEdit'
-import { PaginationType } from '@modules/Commons/types'
+import { getCNPQLevels } from '@modules/WorkHistoryEdit'
+import { DEFAULT_PAGE_SIZE, PaginationType } from '@modules/Commons/types'
 import { getGraduates } from '@modules/GraduatesList/api'
 import { GraduatesListDetails } from '@modules/GraduatesList/types'
-import { toast } from 'react-toastify'
 import { SelectItem } from '@utils/types'
 import { useAuth } from '@context/AuthProvider'
-
-const pageSize = 10
+import { showErrorToast } from '@components/Toast'
+import { getInstitutionTypes } from '@modules/InstitutionTypes/api'
 
 const status = {
   [HISTORY_STATUS.PENDING]: 'Pendente',
@@ -63,7 +62,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
       setGraduatesList(graduatesSend)
       setPagination(metaSend)
     } catch (e) {
-      toast.error('Erro ao buscar egressos.')
+      showErrorToast('Erro ao buscar egressos.')
     }
   }
 
@@ -82,7 +81,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
       setGraduatesList(graduatesPagination)
       setPagination(metaPagination)
     } catch (e) {
-      toast.error('Erro ao buscar egressos.')
+      showErrorToast('Erro ao buscar egressos.')
     }
   }
 
@@ -93,7 +92,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
       setGraduatesList(graduatesClean)
       setPagination(metaClean)
     } catch (e) {
-      toast.error('Erro ao buscar egressos.')
+      showErrorToast('Erro ao buscar egressos.')
     }
   }
 
@@ -257,7 +256,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
         {pagination && rows?.length !== 0 && (
           <Grid item>
             <Pagination
-              count={Math.ceil(pagination.total / pageSize)}
+              count={Math.ceil(pagination.total / DEFAULT_PAGE_SIZE)}
               page={pagination.page + 1}
               onChange={onChangePagination}
             />

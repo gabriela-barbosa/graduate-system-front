@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { ThemeProvider } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import RoutingComponent from '@components/RoutingComponent'
 import NextNProgress from 'nextjs-progressbar'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 
@@ -17,7 +16,7 @@ const MyApp = ({ Component, pageProps }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <AuthProvider>
             <NextNProgress color={theme.palette.primary.main} />
-            <RoutingComponent Component={Component} pageProps={pageProps} />
+            <Component {...pageProps} />
           </AuthProvider>
           <GlobalStyle />
         </LocalizationProvider>

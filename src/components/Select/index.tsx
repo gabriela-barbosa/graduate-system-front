@@ -12,6 +12,6 @@ export const Select = styled(SelectElement)({
 
 export const SelectMui = styled(SelectMaterial)({
   '& .MuiOutlinedInput-notchedOutline': {
-    borderRadius: '15px',
+    // borderRadius: '15px',
   },
 })

@@ -12,17 +12,6 @@ export const getGraduateInfoAndWorkHistory = async (
   return data
 }
 
-export const getInstitutionTypes = async (
-  apiClient: AxiosInstance
-): Promise<SelectItem[] | AxiosError> => {
-  const { data } = await apiClient.get(`/v1/institution/type`)
-
-  return [
-    { id: 0, label: 'Nenhum tipo de instituição selecionado' },
-    ...data.map(({ name, id }) => ({ id, label: name })),
-  ]
-}
-
 export const getCNPQLevels = async (
   apiClient: AxiosInstance
 ): Promise<SelectItem[] | AxiosError> => {
@@ -35,7 +24,7 @@ export const getCNPQLevels = async (
 }
 
 export const getCourses = async (apiClient: AxiosInstance): Promise<SelectItem[] | AxiosError> => {
-  const { data, status } = await apiClient.get(`/v1/courses`)
+  const { data } = await apiClient.get(`/v1/courses`)
 
   return data.map(({ level, id }) => ({ id, label: level }))
 }

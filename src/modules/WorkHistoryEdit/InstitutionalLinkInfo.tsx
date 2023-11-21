@@ -18,7 +18,7 @@ import GraduatesTable from '@components/Table/CustomTable'
 import { ErrorMessage, Fields, Label } from '@styles/index.style'
 import { GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
 import { SelectItem } from '@utils/types'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import { Control, Controller, useController } from 'react-hook-form'
 import { InstitutionalLinkModal } from '@modules/WorkHistoryEdit/InstitutionalLinkModal'
@@ -33,14 +33,14 @@ interface Props {
   // setInstitutionalLinks: (institutionalLink: InstitutionalLinkInfoType) => void
 }
 
-interface InstitutionalLinkInfoType {
-  id?: string | null
-  position?: string | null
-  institutionTypeId?: string | null
-  institutionName?: string | null
-  startedAt?: Dayjs | null
-  endedAt?: Dayjs | null
-}
+// interface InstitutionalLinkInfoType {
+//   id?: string | null
+//   position?: string | null
+//   institutionTypeId?: string | null
+//   institutionName?: string | null
+//   startedAt?: Dayjs | null
+//   endedAt?: Dayjs | null
+// }
 
 export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control }: Props) => {
   const { workHistories } = graduateInfo

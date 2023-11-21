@@ -78,9 +78,7 @@ const UserList = ({ users, meta }: Props) => {
     await handleGetUsers(value, form)
   }
 
-  const setCurrentUserEmpty = () => {
-    setCurrentUser({} as User)
-  }
+  const setCurrentUserEmpty = () => setCurrentUser({} as User)
 
   const handleClickEdit = (id: string) => {
     router.push(`usuarios/${id}`)

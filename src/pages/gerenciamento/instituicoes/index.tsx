@@ -7,40 +7,62 @@ import { Fields, PageWrapper, Title } from '@styles/index.style'
 import {
   ActionIcon,
   Button,
+  Input,
   MainWrapper,
+  Select,
+  SelectMui,
   showDeletedToast,
   showSavedToast,
   ToastContainer,
 } from '@components'
-import { FormControl, Grid, TextField } from '@mui/material'
+import { FormControl, Grid, InputLabel, MenuItem, Pagination, TextField } from '@mui/material'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
-import {
-  deleteInstitutionType,
-  saveInstitutionType,
-  updateInstitutionType,
-} from '@modules/InstitutionTypes/api'
 import { showErrorToast } from '@components/Toast'
-import { InstitutionType } from '@modules/InstitutionTypes/types'
 import { CustomTable } from '@components/Table'
 import { DeleteItem, DeleteModal } from '@components/DeleteModal'
-import { getInstitutions } from '@modules/Institutions/api'
-import { Institution } from '@modules/Institutions/types'
+import {
+  createInstitution,
+  deleteInstitution,
+  getInstitutions,
+  updateInstitution,
+} from '@modules/Institutions/api'
+import {
+  CreateInstitution,
+  Institution,
+  InstitutionFilters,
+  InstitutionsDTO,
+} from '@modules/Institutions/types'
+import { DEFAULT_PAGE_SIZE, PaginationType } from '@modules/Commons/types'
+import { useForm } from 'react-hook-form'
+import { FormContainer } from 'react-hook-form-mui'
+import { getInstitutionTypesOptions } from '@modules/Commons/api'
+import { SelectItem } from '@utils/types'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
+import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 
 interface Props {
   institutions: Institution[]
+  meta: PaginationType
+  institutionTypes: SelectItem[]
 }
 
-const Institutions = ({ institutions }: Props) => {
+const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
   const apiClient = getAPIClient()
-  const [currentInstitution, setCurrentInstitution] = useState<InstitutionType>({
+  const [currentInstitution, setCurrentInstitution] = useState<CreateInstitution>({
     name: '',
+    typeId: '',
   })
+  const [institutionsList, setInstitutionsList] = useState<Institution[]>(institutions)
+  const [pagination, setPagination] = useState<PaginationType>(meta)
   const [show, setShow] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [deleteItem, setDeleteItem] = useState<DeleteItem>({ id: undefined, value: undefined })
+
+  const formContext = useForm()
+  const { getValues, reset } = formContext
 
   const router = useRouter()
 
@@ -50,46 +72,79 @@ const Institutions = ({ institutions }: Props) => {
     router.push('/gerenciamento')
   }
 
-  const handleDeleteInstitutionType = async (id: string) => {
+  const handleGetInstitutions = async (filters: InstitutionFilters, page: number) => {
     try {
-      await deleteInstitutionType(apiClient, id)
-      await router.replace(router.asPath)
+      const { data: institutionsPagination, meta: metaPagination } = await getInstitutions(
+        apiClient,
+        page,
+        DEFAULT_PAGE_SIZE,
+        filters
+      )
+      setInstitutionsList(institutionsPagination)
+      setPagination(metaPagination)
+    } catch (e) {
+      showErrorToast('Erro ao buscar instituições.')
+    }
+  }
+
+  const handleDeleteInstitution = async (id: string) => {
+    try {
+      await deleteInstitution(apiClient, id)
+      await handleGetInstitutions({} as InstitutionFilters, 1)
       showDeletedToast()
     } catch (error) {
-      showErrorToast('Ocorreu um erro ao deletar tipo de instituição.')
+      showErrorToast('Ocorreu um erro ao deletar instituição.')
     }
   }
 
-  const handleSaveInstitution = async (institutionType: InstitutionType) => {
+  const onCloseModal = () => {
+    setShow(false)
+    setCurrentInstitution({ id: undefined, name: '', typeId: '' })
+  }
+
+  const handleSaveInstitution = async (createInstitutionDTO: CreateInstitution) => {
     try {
-      await saveInstitutionType(apiClient, institutionType)
-      await router.replace(router.asPath)
+      await createInstitution(apiClient, createInstitutionDTO)
+      await handleGetInstitutions({} as InstitutionFilters, 1)
       showSavedToast()
-      setShow(false)
-      setCurrentInstitution({ id: undefined, name: '' })
+      onCloseModal()
     } catch (error) {
-      showErrorToast('Ocorreu um erro ao salvar tipo de instituição.')
+      showErrorToast('Ocorreu um erro ao criar instituição.')
     }
   }
 
-  const handleUpdateInstitution = async (institutionType: InstitutionType) => {
+  const handleUpdateInstitution = async (institutionDTO: CreateInstitution) => {
     try {
-      await updateInstitutionType(apiClient, institutionType)
-      await router.replace(router.asPath)
+      await updateInstitution(apiClient, institutionDTO)
+      await handleGetInstitutions({} as InstitutionFilters, 1)
       showSavedToast()
-      setShow(false)
-      setCurrentInstitution({ id: undefined, name: '' })
+      onCloseModal()
     } catch (error) {
-      showErrorToast('Ocorreu um erro ao atualizar tipo de instituição.')
+      showErrorToast('Ocorreu um erro ao atualizar instituição.')
     }
   }
 
-  const handlerOpenEdit = (id: string, name: string) => {
+  const onSend = async (data: InstitutionFilters) => handleGetInstitutions(data, 1)
+
+  const onChangePagination = async (event: any, value: number) => {
+    const filters = getValues() as InstitutionFilters
+    await handleGetInstitutions(filters, value)
+  }
+
+  const onClean = async () => {
+    reset()
+    await handleGetInstitutions({} as InstitutionFilters, 1)
+  }
+
+  const handlerOpenEdit = (id: string, name: string, type: string) => {
     setShow(true)
-    setCurrentInstitution({ id, name })
+    setCurrentInstitution({ id, name, typeId: type })
   }
 
   const columns = [
+    {
+      name: 'Nome',
+    },
     {
       name: 'Tipo de Instituição',
     },
@@ -98,20 +153,21 @@ const Institutions = ({ institutions }: Props) => {
     },
   ]
 
-  const onClickDelete = (id: string | undefined, value: string) => {
+  const onDelete = (id: string, value: string) => {
     setDeleteItem({ id, value })
     setIsDeleteModalOpen(true)
   }
 
-  const rows = institutions?.map(({ id, name }) => [
+  const rows = institutionsList?.map(({ id, name, type }) => [
     { body: name },
+    { body: type.name },
     {
       body: (
         <section>
-          <ActionIcon onClick={() => handlerOpenEdit(id as string, name)}>
+          <ActionIcon onClick={() => handlerOpenEdit(id as string, name, type.id as string)}>
             <EditRoundedIcon />
           </ActionIcon>
-          <ActionIcon onClick={() => onClickDelete(id, name)}>
+          <ActionIcon onClick={() => onDelete(id as string, name)}>
             <DeleteForeverRoundedIcon />
           </ActionIcon>
         </section>
@@ -127,8 +183,58 @@ const Institutions = ({ institutions }: Props) => {
             <Grid item xs={12}>
               <Title>Atualizar Instituições</Title>
             </Grid>
+            <Grid item sx={{ paddingBottom: '20px' }}>
+              <FormContainer formContext={formContext} onSuccess={onSend}>
+                <Grid container spacing={2}>
+                  <Grid
+                    item
+                    sx={{
+                      width: '350px',
+                    }}
+                  >
+                    <FormControl fullWidth>
+                      <Input variant="standard" label="Nome da instituição" name="name" />
+                    </FormControl>
+                  </Grid>
+                  <Grid
+                    item
+                    sx={{
+                      width: '350px',
+                    }}
+                  >
+                    <FormControl fullWidth>
+                      <Select
+                        variant="standard"
+                        name={'type'}
+                        label={'Tipo da instituição'}
+                        options={institutionTypes}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item alignSelf={'center'}>
+                    <Button size={'large'} variant="contained" type="submit">
+                      <SearchRoundedIcon />
+                    </Button>
+                  </Grid>
+                  <Grid item alignSelf={'center'}>
+                    <Button size={'large'} variant="outlined" onClick={onClean}>
+                      <ClearRoundedIcon />
+                    </Button>
+                  </Grid>
+                </Grid>
+              </FormContainer>
+            </Grid>
             <Grid item xs={12}>
               <CustomTable columns={columns} rows={rows} />
+            </Grid>
+            <Grid item xs={12}>
+              {pagination && (
+                <Pagination
+                  count={Math.ceil(pagination.total / DEFAULT_PAGE_SIZE)}
+                  page={pagination.page + 1}
+                  onChange={onChangePagination}
+                />
+              )}
             </Grid>
             <Grid item>
               <Grid container columnSpacing={2}>
@@ -137,7 +243,7 @@ const Institutions = ({ institutions }: Props) => {
                     size={'large'}
                     variant={'contained'}
                     onClick={() => {
-                      setCurrentInstitution({ id: undefined, name: '' })
+                      setCurrentInstitution({ id: undefined, name: '', typeId: '' })
                       handleShow()
                     }}
                   >
@@ -159,7 +265,7 @@ const Institutions = ({ institutions }: Props) => {
       <DeleteModal
         isOpen={isDeleteModalOpen}
         setIsOpen={setIsDeleteModalOpen}
-        handleDelete={handleDeleteInstitutionType}
+        handleDelete={handleDeleteInstitution}
         id={deleteItem.id}
         value={deleteItem.value}
       />
@@ -169,17 +275,42 @@ const Institutions = ({ institutions }: Props) => {
           <Fields>{currentInstitution.id ? 'Editar' : 'Adicionar'} Instituição</Fields>
         </Modal.Header>
         <Modal.Body>
-          <FormControl fullWidth>
-            <TextField
-              value={currentInstitution.name}
-              required
-              name={'institution'}
-              label={'Instituição'}
-              onChange={({ target }) =>
-                setCurrentInstitution({ ...currentInstitution, name: target.value })
-              }
-            />
-          </FormControl>
+          <Grid container rowSpacing={4}>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <TextField
+                  value={currentInstitution.name}
+                  required
+                  name={'name'}
+                  label={'Nome'}
+                  onChange={({ target }) =>
+                    setCurrentInstitution({ ...currentInstitution, name: target.value })
+                  }
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="type">Tipo de instituição*</InputLabel>
+                <SelectMui
+                  name={'type'}
+                  labelId="type"
+                  value={currentInstitution.typeId}
+                  label={'Tipo de instituição*'}
+                  onChange={({ target }) => {
+                    const type = target.value as string
+                    setCurrentInstitution({ ...currentInstitution, typeId: type })
+                  }}
+                >
+                  {institutionTypes.map(type => (
+                    <MenuItem key={type.id} value={type.id}>
+                      {type.label}
+                    </MenuItem>
+                  ))}
+                </SelectMui>
+              </FormControl>
+            </Grid>
+          </Grid>
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -210,11 +341,18 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
-  const institutions = await getInstitutions(apiClient)
+
+  const promises = [getInstitutions(apiClient), getInstitutionTypesOptions(apiClient)]
+
+  const [institutionsResponse, institutionTypesResponse] = await Promise.all(promises)
+
+  const { data, meta } = institutionsResponse as InstitutionsDTO
 
   return {
     props: {
-      institutions: institutions ?? [],
+      institutions: data ?? [],
+      meta,
+      institutionTypes: institutionTypesResponse ?? [],
     },
   }
 }
