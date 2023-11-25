@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import 'react-toastify/dist/ReactToastify.css'
 import { Modal } from 'react-bootstrap'
 import { useRouter } from 'next/router'
@@ -27,6 +27,7 @@ import { showErrorToast } from '@components/Toast'
 import { InstitutionType } from '@modules/InstitutionTypes/types'
 import { CustomTable } from '@components/Table'
 import { DeleteItem, DeleteModal } from '@components/DeleteModal'
+import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
   institutionTypes: InstitutionType[]
@@ -123,6 +124,15 @@ const Institutions = ({ institutionTypes }: Props) => {
       <MainWrapper themeName={Theme.white} hasContent hasHeader>
         <PageWrapper>
           <Grid container rowSpacing={2}>
+            <Grid item>
+              <Breadcrumbs
+                breadcrumbs={[
+                  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+                  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+                  { name: 'Tipos de Instituição' },
+                ]}
+              />
+            </Grid>
             <Grid item xs={12}>
               <Title>Atualizar Tipo de Instituição</Title>
             </Grid>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { Modal } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/router'
@@ -22,6 +22,7 @@ import { getAPIClient } from '@services/axios'
 import { showEditedToast, showErrorToast } from '@components/Toast'
 import { CustomTable } from '@components/Table'
 import { DeleteItem, DeleteModal } from '@components/DeleteModal'
+import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
   cnpqLevels: CNPQLevelInfo[]
@@ -124,6 +125,15 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
       <MainWrapper themeName={Theme.white} hasContent={true} hasHeader={true}>
         <PageWrapper>
           <Grid container rowSpacing={2}>
+            <Grid item>
+              <Breadcrumbs
+                breadcrumbs={[
+                  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+                  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+                  { name: 'Níveis CNPQ' },
+                ]}
+              />
+            </Grid>
             <Grid item xs={12}>
               <Title>Atualizar Níveis CNPQ</Title>
             </Grid>

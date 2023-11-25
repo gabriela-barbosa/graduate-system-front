@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { ActionIcon, Button, Input, MainWrapper, showSavedToast, ToastContainer } from '@components'
-import { RoleTranslation, Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { RoleTranslation, Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { Grid, Pagination } from '@mui/material'
 import { showErrorToast } from '@components/Toast'
@@ -20,6 +20,7 @@ import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import { useForm } from 'react-hook-form'
 import { FormContainer } from 'react-hook-form-mui'
 import { toast } from 'react-toastify'
+import { Breadcrumbs } from '@components/Breadcrumbs'
 
 const pageSize = 10
 
@@ -136,6 +137,15 @@ const UserList = ({ users, meta }: Props) => {
     <>
       <MainWrapper themeName={Theme.white} hasContent hasHeader>
         <PageWrapper spacing={2} container direction="column">
+          <Grid item>
+            <Breadcrumbs
+              breadcrumbs={[
+                { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+                { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+                { name: 'Usuários' },
+              ]}
+            />
+          </Grid>
           <Grid item xs={12}>
             <Title>Atualizar Informações de Usuário</Title>
           </Grid>

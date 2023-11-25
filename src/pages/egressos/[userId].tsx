@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo } from 'react'
 import { Button, MainWrapper, showSavedToast, ToastContainer } from '@components'
-import { Role, Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Role, Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { useAuth } from '@context/AuthProvider'
 import { useRouter } from 'next/router'
 import { PageWrapper, Title } from '@styles/index.style'
-import { Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { FormContainer } from 'react-hook-form-mui'
 import {
   AcademicInfo,
@@ -22,6 +22,8 @@ import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { SelectItem } from '@utils/types'
 import { getInstitutionTypesOptions } from '@modules/Commons/api'
+import { getInstitutionTypesOptions } from '@modules/Commons/api'
+import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -190,6 +192,17 @@ const GraduateInfo = ({
       <PageWrapper spacing={2} container>
         <Grid item>
           <Grid container spacing={3}>
+            {currentRole !== Role.GRADUATE && (
+              <Box pt={3} pl={3}>
+                <Breadcrumbs
+                  breadcrumbs={[
+                    { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+                    { name: 'Histórico do Egressos' },
+                  ]}
+                />
+              </Box>
+            )}
+
             <Grid item>
               <Title>Registro de Histórico do Egresso</Title>
             </Grid>

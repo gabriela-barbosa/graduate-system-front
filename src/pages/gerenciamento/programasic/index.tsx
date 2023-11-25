@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { Modal } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -27,6 +27,8 @@ import { parseCookies } from 'nookies'
 import { CIProgramInfo } from '@modules/Programs/types'
 import { DeleteModal } from '@components/DeleteModal'
 import { DeleteItem } from '@components/DeleteModal/types'
+import { Breadcrumbs } from '@components/Breadcrumbs'
+import { Box } from '@mui/material'
 
 interface Props {
   programs: CIProgramInfo[]
@@ -129,6 +131,15 @@ const Programs = ({ programs }: Props) => {
       <MainWrapper themeName={Theme.white} hasContent hasHeader>
         <PageWrapper>
           <Grid container rowSpacing={2}>
+            <Grid item>
+              <Breadcrumbs
+                breadcrumbs={[
+                  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+                  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+                  { name: 'Programas IC' },
+                ]}
+              />
+            </Grid>
             <Grid item xs={12}>
               <Title>Atualizar Programas</Title>
             </Grid>
