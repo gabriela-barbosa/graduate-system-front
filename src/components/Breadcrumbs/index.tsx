@@ -34,7 +34,7 @@ const showSavedToast = () => toast.success('Salvo com sucesso!')
 const showEditedToast = () => toast.success('Editado com sucesso!')
 const showDeletedToast = () => toast.success('Deletado com sucesso!')
 const showErrorToast = (errorMessage: string) => toast.error(errorMessage)
-const showToast = (errorMessage: string, type?: TypeOptions) => toast(errorMessage, {type})
+const showToast = (errorMessage: string, type?: TypeOptions) => toast(errorMessage, { type })
 
 export {
   ToastContainer,
