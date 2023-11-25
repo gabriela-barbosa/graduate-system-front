@@ -14,7 +14,7 @@ import {
   TextField,
 } from '@mui/material'
 import { Subtitle } from './index.style'
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ActionIcon, Button, DatePicker, InputMui, Paper, SelectMui } from '@components'
 import { GraduateWorkHistoriesInfo, Option } from './types'
 import { Role } from '@utils/enums'
@@ -28,6 +28,7 @@ import { useAuth } from '@context/AuthProvider'
 import { Controller, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
 import { getAPIClient } from '@services/axios'
+import { Institution } from '@modules/Institutions/types'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -47,6 +48,12 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
   const [currentCNPQScholarshipsSelected, setCurrentCNPQScholarshipsSelected] = useState<number[]>(
     []
   )
+
+  const onSelectInstitutionName = institution => {}
+
+  const {
+    field: { value: institutionTypeIdValue, onChange: institutionTypeIdOnChange },
+  } = useController({ control, name: 'postDoctorate.institution.typeId' })
 
   const {
     field: { value: cnpqScholarships, onChange: setCNPQScholarships },
@@ -155,29 +162,37 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
   ]
 
   const [options, setOptions] = useState([])
-  const [newInstitutions, setNewInstitutions] = useState([])
-  const previousController = useRef()
+  // const [newInstitutions, setNewInstitutions] = useState([])
 
   const getData = async searchTerm => {
-    if (previousController.current) {
-      previousController.current.abort()
-    }
-    const controller = new AbortController()
-    const signal = controller.signal
-    previousController.current = controller
-    const { data } = await apiClient.get(`v1/institutions?name=${searchTerm}`)
-
-    setOptions(data.map(institution => ({ name: institution.name, id: institution.id })))
-    setNewInstitutions(data)
+    const { data: dataResponse } = await apiClient.get(
+      `v1/institutions?name=${searchTerm}&pageSize=1000`
+    )
+    const { data } = dataResponse
+    console.warn('data', data)
+    setOptions(data)
+    // setNewInstitutions(data)
   }
 
-  const onInputChange = (event, value) => {
-    if (value) {
-      getData(value)
+  // const onInputChange = (event, value) => {
+  const onInputChange = async (inputValue, onChangeInstitution) => {
+    console.warn(inputValue)
+    if (inputValue) {
+      onChangeInstitution(inputValue)
+      await getData(inputValue)
     } else {
       setOptions([])
     }
   }
+
+  const debounceOnChange = useCallback(
+    debounce(
+      (inputValue, onChangePostDoctorateInstitution) =>
+        onInputChange(inputValue, onChangePostDoctorateInstitution),
+      6000
+    ),
+    []
+  )
 
   return (
     <Grid container spacing={4}>
@@ -338,37 +353,128 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                 </Grid>
                 <Grid item xs={5}>
                   <FormControl fullWidth>
-                    <Autocomplete
-                      filterOptions={x => x}
-                      disablePortal
-                      id="autocomplete-search"
-                      onInputChange={debounce(onInputChange, 1000)}
-                      getOptionLabel={option => option.name}
-                      sx={{ width: 300 }}
-                      renderInput={params => <TextField {...params} label="Search an item..." />}
-                      options={options}
-                    />
                     <Controller
-                      name={'postDoctorate.institution.name'}
+                      name="postDoctorate.institution.name"
                       control={control}
                       rules={{ required: hasPostDoctorate === 1 }}
-                      render={({ field: { onChange, value }, fieldState: { error } }) => (
-                        <InputMui
-                          label={'Nome da instituição'}
-                          name={'postDoctorate.name'}
-                          disabled={hasPostDoctorate !== 1}
-                          // disabled={hasPostDoctorate !== 1}
-                          value={value}
-                          onChange={value => {
-                            onChange(value)
-                          }}
-                          // parseError={() => 'Campo obrigatório.'}
-                          error={!!error}
-                          // helperText={error ? 'Campo obrigatório.' : ''}
-                          helperText={error?.message || ''}
-                        />
+                      render={({
+                        field: {
+                          onChange: onChangePostDoctorateInstitution,
+                          value: valuePostDoctorateInstitution,
+                        },
+                        fieldState: { error },
+                      }) => (
+                        <>
+                          {valuePostDoctorateInstitution}
+
+                          <Autocomplete
+                            freeSolo
+                            noOptionsText="Nenhuma instituição encontrada"
+                            filterOptions={x => x}
+                            value={valuePostDoctorateInstitution}
+                            disablePortal
+                            id="autocomplete-search"
+                            inputValue={valuePostDoctorateInstitution}
+                            onInputChange={(event, inputValue) =>
+                              debounceOnChange(inputValue, onChangePostDoctorateInstitution)
+                            }
+                            // inputValue={valuePostDoctorateInstitution}
+                            getOptionLabel={(option: Institution) => {
+                              console.warn('option', option)
+                              return option?.name
+                            }}
+                            sx={{ width: 'auto' }}
+                            renderInput={params => (
+                              <InputMui
+                                {...params}
+                                label="Nome da instituição"
+                                variant="standard"
+                                parseError={() => 'Campo obrigatório.'}
+                                error={!!error}
+                                helperText={error?.message || ''}
+                              />
+                            )}
+                            options={options}
+                            onChange={(event, value) => {
+                              const { name, type } = value || {}
+                              console.warn('event', value)
+                              onChangePostDoctorateInstitution(name)
+                              institutionTypeIdOnChange(type?.id)
+                            }}
+                          />
+                        </>
                       )}
                     />
+                    {/* <Controller */}
+                    {/*  name={'postDoctorate.institution.name'} */}
+                    {/*  control={control} */}
+                    {/*  rules={{ required: hasPostDoctorate === 1 }} */}
+                    {/*  defaultValue={null} */}
+                    {/*  render={({ */}
+                    {/*    field: { */}
+                    {/*      onChange: onChangePostDoctorateInstitution, */}
+                    {/*      value: valuePostDoctorateInstitution, */}
+                    {/*    }, */}
+                    {/*    fieldState: { error }, */}
+                    {/*  }) => ( */}
+                    {/*    <Autocomplete */}
+                    {/*      freeSolo */}
+                    {/*      noOptionsText="Nenhuma instituição encontrada" */}
+                    {/*      filterOptions={x => x} */}
+                    {/*      disablePortal */}
+                    {/*      id="autocomplete-search" */}
+                    {/*      onInputChange={(event, inputValue) => */}
+                    {/*        onInputChange(inputValue, onChangePostDoctorateInstitution) */}
+                    {/*      } */}
+                    {/*      inputValue={valuePostDoctorateInstitution} */}
+                    {/*      getOptionLabel={(option: Institution) => { */}
+                    {/*        console.warn('option', option) */}
+                    {/*        return option?.name */}
+                    {/*      }} */}
+                    {/*      sx={{ width: 'auto' }} */}
+                    {/*      renderInput={params => ( */}
+                    {/*        <InputMui */}
+                    {/*          {...params} */}
+                    {/*          label="Nome da instituição" */}
+                    {/*          variant="standard" */}
+                    {/*          parseError={() => 'Campo obrigatório.'} */}
+                    {/*          error={!!error} */}
+                    {/*          helperText={error?.message || ''} */}
+                    {/*        /> */}
+                    {/*      )} */}
+                    {/*      options={options} */}
+                    {/*      onChange={(event, value) => { */}
+                    {/*        const { name, type } = value || {} */}
+                    {/*        console.warn('event', value) */}
+                    {/*        onChangePostDoctorateInstitution(name) */}
+                    {/*        institutionTypeIdOnChange(type?.id) */}
+                    {/*      }} */}
+                    {/*      value={valuePostDoctorateInstitution} */}
+                    {/*    /> */}
+                    {/*  )} */}
+                    {/* /> */}
+
+                    {/* <Controller */}
+                    {/*  name={'postDoctorate.institution.name'} */}
+                    {/*  control={control} */}
+                    {/*  rules={{ required: hasPostDoctorate === 1 }} */}
+                    {/*  render={({ field: { onChange, value }, fieldState: { error } }) => ( */}
+                    {/*    <InputMui */}
+                    {/*      label={'Nome da instituição'} */}
+                    {/*      name={'postDoctorate.name'} */}
+                    {/*      disabled={hasPostDoctorate !== 1} */}
+                    {/*      // disabled={hasPostDoctorate !== 1} */}
+                    {/*      value={value} */}
+                    {/*      onChange={value => { */}
+                    {/*        onChange(value) */}
+                    {/*      }} */}
+                    {/*      // parseError={() => 'Campo obrigatório.'} */}
+                    {/*      error={!!error} */}
+                    {/*      // helperText={error ? 'Campo obrigatório.' : ''} */}
+                    {/*      helperText={error?.message || ''} */}
+                    {/*    /> */}
+                    {/*  )} */}
+                    {/* /> */}
                   </FormControl>
                 </Grid>
                 <Grid item xs={1} />
@@ -428,6 +534,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                           }}
                           slotProps={{
                             textField: {
+                              variant: 'standard',
                               error: !!error,
                               helperText: error ? 'Campo obrigatório.' : '',
                             },
@@ -455,6 +562,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                           }}
                           slotProps={{
                             textField: {
+                              variant: 'standard',
                               error: !!error,
                               helperText: error ? 'Campo obrigatório.' : '',
                             },

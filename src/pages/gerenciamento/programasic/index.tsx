@@ -133,7 +133,11 @@ const Programs = ({ programs }: Props) => {
               <Title>Atualizar Programas</Title>
             </Grid>
             <Grid item xs={12} height={510}>
-              <GraduatesTable columns={columns} rows={rows} />
+              {rows?.length !== 0 ? (
+                <GraduatesTable columns={columns} rows={rows} />
+              ) : (
+                <Fields>Nenhum resultado encontrado.</Fields>
+              )}
             </Grid>
             <Grid item xs={12}>
               <Grid container columnSpacing={2}>

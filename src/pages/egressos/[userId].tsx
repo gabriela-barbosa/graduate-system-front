@@ -14,7 +14,6 @@ import {
   Fields,
   getCNPQLevels,
   getGraduateInfoAndWorkHistory,
-  getInstitutionTypes,
   GraduateWorkHistoriesInfo,
   InstitutionalLinkInfo,
   PersonalInfo,
@@ -22,7 +21,7 @@ import {
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { SelectItem } from '@utils/types'
-import { showErrorToast } from '@components/Toast'
+import { getInstitutionTypesOptions } from '@modules/Commons/api'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -58,7 +57,10 @@ const GraduateInfo = ({
         hasCurrentWorkHistory,
         hasPostDoctorate,
         institutionalLinks: [],
-        postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
+        postDoctorateType: {
+          name: graduateInfo.postDoctorate?.institution.name,
+          typeId: graduateInfo.postDoctorate?.institution.typeId,
+        },
         workHistories: [],
       }
     }, [graduateInfo]),
@@ -93,12 +95,16 @@ const GraduateInfo = ({
       hasCurrentWorkHistory,
       hasPostDoctorate,
       institutionalLinks: [],
-      postDoctorateType: graduateInfo.postDoctorate?.institution.typeId,
+      postDoctorateType: {
+        name: graduateInfo.postDoctorate?.institution.name,
+        typeId: graduateInfo.postDoctorate?.institution.typeId,
+      },
       workHistories: [],
     })
   }, [graduateInfo])
 
   const onSend = async data => {
+    console.warn('onSend', data)
     const {
       graduateId,
       graduateName,
@@ -134,12 +140,12 @@ const GraduateInfo = ({
 
     const apiClient = getAPIClient()
 
-    try {
-      await apiClient.post(`v1/work-history?graduateId=${graduateId}`, { ...body })
-      showSavedToast()
-    } catch (err) {
-      showErrorToast('Ocorreu algum erro.')
-    }
+    // try {
+    //   await apiClient.post(`v1/work-history?graduateId=${graduateId}`, { ...body })
+    //   showSavedToast()
+    // } catch (err) {
+    //   showErrorToast('Ocorreu algum erro.')
+    // }
 
     // const myInit = {
     //   method: 'POST',
@@ -256,7 +262,7 @@ export async function getServerSideProps(ctx) {
 
   const promises = [
     getGraduateInfoAndWorkHistory(apiClient, userId),
-    getInstitutionTypes(apiClient),
+    getInstitutionTypesOptions(apiClient),
     getCNPQLevels(apiClient),
   ]
 

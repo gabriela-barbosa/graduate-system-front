@@ -129,6 +129,11 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
             </Grid>
             <ToastContainer />
             <Grid item xs={12}>
+              {cnpqLevels.length ? (
+                <CustomTable columns={columns} rows={rows} />
+              ) : (
+                <Fields>Nenhum resultado encontrado.</Fields>
+              )}
               <CustomTable columns={columns} rows={rows} />
             </Grid>
             <Grid item>

@@ -127,7 +127,11 @@ const Institutions = ({ institutionTypes }: Props) => {
               <Title>Atualizar Tipo de Instituição</Title>
             </Grid>
             <Grid item xs={12}>
-              <CustomTable columns={columns} rows={rows} />
+              {rows?.length !== 0 ? (
+                <CustomTable columns={columns} rows={rows} />
+              ) : (
+                <Fields>Nenhum resultado encontrado.</Fields>
+              )}
             </Grid>
             <Grid item>
               <Grid container columnSpacing={2}>

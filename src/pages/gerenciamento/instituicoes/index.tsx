@@ -225,10 +225,14 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
               </FormContainer>
             </Grid>
             <Grid item xs={12}>
-              <CustomTable columns={columns} rows={rows} />
+              {institutionsList.length ? (
+                <CustomTable columns={columns} rows={rows} />
+              ) : (
+                <Fields>Nenhum resultado encontrado.</Fields>
+              )}
             </Grid>
             <Grid item xs={12}>
-              {pagination && (
+              {pagination && institutionsList.length > 0 && (
                 <Pagination
                   count={Math.ceil(pagination.total / DEFAULT_PAGE_SIZE)}
                   page={pagination.page + 1}

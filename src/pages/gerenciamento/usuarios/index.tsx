@@ -163,13 +163,17 @@ const UserList = ({ users, meta }: Props) => {
                   </Button>
                 </Grid>
                 <Grid item>
-                  <CustomTable columns={columns} rows={rows} />
+                  {rows?.length !== 0 ? (
+                    <CustomTable columns={columns} rows={rows} />
+                  ) : (
+                    <Fields>Nenhum resultado encontrado.</Fields>
+                  )}
                 </Grid>
               </Grid>
             </FormContainer>
           </Grid>
           <Grid item xs={12}>
-            {pagination && (
+            {pagination && rows?.length !== 0 && (
               <Pagination
                 count={Math.ceil(pagination.total / pageSize)}
                 page={pagination.page + 1}
