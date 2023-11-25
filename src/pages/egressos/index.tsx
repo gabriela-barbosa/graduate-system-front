@@ -25,7 +25,7 @@ import { GraduatesListDetails } from '@modules/GraduatesList/types'
 import { SelectItem } from '@utils/types'
 import { useAuth } from '@context/AuthProvider'
 import { showErrorToast } from '@components/Toast'
-import { getInstitutionTypes } from '@modules/InstitutionTypes/api'
+import { getInstitutionTypesOptions } from '@modules/Commons/api'
 
 const status = {
   [HISTORY_STATUS.PENDING]: 'Pendente',
@@ -281,7 +281,7 @@ export async function getServerSideProps(ctx) {
 
   const promises = [
     getGraduates(apiClient),
-    getInstitutionTypes(apiClient),
+    getInstitutionTypesOptions(apiClient),
     getCNPQLevels(apiClient),
   ]
   const responses = await Promise.all(promises)

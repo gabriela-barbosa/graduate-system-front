@@ -1,5 +1,5 @@
 import React from 'react'
-import { Theme } from '@utils/enums'
+import { Routes, Theme } from '@utils/enums'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { useRouter } from 'next/router'
@@ -14,14 +14,7 @@ import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded'
 import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded'
 import { OverridableComponent } from '@mui/types'
-enum ManagementLinks {
-  PROGRAM = 'programasic',
-  INSTITUTION_TYPE = 'tiposdeinstituicao',
-  CNPQ_LEVELS = 'niveiscnpq',
-  CONFIG_EMAIL = 'emails',
-  CONFIG_USER = 'usuarios',
-  CONFIG_INSTITUTION = 'instituicoes',
-}
+import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface OptionProps {
   title: string
@@ -33,8 +26,8 @@ interface OptionProps {
 const Select: React.FC = () => {
   const router = useRouter()
 
-  const goToPage = (option: ManagementLinks) => {
-    router.push(`gerenciamento/${option}`)
+  const goToPage = (option: Routes) => {
+    router.push(option)
   }
 
   const options: OptionProps[] = [
@@ -42,37 +35,37 @@ const Select: React.FC = () => {
       title: 'Configurar Programas',
       subtitle: 'Adicione, exclua ou edite um programa de pós-graduação.',
       icon: AccountBalanceRoundedIcon,
-      onClick: () => goToPage(ManagementLinks.PROGRAM),
+      onClick: () => goToPage(Routes.MANAGEMENT_CI_PROGRAMS),
     },
     {
       title: 'Configurar Instituições',
       subtitle: 'Adicione, exclua ou edite uma instituição.',
       icon: BusinessRoundedIcon,
-      onClick: () => goToPage(ManagementLinks.CONFIG_INSTITUTION),
+      onClick: () => goToPage(Routes.MANAGEMENT_INSTITUTIONS),
     },
     {
       title: 'Configurar Tipo de Instituição',
       subtitle: 'Adicione, exclua ou edite um tipo de instituição.',
       icon: HomeWorkRoundedIcon,
-      onClick: () => goToPage(ManagementLinks.INSTITUTION_TYPE),
+      onClick: () => goToPage(Routes.MANAGEMENT_INSTITUTIONS_TYPES),
     },
     {
       title: 'Configurar Níveis CNPQ',
       subtitle: 'Adicione, exclua ou edite um nível CNPQ.',
       icon: SchoolRoundedIcon,
-      onClick: () => goToPage(ManagementLinks.CNPQ_LEVELS),
+      onClick: () => goToPage(Routes.MANAGEMENT_CNPQ_LEVELS),
     },
     {
-      title: 'Configurar Conteúdo do Email',
+      title: 'Configurar Conteúdo dos Emails',
       subtitle: 'Adicione, exclua ou edite um email.',
       icon: EmailRoundedIcon,
-      onClick: () => goToPage(ManagementLinks.CONFIG_EMAIL),
+      onClick: () => goToPage(Routes.MANAGEMENT_EMAILS),
     },
     {
       title: 'Configurar Usuários',
       subtitle: 'Adicione, exclua ou edite um usuário.',
       icon: ManageAccountsRoundedIcon,
-      onClick: () => goToPage(ManagementLinks.CONFIG_USER),
+      onClick: () => goToPage(Routes.MANAGEMENT_USERS),
     },
   ]
 
@@ -81,6 +74,14 @@ const Select: React.FC = () => {
       <MainWrapper themeName={Theme.white} hasContent={true} hasHeader={true}>
         <PageWrapper container rowSpacing={3}>
           <Grid item>
+            <Breadcrumbs
+              breadcrumbs={[
+                { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+                { name: 'Gerenciamento' },
+              ]}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <Title>Gerenciamento de opções</Title>
           </Grid>
 
