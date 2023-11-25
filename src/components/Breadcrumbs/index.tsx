@@ -1,47 +1,36 @@
 import React from 'react'
-import {Typography} from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import BC from '@mui/material/Breadcrumbs'
 import Link from 'next/link'
-import MUILink from '@mui/material/Link'
-
-interface BreadcrumbOptions {
-  name: string
-  href?: string
-}
+import { BreadcrumbOptions } from './types'
 
 interface Props {
   breadcrumbs: BreadcrumbOptions[]
 }
 
-const Breadcrumbs = ({breadcrumbs}: Props) => (
-  <BC aria-label="breadcrumb">
-    {breadcrumbs.map(({name, href}, index) => (
-      {index !== breadcrumbs.length - 1 ? (
-        <Link href="/">
-          <MUILink underline="hover" color="inherit">
-            MUI
-          </MUILink>
-          MUI
-        </Link>
-      ) : (
-        <Typography color="text.primary">Breadcrumbs</Typography>)}
-      ))
-    }
-  </BC>
-)
+export const Breadcrumbs = ({ breadcrumbs }: Props) => {
+  const itensWithoutLast = breadcrumbs.slice(0, breadcrumbs.length - 1)
+  const lastItem = breadcrumbs[breadcrumbs.length - 1]
 
-const showSavedToast = () => toast.success('Salvo com sucesso!')
-const showEditedToast = () => toast.success('Editado com sucesso!')
-const showDeletedToast = () => toast.success('Deletado com sucesso!')
-const showErrorToast = (errorMessage: string) => toast.error(errorMessage)
-const showToast = (errorMessage: string, type?: TypeOptions) => toast(errorMessage, { type })
-
-export {
-  ToastContainer,
-  toast,
-  showSavedToast,
-  showDeletedToast,
-  showErrorToast,
-  showToast,
-  showEditedToast,
+  return (
+    <BC aria-label="breadcrumb">
+      {itensWithoutLast.map((breadcrumb, index) => (
+        <Button
+          sx={{
+            backgroundColor: 'transparent',
+            padding: 0,
+            '&:hover': { backgroundColor: 'transparent' },
+          }}
+          key={index}
+          href={breadcrumb.href}
+          LinkComponent={Link}
+        >
+          {breadcrumb.name}
+        </Button>
+      ))}
+      <Typography color="text.primary" variant="subtitle2">
+        {lastItem.name.toUpperCase()}
+      </Typography>
+    </BC>
+  )
 }

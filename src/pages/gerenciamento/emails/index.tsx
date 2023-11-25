@@ -11,7 +11,7 @@ import {
   showSavedToast,
   ToastContainer,
 } from '@components'
-import { Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
 import {
   Checkbox,
@@ -35,6 +35,7 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import GraduatesTable from '@components/Table/CustomTable'
 import { showErrorToast } from '@components/Toast'
 import { DeleteModal, DeleteItem } from '@components/DeleteModal'
+import { Breadcrumbs } from '@components/Breadcrumbs'
 
 const pageSize = 10
 
@@ -188,6 +189,15 @@ const EmailConfig = ({ emails, meta }: Props) => {
       <MainWrapper themeName={Theme.white} hasContent hasHeader>
         <PageWrapper>
           <Grid container rowSpacing={2}>
+            <Grid item>
+              <Breadcrumbs
+                breadcrumbs={[
+                  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+                  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+                  { name: 'Conteúdo dos Emails' },
+                ]}
+              />
+            </Grid>
             <Grid item xs={12}>
               <Title>Atualizar Informações do Email</Title>
             </Grid>
