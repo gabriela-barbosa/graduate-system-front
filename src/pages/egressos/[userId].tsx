@@ -22,7 +22,6 @@ import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { SelectItem } from '@utils/types'
 import { getInstitutionTypesOptions } from '@modules/Commons/api'
-import { getInstitutionTypesOptions } from '@modules/Commons/api'
 import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {

@@ -43,7 +43,7 @@ const MainHeader: React.FC = () => {
           </Grid>
           <Grid xs={4} xsOffset={1} alignSelf="center">
             <Grid container alignItems="center" justifyContent="flex-end">
-              <Grid>
+              <Grid pr={1}>
                 <FormControl>
                   <InputLabel id="currentRoleLabel">Papel</InputLabel>
                   <SelectMui
@@ -77,7 +77,7 @@ const MainHeader: React.FC = () => {
                 <LogoutButton onClick={logout}>Sair</LogoutButton>
               </Grid>
 
-              <Grid>
+              <Grid pl={1}>
                 {currentRole === Role.ADMIN && (
                   <IconButton onClick={onClickConfig}>
                     <SettingsIcon fontSize="large" />

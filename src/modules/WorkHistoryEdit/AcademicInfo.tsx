@@ -12,6 +12,7 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  Typography,
 } from '@mui/material'
 import { Subtitle } from './index.style'
 import React, { useCallback, useState } from 'react'
@@ -364,45 +365,45 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                         },
                         fieldState: { error },
                       }) => (
-                        <>
-                          {valuePostDoctorateInstitution}
-
-                          <Autocomplete
-                            freeSolo
-                            noOptionsText="Nenhuma instituição encontrada"
-                            filterOptions={x => x}
-                            value={valuePostDoctorateInstitution}
-                            disablePortal
-                            id="autocomplete-search"
-                            inputValue={valuePostDoctorateInstitution}
-                            onInputChange={(event, inputValue) =>
-                              debounceOnChange(inputValue, onChangePostDoctorateInstitution)
-                            }
-                            // inputValue={valuePostDoctorateInstitution}
-                            getOptionLabel={(option: Institution) => {
-                              console.warn('option', option)
-                              return option?.name
-                            }}
-                            sx={{ width: 'auto' }}
-                            renderInput={params => (
-                              <InputMui
-                                {...params}
-                                label="Nome da instituição"
-                                variant="standard"
-                                parseError={() => 'Campo obrigatório.'}
-                                error={!!error}
-                                helperText={error?.message || ''}
-                              />
-                            )}
-                            options={options}
-                            onChange={(event, value) => {
-                              const { name, type } = value || {}
-                              console.warn('event', value)
-                              onChangePostDoctorateInstitution(name)
-                              institutionTypeIdOnChange(type?.id)
-                            }}
-                          />
-                        </>
+                        <Autocomplete
+                          freeSolo
+                          noOptionsText="Nenhuma instituição encontrada"
+                          disablePortal
+                          onInputChange={(event, inputValue) =>
+                            onInputChange(inputValue, onChangePostDoctorateInstitution)
+                          }
+                          renderOption={(option: Institution) => (
+                            <Grid container>
+                              <Grid item>
+                                <Typography>{option.name}</Typography>
+                              </Grid>
+                              <Grid item>
+                                <Typography>{option?.type?.name} </Typography>
+                              </Grid>
+                            </Grid>
+                          )}
+                          getOptionLabel={(option: Institution) =>
+                            `Nome: ${option?.name} Tipo: ${option?.type?.name}`
+                          }
+                          options={options}
+                          renderInput={params => (
+                            <InputMui
+                              {...params}
+                              label="Nome da instituição"
+                              variant="standard"
+                              parseError={() => 'Campo obrigatório.'}
+                              error={!!error}
+                              helperText={error?.message || ''}
+                            />
+                          )}
+                          onChange={(event, value) => {
+                            const { name, type } = value || {}
+                            console.warn('event', value)
+                            onChangePostDoctorateInstitution(name)
+                            institutionTypeIdOnChange(type?.id)
+                          }}
+                          value={valuePostDoctorateInstitution}
+                        />
                       )}
                     />
                     {/* <Controller */}
@@ -450,28 +451,6 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                     {/*        institutionTypeIdOnChange(type?.id) */}
                     {/*      }} */}
                     {/*      value={valuePostDoctorateInstitution} */}
-                    {/*    /> */}
-                    {/*  )} */}
-                    {/* /> */}
-
-                    {/* <Controller */}
-                    {/*  name={'postDoctorate.institution.name'} */}
-                    {/*  control={control} */}
-                    {/*  rules={{ required: hasPostDoctorate === 1 }} */}
-                    {/*  render={({ field: { onChange, value }, fieldState: { error } }) => ( */}
-                    {/*    <InputMui */}
-                    {/*      label={'Nome da instituição'} */}
-                    {/*      name={'postDoctorate.name'} */}
-                    {/*      disabled={hasPostDoctorate !== 1} */}
-                    {/*      // disabled={hasPostDoctorate !== 1} */}
-                    {/*      value={value} */}
-                    {/*      onChange={value => { */}
-                    {/*        onChange(value) */}
-                    {/*      }} */}
-                    {/*      // parseError={() => 'Campo obrigatório.'} */}
-                    {/*      error={!!error} */}
-                    {/*      // helperText={error ? 'Campo obrigatório.' : ''} */}
-                    {/*      helperText={error?.message || ''} */}
                     {/*    /> */}
                     {/*  )} */}
                     {/* /> */}
