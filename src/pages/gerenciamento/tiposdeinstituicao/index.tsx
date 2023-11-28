@@ -19,7 +19,6 @@ import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import {
   deleteInstitutionType,
-  getInstitutionTypes,
   saveInstitutionType,
   updateInstitutionType,
 } from '@modules/InstitutionTypes/api'
@@ -28,6 +27,7 @@ import { InstitutionType } from '@modules/InstitutionTypes/types'
 import { CustomTable } from '@components/Table'
 import { DeleteItem, DeleteModal } from '@components/DeleteModal'
 import { Breadcrumbs } from '@components/Breadcrumbs'
+import { getInstitutionTypesOptions } from '@modules/Commons/api'
 
 interface Props {
   institutionTypes: InstitutionType[]
@@ -223,7 +223,7 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
-  const types = await getInstitutionTypes(apiClient)
+  const types = await getInstitutionTypesOptions(apiClient)
 
   return {
     props: {

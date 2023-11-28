@@ -28,8 +28,6 @@ import { CIProgramInfo } from '@modules/Programs/types'
 import { DeleteModal } from '@components/DeleteModal'
 import { DeleteItem } from '@components/DeleteModal/types'
 import { Breadcrumbs } from '@components/Breadcrumbs'
-import { Box } from '@mui/material'
-
 interface Props {
   programs: CIProgramInfo[]
 }
