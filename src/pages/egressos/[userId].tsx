@@ -56,12 +56,13 @@ const GraduateInfo = ({
         hasPostDoctorate,
         institutionalLinks: [],
         postDoctorate: {
+          id: graduateInfo.postDoctorate?.id,
           startedAt: graduateInfo.postDoctorate?.startedAt,
           endedAt: graduateInfo.postDoctorate?.endedAt,
           institution: {
-            id: graduateInfo.postDoctorate?.institution.id,
-            name: graduateInfo.postDoctorate?.institution.name,
-            typeId: graduateInfo.postDoctorate?.institution.typeId,
+            id: graduateInfo.postDoctorate?.institution?.id,
+            name: graduateInfo.postDoctorate?.institution?.name,
+            typeId: graduateInfo.postDoctorate?.institution?.typeId,
           },
         },
         workHistories: [],
@@ -85,12 +86,13 @@ const GraduateInfo = ({
       hasPostDoctorate,
       institutionalLinks: [],
       postDoctorate: {
+        id: graduateInfo.postDoctorate?.id,
         startedAt: graduateInfo.postDoctorate?.startedAt,
         endedAt: graduateInfo.postDoctorate?.endedAt,
         institution: {
-          id: graduateInfo.postDoctorate?.institution.id,
-          name: graduateInfo.postDoctorate?.institution.name,
-          typeId: graduateInfo.postDoctorate?.institution.typeId,
+          id: graduateInfo.postDoctorate?.institution?.id,
+          name: graduateInfo.postDoctorate?.institution?.name,
+          typeId: graduateInfo.postDoctorate?.institution?.typeId,
         },
       },
       workHistories: [],

@@ -144,7 +144,6 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
               ) : (
                 <Fields>Nenhum resultado encontrado.</Fields>
               )}
-              <CustomTable columns={columns} rows={rows} />
             </Grid>
             <Grid item>
               <Grid container columnSpacing={2}>
