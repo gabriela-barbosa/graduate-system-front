@@ -1,20 +1,15 @@
-import {
-  Autocomplete,
-  Box,
-  Checkbox,
-  debounce,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-} from '@mui/material'
 import { Subtitle } from './index.style'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import FormControl from '@mui/material/FormControl'
+import FormLabel from '@mui/material/FormLabel'
+import RadioGroup from '@mui/material/RadioGroup'
+import Radio from '@mui/material/Radio'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Autocomplete from '@mui/material/Autocomplete'
+import Typography from '@mui/material/Typography'
+import MenuItem from '@mui/material/MenuItem'
+import Checkbox from '@mui/material/Checkbox'
 import React, { useCallback, useState } from 'react'
 import { ActionIcon, Button, DatePicker, InputMui, Paper, SelectMui } from '@components'
 import { GraduateWorkHistoriesInfo, Option } from './types'
@@ -29,7 +24,9 @@ import { useAuth } from '@context/AuthProvider'
 import { Controller, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
 import { getAPIClient } from '@services/axios'
-import { Institution } from '@modules/Institutions/types'
+import { InputLabel } from '@components/Input'
+import debounce from '@mui/utils/debounce'
+import FormHelperText from '@mui/material/FormHelperText'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -50,10 +47,12 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
     []
   )
 
-  const onSelectInstitutionName = institution => {}
+  const {
+    field: { value: institutionIdValue, onChange: institutionIdOnChange },
+  } = useController({ control, name: 'postDoctorate.institution.id' })
 
   const {
-    field: { value: institutionTypeIdValue, onChange: institutionTypeIdOnChange },
+    field: { onChange: institutionTypeIdOnChange },
   } = useController({ control, name: 'postDoctorate.institution.typeId' })
 
   const {
@@ -175,25 +174,19 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
     // setNewInstitutions(data)
   }
 
-  // const onInputChange = (event, value) => {
-  const onInputChange = async (inputValue, onChangeInstitution) => {
-    console.warn(inputValue)
+  const debounceGetData = useCallback(
+    debounce(inputValue => getData(inputValue), 1000),
+    []
+  )
+  const onInputChange = (inputValue, onChangeInstitution) => {
+    console.warn('passeo aqui', inputValue)
     if (inputValue) {
       onChangeInstitution(inputValue)
-      await getData(inputValue)
+      debounceGetData(inputValue)
     } else {
       setOptions([])
     }
   }
-
-  const debounceOnChange = useCallback(
-    debounce(
-      (inputValue, onChangePostDoctorateInstitution) =>
-        onInputChange(inputValue, onChangePostDoctorateInstitution),
-      6000
-    ),
-    []
-  )
 
   return (
     <Grid container spacing={4}>
@@ -367,93 +360,57 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                       }) => (
                         <Autocomplete
                           freeSolo
+                          disabled={hasPostDoctorate !== 1}
                           noOptionsText="Nenhuma instituição encontrada"
                           disablePortal
                           onInputChange={(event, inputValue) =>
                             onInputChange(inputValue, onChangePostDoctorateInstitution)
                           }
-                          renderOption={(option: Institution) => (
-                            <Grid container>
-                              <Grid item>
-                                <Typography>{option.name}</Typography>
+                          renderOption={(props, option) => (
+                            <li {...props}>
+                              <Grid container>
+                                <Grid item xs={12}>
+                                  <Typography variant="subtitle1">{option.name}</Typography>
+                                </Grid>
+                                <Grid item>
+                                  <Typography variant="body2" color="gray">
+                                    {option?.type?.name}
+                                  </Typography>
+                                </Grid>
                               </Grid>
-                              <Grid item>
-                                <Typography>{option?.type?.name} </Typography>
-                              </Grid>
-                            </Grid>
+                            </li>
                           )}
-                          getOptionLabel={(option: Institution) =>
-                            `Nome: ${option?.name} Tipo: ${option?.type?.name}`
-                          }
+                          inputValue={valuePostDoctorateInstitution || ''}
+                          getOptionLabel={option => option?.name || option}
+                          defaultValue={''}
                           options={options}
                           renderInput={params => (
                             <InputMui
                               {...params}
                               label="Nome da instituição"
                               variant="standard"
-                              parseError={() => 'Campo obrigatório.'}
+                              pa={() => 'Campo obrigatório.'}
                               error={!!error}
-                              helperText={error?.message || ''}
+                              helperText={error ? 'Campo obrigatório.' : ''}
                             />
                           )}
-                          onChange={(event, value) => {
-                            const { name, type } = value || {}
-                            console.warn('event', value)
+                          onChange={(event, value, reason) => {
+                            let name = value?.name
+                            let typeId = value?.type.id
+                            let id = value?.id
+                            if (reason === 'clear') {
+                              name = null
+                              typeId = null
+                              id = null
+                            }
                             onChangePostDoctorateInstitution(name)
-                            institutionTypeIdOnChange(type?.id)
+                            institutionTypeIdOnChange(typeId)
+                            institutionIdOnChange(id)
                           }}
                           value={valuePostDoctorateInstitution}
                         />
                       )}
                     />
-                    {/* <Controller */}
-                    {/*  name={'postDoctorate.institution.name'} */}
-                    {/*  control={control} */}
-                    {/*  rules={{ required: hasPostDoctorate === 1 }} */}
-                    {/*  defaultValue={null} */}
-                    {/*  render={({ */}
-                    {/*    field: { */}
-                    {/*      onChange: onChangePostDoctorateInstitution, */}
-                    {/*      value: valuePostDoctorateInstitution, */}
-                    {/*    }, */}
-                    {/*    fieldState: { error }, */}
-                    {/*  }) => ( */}
-                    {/*    <Autocomplete */}
-                    {/*      freeSolo */}
-                    {/*      noOptionsText="Nenhuma instituição encontrada" */}
-                    {/*      filterOptions={x => x} */}
-                    {/*      disablePortal */}
-                    {/*      id="autocomplete-search" */}
-                    {/*      onInputChange={(event, inputValue) => */}
-                    {/*        onInputChange(inputValue, onChangePostDoctorateInstitution) */}
-                    {/*      } */}
-                    {/*      inputValue={valuePostDoctorateInstitution} */}
-                    {/*      getOptionLabel={(option: Institution) => { */}
-                    {/*        console.warn('option', option) */}
-                    {/*        return option?.name */}
-                    {/*      }} */}
-                    {/*      sx={{ width: 'auto' }} */}
-                    {/*      renderInput={params => ( */}
-                    {/*        <InputMui */}
-                    {/*          {...params} */}
-                    {/*          label="Nome da instituição" */}
-                    {/*          variant="standard" */}
-                    {/*          parseError={() => 'Campo obrigatório.'} */}
-                    {/*          error={!!error} */}
-                    {/*          helperText={error?.message || ''} */}
-                    {/*        /> */}
-                    {/*      )} */}
-                    {/*      options={options} */}
-                    {/*      onChange={(event, value) => { */}
-                    {/*        const { name, type } = value || {} */}
-                    {/*        console.warn('event', value) */}
-                    {/*        onChangePostDoctorateInstitution(name) */}
-                    {/*        institutionTypeIdOnChange(type?.id) */}
-                    {/*      }} */}
-                    {/*      value={valuePostDoctorateInstitution} */}
-                    {/*    /> */}
-                    {/*  )} */}
-                    {/* /> */}
                   </FormControl>
                 </Grid>
                 <Grid item xs={1} />
@@ -467,30 +424,28 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                         required: hasPostDoctorate === 1,
                         validate: value => hasPostDoctorate !== 1 || value !== 0,
                       }}
-                      render={({ field: { value, ...rest } }) => (
-                        <SelectMui
-                          {...rest}
-                          value={value ?? 0}
-                          label={'Tipo da Instituição'}
-                          labelId={'labelPostDocType'}
-                          disabled={hasPostDoctorate !== 1}
-                        >
-                          {institutionTypes.map(type => (
-                            <MenuItem key={type.id} value={type.id}>
-                              {type.label}
-                            </MenuItem>
-                          ))}
-                        </SelectMui>
+                      render={({ field: { value, ...rest }, fieldState: { error } }) => (
+                        <>
+                          <SelectMui
+                            {...rest}
+                            value={value ?? 0}
+                            label={'Tipo da Instituição'}
+                            labelId={'labelPostDocType'}
+                            disabled={hasPostDoctorate !== 1 || institutionIdValue}
+                            error={!!error}
+                          >
+                            {institutionTypes.map(type => (
+                              <MenuItem key={type.id} value={type.id}>
+                                {type.label}
+                              </MenuItem>
+                            ))}
+                          </SelectMui>
+                          <FormHelperText variant="standard" sx={{ color: '#d32f2f' }}>
+                            {error ? 'Campo obrigatório.' : ''}
+                          </FormHelperText>
+                        </>
                       )}
                     />
-                    {/* <Select */}
-                    {/*  disabled={hasPostDoctorate !== 1} */}
-                    {/*  name={'postDoctorateType'} */}
-                    {/*  label={'Tipo da instituição'} */}
-                    {/*  options={institutionTypes} */}
-                    {/*  parseError={() => 'Campo obrigatório.'} */}
-                    {/*  required={hasPostDoctorate === 1} */}
-                    {/* /> */}
                   </FormControl>
                 </Grid>
                 <Grid item xs={5}>

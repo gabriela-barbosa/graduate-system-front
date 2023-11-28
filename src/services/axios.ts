@@ -14,9 +14,9 @@ export function getAPIClient(ctx?: any) {
     },
   })
 
-  if (token) {
-    api.defaults.headers.Cookie = `${USER_TOKEN_NAME}=${token}`
-  }
+  // if (token) {
+  //   api.defaults.headers.Cookie = `${USER_TOKEN_NAME}=${token}`
+  // }
 
   return api
 }

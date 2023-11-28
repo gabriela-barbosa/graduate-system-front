@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { Button, MainWrapper, showSavedToast, ToastContainer } from '@components'
+import { Button, MainWrapper, showSavedToast, ToastContainer, showErrorToast } from '@components'
 import { Role, Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
@@ -7,7 +7,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '@context/AuthProvider'
 import { useRouter } from 'next/router'
 import { PageWrapper, Title } from '@styles/index.style'
-import { Box, Grid } from '@mui/material'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import { FormContainer } from 'react-hook-form-mui'
 import {
   AcademicInfo,
@@ -42,11 +43,7 @@ const GraduateInfo = ({
   institutionTypes,
 }: Props) => {
   const router = useRouter()
-
   const { currentRole } = useAuth()
-
-  // const { graduateId } = router.query
-
   const formContext = useForm({
     defaultValues: useMemo(() => {
       return {
@@ -58,29 +55,20 @@ const GraduateInfo = ({
         hasCurrentWorkHistory,
         hasPostDoctorate,
         institutionalLinks: [],
-        postDoctorateType: {
-          name: graduateInfo.postDoctorate?.institution.name,
-          typeId: graduateInfo.postDoctorate?.institution.typeId,
+        postDoctorate: {
+          startedAt: graduateInfo.postDoctorate?.startedAt,
+          endedAt: graduateInfo.postDoctorate?.endedAt,
+          institution: {
+            id: graduateInfo.postDoctorate?.institution.id,
+            name: graduateInfo.postDoctorate?.institution.name,
+            typeId: graduateInfo.postDoctorate?.institution.typeId,
+          },
         },
         workHistories: [],
       }
     }, [graduateInfo]),
   })
   const { reset, control } = formContext
-
-  // const [
-  //   hasCurrentWorkHistory,
-  //   institutionalLinks,
-  //   hasCurrentCNPQScholarship,
-  //   hasPostDoctorate,
-  //   currentInstitutionalLinks,
-  // ] = watch([
-  //   'hasCurrentWorkHistory',
-  //   'institutionalLinks',
-  //   'hasCurrentCNPQScholarship',
-  //   'hasPostDoctorate',
-  //   'currentInstitutionalLinks',
-  // ])
 
   const transformNumberToValue = (n: number) => (n === 1 ? true : n === 0 ? false : undefined)
 
@@ -96,9 +84,14 @@ const GraduateInfo = ({
       hasCurrentWorkHistory,
       hasPostDoctorate,
       institutionalLinks: [],
-      postDoctorateType: {
-        name: graduateInfo.postDoctorate?.institution.name,
-        typeId: graduateInfo.postDoctorate?.institution.typeId,
+      postDoctorate: {
+        startedAt: graduateInfo.postDoctorate?.startedAt,
+        endedAt: graduateInfo.postDoctorate?.endedAt,
+        institution: {
+          id: graduateInfo.postDoctorate?.institution.id,
+          name: graduateInfo.postDoctorate?.institution.name,
+          typeId: graduateInfo.postDoctorate?.institution.typeId,
+        },
       },
       workHistories: [],
     })
@@ -141,12 +134,12 @@ const GraduateInfo = ({
 
     const apiClient = getAPIClient()
 
-    // try {
-    //   await apiClient.post(`v1/work-history?graduateId=${graduateId}`, { ...body })
-    //   showSavedToast()
-    // } catch (err) {
-    //   showErrorToast('Ocorreu algum erro.')
-    // }
+    try {
+      await apiClient.post(`v1/work-history?graduateId=${graduateId}`, { ...body })
+      showSavedToast()
+    } catch (err) {
+      showErrorToast('Ocorreu algum erro.')
+    }
 
     // const myInit = {
     //   method: 'POST',

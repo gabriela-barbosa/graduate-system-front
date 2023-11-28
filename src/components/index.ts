@@ -13,7 +13,7 @@ import {
   ActionIcon,
   TableContainer,
 } from './Table'
-import { ToastContainer, toast, showSavedToast, showDeletedToast } from './Toast'
+import { ToastContainer, toast, showSavedToast, showDeletedToast, showErrorToast } from './Toast'
 import Paper from '@mui/material/Paper'
 import { DatePicker } from './DatePicker'
 
@@ -25,6 +25,7 @@ export {
   InputMui,
   toast,
   showDeletedToast,
+  showErrorToast,
   showSavedToast,
   Select,
   ToastContainer,
