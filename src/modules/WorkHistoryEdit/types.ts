@@ -21,6 +21,7 @@ type FormType = {
 }
 
 interface InstitutionInfo {
+  id?: string
   typeId: string
   typeName: string
   name: string
