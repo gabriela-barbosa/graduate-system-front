@@ -1,14 +1,18 @@
 import React, { useEffect, useMemo } from 'react'
-import { Button, MainWrapper, showSavedToast, ToastContainer, showErrorToast } from '@components'
+import {
+  Button,
+  MainWrapper,
+  showSavedToast,
+  ToastContainer,
+  showErrorToast,
+  Grid,
+} from '@components'
 import { Role, Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { useForm } from 'react-hook-form'
-import 'react-toastify/dist/ReactToastify.css'
 
 import { useAuth } from '@context/AuthProvider'
 import { useRouter } from 'next/router'
 import { PageWrapper, Title } from '@styles/index.style'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
 import { FormContainer } from 'react-hook-form-mui'
 import {
   AcademicInfo,
@@ -142,26 +146,6 @@ const GraduateInfo = ({
     } catch (err) {
       showErrorToast('Ocorreu algum erro.')
     }
-
-    // const myInit = {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   credentials: 'include',
-    //   body: JSON.stringify(body),
-    // }
-    //
-    // const result = await fetch(
-    //   `${GRADUATE_API}/v1/work-history?graduateId=${graduateId}`,
-    //   myInit as RequestInit
-    // )
-    // if (result.status === 201 || result.status === 204) {
-    //   toast.success('Salvo com sucesso!')
-    // } else {
-    //   toast.error('Ocorreu algum problema.')
-    // }
   }
 
   // const handleGetOnChangeValue = ({ target }) => {
@@ -183,69 +167,64 @@ const GraduateInfo = ({
 
   return (
     <MainWrapper themeName={Theme.white}>
-      <PageWrapper spacing={2} container>
+      <PageWrapper container spacing={3}>
+        {currentRole !== Role.GRADUATE && (
+          <Grid item>
+            <Breadcrumbs
+              breadcrumbs={[
+                { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+                { name: 'Histórico do Egressos' },
+              ]}
+            />
+          </Grid>
+        )}
+        <Grid item xs={12}>
+          <Title>Registro de Histórico do Egresso</Title>
+        </Grid>
         <Grid item>
-          <Grid container spacing={3}>
-            {currentRole !== Role.GRADUATE && (
-              <Box pt={3} pl={3}>
-                <Breadcrumbs
-                  breadcrumbs={[
-                    { name: 'Listagem de Egressos', href: Routes.GRADUATES },
-                    { name: 'Histórico do Egressos' },
-                  ]}
+          <FormContainer formContext={formContext} onSuccess={onSend}>
+            <Grid container spacing={6}>
+              <Grid item xs={12}>
+                <PersonalInfo />
+              </Grid>
+              <Grid item xs={12}>
+                <InstitutionalLinkInfo
+                  control={control}
+                  graduateInfo={graduateInfo}
+                  institutionTypes={institutionTypes}
                 />
-              </Box>
-            )}
-
-            <Grid item>
-              <Title>Registro de Histórico do Egresso</Title>
-            </Grid>
-            <Grid item>
-              <FormContainer formContext={formContext} onSuccess={onSend}>
-                <Grid container spacing={6}>
-                  <Grid item xs={12}>
-                    <PersonalInfo />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <InstitutionalLinkInfo
-                      control={control}
-                      graduateInfo={graduateInfo}
-                      institutionTypes={institutionTypes}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AcademicInfo
-                      control={control}
-                      cnpqLevels={cnpqLevels}
-                      graduateInfo={graduateInfo}
-                      institutionTypes={institutionTypes}
-                    />
-                  </Grid>
-                  <Grid item xs={12} alignSelf={'center'}>
-                    <Grid container justifyContent={'center'} columnSpacing={3}>
-                      {currentRole !== Role.GRADUATE ? (
-                        <Grid item>
-                          <Button
-                            size={'large'}
-                            variant="outlined"
-                            onClick={() => router.push(`/egressos`)}
-                          >
-                            Voltar
-                          </Button>
-                        </Grid>
-                      ) : null}
-
-                      <Grid item>
-                        <Button size={'large'} variant="contained" type="submit">
-                          Enviar
-                        </Button>
-                      </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <AcademicInfo
+                  control={control}
+                  cnpqLevels={cnpqLevels}
+                  graduateInfo={graduateInfo}
+                  institutionTypes={institutionTypes}
+                />
+              </Grid>
+              <Grid item xs={12} alignSelf={'center'}>
+                <Grid container justifyContent={'center'} columnSpacing={3}>
+                  {currentRole !== Role.GRADUATE ? (
+                    <Grid item>
+                      <Button
+                        size={'large'}
+                        variant="outlined"
+                        onClick={() => router.push(`/egressos`)}
+                      >
+                        Voltar
+                      </Button>
                     </Grid>
+                  ) : null}
+
+                  <Grid item>
+                    <Button size={'large'} variant="contained" type="submit">
+                      Enviar
+                    </Button>
                   </Grid>
                 </Grid>
-              </FormContainer>
+              </Grid>
             </Grid>
-          </Grid>
+          </FormContainer>
         </Grid>
         <ToastContainer />
       </PageWrapper>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { Theme, USER_TOKEN_NAME } from '@utils/enums'
-import 'react-toastify/dist/ReactToastify.css'
+import { Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Modal } from 'react-bootstrap'
 import { useRouter } from 'next/router'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
@@ -42,6 +41,7 @@ import { getInstitutionTypesOptions } from '@modules/Commons/api'
 import { SelectItem } from '@utils/types'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
+import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
   institutions: Institution[]
@@ -176,72 +176,81 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
   ])
 
   return (
-    <>
-      <MainWrapper themeName={Theme.white} hasContent hasHeader>
-        <PageWrapper>
-          <Grid container rowSpacing={2}>
-            <Grid item xs={12}>
-              <Title>Atualizar Instituições</Title>
+    <MainWrapper>
+      <PageWrapper container rowSpacing={2}>
+        <Grid item>
+          <Breadcrumbs
+            breadcrumbs={[
+              { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+              { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+              { name: 'Tipos de Instituição' },
+            ]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Title>Atualizar Instituições</Title>
+        </Grid>
+        <Grid item sx={{ paddingBottom: '20px' }}>
+          <FormContainer formContext={formContext} onSuccess={onSend}>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                sx={{
+                  width: '350px',
+                }}
+              >
+                <FormControl fullWidth>
+                  <Input variant="standard" label="Nome da instituição" name="name" />
+                </FormControl>
+              </Grid>
+              <Grid
+                item
+                sx={{
+                  width: '350px',
+                }}
+              >
+                <FormControl fullWidth>
+                  <Select
+                    variant="standard"
+                    name={'type'}
+                    label={'Tipo da instituição'}
+                    options={institutionTypes}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item alignSelf={'center'}>
+                <Button size={'large'} variant="contained" type="submit">
+                  <SearchRoundedIcon />
+                </Button>
+              </Grid>
+              <Grid item alignSelf={'center'}>
+                <Button size={'large'} variant="outlined" onClick={onClean}>
+                  <ClearRoundedIcon />
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item sx={{ paddingBottom: '20px' }}>
-              <FormContainer formContext={formContext} onSuccess={onSend}>
-                <Grid container spacing={2}>
-                  <Grid
-                    item
-                    sx={{
-                      width: '350px',
-                    }}
-                  >
-                    <FormControl fullWidth>
-                      <Input variant="standard" label="Nome da instituição" name="name" />
-                    </FormControl>
-                  </Grid>
-                  <Grid
-                    item
-                    sx={{
-                      width: '350px',
-                    }}
-                  >
-                    <FormControl fullWidth>
-                      <Select
-                        variant="standard"
-                        name={'type'}
-                        label={'Tipo da instituição'}
-                        options={institutionTypes}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item alignSelf={'center'}>
-                    <Button size={'large'} variant="contained" type="submit">
-                      <SearchRoundedIcon />
-                    </Button>
-                  </Grid>
-                  <Grid item alignSelf={'center'}>
-                    <Button size={'large'} variant="outlined" onClick={onClean}>
-                      <ClearRoundedIcon />
-                    </Button>
-                  </Grid>
-                </Grid>
-              </FormContainer>
-            </Grid>
-            <Grid item xs={12}>
-              {institutionsList.length ? (
-                <CustomTable columns={columns} rows={rows} />
-              ) : (
-                <Fields>Nenhum resultado encontrado.</Fields>
-              )}
-            </Grid>
-            <Grid item xs={12}>
-              {pagination && institutionsList.length > 0 && (
+          </FormContainer>
+        </Grid>
+        <Grid item xs={12}>
+          {institutionsList.length ? (
+            <CustomTable columns={columns} rows={rows} />
+          ) : (
+            <Fields>Nenhum resultado encontrado.</Fields>
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container>
+            {pagination && institutionsList.length > 0 && (
+              <Grid item justifyContent="right" xs={8}>
                 <Pagination
                   count={Math.ceil(pagination.total / DEFAULT_PAGE_SIZE)}
                   page={pagination.page + 1}
                   onChange={onChangePagination}
                 />
-              )}
-            </Grid>
-            <Grid item>
-              <Grid container columnSpacing={2}>
+              </Grid>
+            )}
+            <Grid item xs>
+              <Grid container columnSpacing={2} justifyContent="right">
                 <Grid item>
                   <Button
                     size={'large'}
@@ -254,18 +263,18 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
                     Adicionar Instituição
                   </Button>
                 </Grid>
-                <Grid item>
+                <Grid item justifyContent="center">
                   <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
                     Voltar
                   </Button>
                 </Grid>
               </Grid>
             </Grid>
-            <ToastContainer />
           </Grid>
-        </PageWrapper>
-      </MainWrapper>
+        </Grid>
 
+        <ToastContainer />
+      </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}
         setIsOpen={setIsDeleteModalOpen}
@@ -330,7 +339,7 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </MainWrapper>
   )
 }
 

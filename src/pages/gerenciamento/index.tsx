@@ -1,6 +1,5 @@
 import React from 'react'
 import { Routes, Theme } from '@utils/enums'
-import 'react-toastify/dist/ReactToastify.css'
 
 import { useRouter } from 'next/router'
 import MainWrapper from '@components/MainWrapper'

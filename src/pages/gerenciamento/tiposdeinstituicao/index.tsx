@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
-import 'react-toastify/dist/ReactToastify.css'
+import { Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Modal } from 'react-bootstrap'
 import { useRouter } from 'next/router'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
@@ -120,55 +119,50 @@ const Institutions = ({ institutionTypes }: Props) => {
   ])
 
   return (
-    <>
-      <MainWrapper themeName={Theme.white} hasContent hasHeader>
-        <PageWrapper>
-          <Grid container rowSpacing={2}>
+    <MainWrapper>
+      <PageWrapper container rowSpacing={2}>
+        <Grid item>
+          <Breadcrumbs
+            breadcrumbs={[
+              { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+              { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+              { name: 'Tipos de Instituição' },
+            ]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Title>Atualizar Tipo de Instituição</Title>
+        </Grid>
+        <Grid item xs={12}>
+          {rows?.length !== 0 ? (
+            <CustomTable columns={columns} rows={rows} />
+          ) : (
+            <Fields>Nenhum resultado encontrado.</Fields>
+          )}
+        </Grid>
+        <Grid item>
+          <Grid container columnSpacing={2}>
             <Grid item>
-              <Breadcrumbs
-                breadcrumbs={[
-                  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
-                  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-                  { name: 'Tipos de Instituição' },
-                ]}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Title>Atualizar Tipo de Instituição</Title>
-            </Grid>
-            <Grid item xs={12}>
-              {rows?.length !== 0 ? (
-                <CustomTable columns={columns} rows={rows} />
-              ) : (
-                <Fields>Nenhum resultado encontrado.</Fields>
-              )}
+              <Button
+                size={'large'}
+                variant={'contained'}
+                onClick={() => {
+                  setCurrentInstitution({ id: undefined, name: '' })
+                  handleShow()
+                }}
+              >
+                Adicionar Instituição
+              </Button>
             </Grid>
             <Grid item>
-              <Grid container columnSpacing={2}>
-                <Grid item>
-                  <Button
-                    size={'large'}
-                    variant={'contained'}
-                    onClick={() => {
-                      setCurrentInstitution({ id: undefined, name: '' })
-                      handleShow()
-                    }}
-                  >
-                    Adicionar Instituição
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
-                    Voltar
-                  </Button>
-                </Grid>
-              </Grid>
+              <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                Voltar
+              </Button>
             </Grid>
-            <ToastContainer />
           </Grid>
-        </PageWrapper>
-      </MainWrapper>
-
+        </Grid>
+        <ToastContainer />
+      </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}
         setIsOpen={setIsDeleteModalOpen}
@@ -208,7 +202,7 @@ const Institutions = ({ institutionTypes }: Props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </MainWrapper>
   )
 }
 

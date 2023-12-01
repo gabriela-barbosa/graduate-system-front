@@ -5,7 +5,7 @@ import MainHeader from '../MainHeader'
 import { Metadata } from 'next'
 
 type AppProps = {
-  themeName: Theme
+  themeName?: Theme
   hasHeader?: boolean
   hasContent?: boolean
   children: React.ReactNode
@@ -16,14 +16,17 @@ export const metadata: Metadata = {
   description: 'Sistema para gerenciamento de egressos',
 }
 
-const MainWrapper = ({ themeName, hasHeader = true, hasContent = true, children }: AppProps) => {
+const MainWrapper = ({
+  themeName = Theme.white,
+  hasHeader = true,
+  hasContent = true,
+  children,
+}: AppProps) => {
   return (
-    <>
-      <Wrapper themeName={themeName}>
-        {hasHeader && <MainHeader />}
-        {hasContent ? <Content>{children}</Content> : children}
-      </Wrapper>
-    </>
+    <Wrapper themeName={themeName}>
+      {hasHeader && <MainHeader />}
+      {hasContent ? <Content>{children}</Content> : children}
+    </Wrapper>
   )
 }
 export default MainWrapper

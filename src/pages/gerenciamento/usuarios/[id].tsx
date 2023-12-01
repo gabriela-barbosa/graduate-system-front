@@ -1,15 +1,12 @@
 import { PageWrapper, Title } from '@styles/index.style'
-import { Grid } from '@mui/material'
-import { Button, MainWrapper } from '@components'
+import { Button, MainWrapper, Grid } from '@components'
 import React, { useEffect, useMemo, useState } from 'react'
-import 'react-toastify/dist/ReactToastify.css'
 import { Theme } from '@utils/enums'
 import { useRouter } from 'next/router'
 import { User } from '@context/AuthContext'
 import { useForm } from 'react-hook-form'
 import { FormContainer } from 'react-hook-form-mui'
-import UserInfo from '@modules/User/UserInfo'
-import GraduateInfo from '@modules/User/GraduateInfo'
+import { GraduateInfo, UserInfo } from '@modules/User'
 
 const GRADUATE_API = process.env.GRADUATE_API
 

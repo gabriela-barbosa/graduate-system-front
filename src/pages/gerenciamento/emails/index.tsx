@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useRouter } from 'next/router'
-import 'react-toastify/dist/ReactToastify.css'
 
 import {
   ActionIcon,
   Button,
+  Grid,
   MainWrapper,
   showDeletedToast,
   showSavedToast,
   ToastContainer,
+  showErrorToast,
 } from '@components'
-import { Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
 import {
   Checkbox,
@@ -19,7 +20,6 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
-  Grid,
   Pagination,
   Radio,
   RadioGroup,
@@ -33,7 +33,6 @@ import { PaginationType } from '@modules/Commons/types'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import GraduatesTable from '@components/Table/CustomTable'
-import { showErrorToast } from '@components/Toast'
 import { DeleteModal, DeleteItem } from '@components/DeleteModal'
 import { Breadcrumbs } from '@components/Breadcrumbs'
 
@@ -185,36 +184,36 @@ const EmailConfig = ({ emails, meta }: Props) => {
   })
 
   return (
-    <>
-      <MainWrapper themeName={Theme.white} hasContent hasHeader>
-        <PageWrapper>
-          <Grid container rowSpacing={2}>
-            <Grid item>
-              <Breadcrumbs
-                breadcrumbs={[
-                  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
-                  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-                  { name: 'Conteúdo dos Emails' },
-                ]}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Title>Atualizar Informações do Email</Title>
-            </Grid>
-            <Grid item xs={12}>
-              <GraduatesTable columns={columns} rows={rows} />
-            </Grid>
-            <Grid item xs={12}>
-              {pagination && (
+    <MainWrapper>
+      <PageWrapper container rowSpacing={2}>
+        <Grid item>
+          <Breadcrumbs
+            breadcrumbs={[
+              { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+              { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+              { name: 'Conteúdo dos Emails' },
+            ]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Title>Atualizar Informações do Email</Title>
+        </Grid>
+        <Grid item xs={12}>
+          <GraduatesTable columns={columns} rows={rows} />
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container justifyItems="flex-end">
+            {pagination && (
+              <Grid item xs={12}>
                 <Pagination
                   count={Math.ceil(pagination.total / pageSize)}
                   page={pagination.page + 1}
                   onChange={event => handleChangePagination(event.target as unknown as number)}
                 />
-              )}
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container columnSpacing={2}>
+              </Grid>
+            )}
+            <Grid item xs>
+              <Grid container columnSpacing={2} justifyContent="right">
                 <Grid item>
                   <Button
                     size={'large'}
@@ -227,18 +226,18 @@ const EmailConfig = ({ emails, meta }: Props) => {
                     Adicionar Novo Email
                   </Button>
                 </Grid>
-                <Grid item>
+                <Grid item justifyContent="center">
                   <Button size={'large'} variant={'outlined'} onClick={handleClickBack}>
                     Voltar
                   </Button>
                 </Grid>
               </Grid>
             </Grid>
-            <ToastContainer />
           </Grid>
-        </PageWrapper>
-      </MainWrapper>
+        </Grid>
 
+        <ToastContainer />
+      </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}
         setIsOpen={setIsDeleteModalOpen}
@@ -380,7 +379,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </MainWrapper>
   )
 }
 

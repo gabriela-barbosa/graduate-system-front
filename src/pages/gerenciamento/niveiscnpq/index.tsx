@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Modal } from 'react-bootstrap'
-import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/router'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
 import {
@@ -11,18 +10,21 @@ import {
   showDeletedToast,
   showSavedToast,
   ToastContainer,
+  Grid,
+  showEditedToast,
+  showErrorToast,
+  DeleteItem,
+  DeleteModal,
+  Breadcrumbs,
+  CustomTable,
 } from '@components'
-import { FormControl, Grid, TextField } from '@mui/material'
+import { FormControl, TextField } from '@mui/material'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import { parseCookies } from 'nookies'
 import { deleteCnpqLevel, getCNPQLevels, saveCNPQ, updateCNPQ } from '@modules/CNPQLevels/api'
 import { CNPQLevelInfo } from '@modules/WorkHistoryEdit'
 import { getAPIClient } from '@services/axios'
-import { showEditedToast, showErrorToast } from '@components/Toast'
-import { CustomTable } from '@components/Table'
-import { DeleteItem, DeleteModal } from '@components/DeleteModal'
-import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
   cnpqLevels: CNPQLevelInfo[]
@@ -121,55 +123,50 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
   ])
 
   return (
-    <>
-      <MainWrapper themeName={Theme.white} hasContent={true} hasHeader={true}>
-        <PageWrapper>
-          <Grid container rowSpacing={2}>
+    <MainWrapper>
+      <PageWrapper container rowSpacing={2}>
+        <Grid item>
+          <Breadcrumbs
+            breadcrumbs={[
+              { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+              { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+              { name: 'Níveis CNPQ' },
+            ]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Title>Atualizar Níveis CNPQ</Title>
+        </Grid>
+        <ToastContainer />
+        <Grid item xs={12}>
+          {cnpqLevels.length ? (
+            <CustomTable columns={columns} rows={rows} />
+          ) : (
+            <Fields>Nenhum resultado encontrado.</Fields>
+          )}
+        </Grid>
+        <Grid item>
+          <Grid container columnSpacing={2}>
             <Grid item>
-              <Breadcrumbs
-                breadcrumbs={[
-                  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
-                  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-                  { name: 'Níveis CNPQ' },
-                ]}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Title>Atualizar Níveis CNPQ</Title>
-            </Grid>
-            <ToastContainer />
-            <Grid item xs={12}>
-              {cnpqLevels.length ? (
-                <CustomTable columns={columns} rows={rows} />
-              ) : (
-                <Fields>Nenhum resultado encontrado.</Fields>
-              )}
+              <Button
+                size={'large'}
+                variant={'contained'}
+                onClick={() => {
+                  setCurrentLevel({ id: null, value: '' })
+                  handleShow()
+                }}
+              >
+                Adicionar Nível
+              </Button>
             </Grid>
             <Grid item>
-              <Grid container columnSpacing={2}>
-                <Grid item>
-                  <Button
-                    size={'large'}
-                    variant={'contained'}
-                    onClick={() => {
-                      setCurrentLevel({ id: null, value: '' })
-                      handleShow()
-                    }}
-                  >
-                    Adicionar Nível
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
-                    Voltar
-                  </Button>
-                </Grid>
-              </Grid>
+              <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                Voltar
+              </Button>
             </Grid>
           </Grid>
-        </PageWrapper>
-      </MainWrapper>
-
+        </Grid>
+      </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}
         setIsOpen={setIsDeleteModalOpen}
@@ -199,7 +196,7 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </MainWrapper>
   )
 }
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
+import { Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Modal } from 'react-bootstrap'
-import 'react-toastify/dist/ReactToastify.css'
 
 import { useRouter } from 'next/router'
 import {
@@ -125,56 +124,51 @@ const Programs = ({ programs }: Props) => {
   ])
 
   return (
-    <>
-      <MainWrapper themeName={Theme.white} hasContent hasHeader>
-        <PageWrapper>
-          <Grid container rowSpacing={2}>
+    <MainWrapper>
+      <PageWrapper container rowSpacing={2}>
+        <Grid item>
+          <Breadcrumbs
+            breadcrumbs={[
+              { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+              { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+              { name: 'Programas IC' },
+            ]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Title>Atualizar Programas</Title>
+        </Grid>
+        <Grid item xs={12} height={510}>
+          {rows?.length !== 0 ? (
+            <GraduatesTable columns={columns} rows={rows} />
+          ) : (
+            <Fields>Nenhum resultado encontrado.</Fields>
+          )}
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container columnSpacing={2}>
             <Grid item>
-              <Breadcrumbs
-                breadcrumbs={[
-                  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
-                  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-                  { name: 'Programas IC' },
-                ]}
-              />
+              <Button
+                size={'large'}
+                variant={'contained'}
+                onClick={() => {
+                  setCurrenProgram({ id: null, value: '' })
+                  handleShow()
+                }}
+              >
+                Adicionar Programa
+              </Button>
             </Grid>
-            <Grid item xs={12}>
-              <Title>Atualizar Programas</Title>
+            <Grid item>
+              <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                Voltar
+              </Button>
             </Grid>
-            <Grid item xs={12} height={510}>
-              {rows?.length !== 0 ? (
-                <GraduatesTable columns={columns} rows={rows} />
-              ) : (
-                <Fields>Nenhum resultado encontrado.</Fields>
-              )}
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container columnSpacing={2}>
-                <Grid item>
-                  <Button
-                    size={'large'}
-                    variant={'contained'}
-                    onClick={() => {
-                      setCurrenProgram({ id: null, value: '' })
-                      handleShow()
-                    }}
-                  >
-                    Adicionar Programa
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
-                    Voltar
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <ToastContainer />
           </Grid>
-        </PageWrapper>
-      </MainWrapper>
+        </Grid>
 
+        <ToastContainer />
+      </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}
         setIsOpen={setIsDeleteModalOpen}
@@ -210,7 +204,7 @@ const Programs = ({ programs }: Props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </MainWrapper>
   )
 }
 

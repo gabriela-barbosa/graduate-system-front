@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { styled as styledMUI } from '@mui/material/styles'
 import { Grid, Typography } from '@mui/material'
 import { theme } from './theme'
 import { HISTORY_STATUS } from '@modules/Egressos/types'
@@ -15,35 +16,6 @@ export const Content = styled.div`
 
 export const ImageLogo = styled.div`
   padding-top: 112px;
-`
-
-export const Column = styled.div`
-  float: left;
-  width: 50%;
-`
-
-export const Section = styled.div`
-  width: ${({ width }: { width?: string }) => width ?? 100}%;
-  padding-right: 10px;
-  padding-bottom: 30px;
-`
-
-export const CheckboxLabel = styled.label`
-  padding-left: 5px;
-`
-
-const alignCenter = `
-align-content : center;
-  flex-direction: column;
-  flex-wrap: wrap;
-`
-
-export const Form = styled.div`
-  width: 100%;
-  position: relative;
-  display: flex;
-  ${({ position }: { position?: string }) =>
-    position === 'left' ? 'justify-content: left;' : alignCenter};
 `
 
 export const FormInputGroup = styled.div`
@@ -79,8 +51,8 @@ export const Title = styled.h1`
   color: ${theme.palette.primary.main};
 `
 
-export const PageWrapper = styled(Grid)`
-  padding: 20px 0 50px 50px;
+export const PageWrapper = styledMUI(Grid)`
+  padding: 20px 20px 50px 50px;
 `
 export const Label = styled.p`
   padding-top: 5px;
@@ -100,14 +72,6 @@ export const ErrorMessage = styled.p`
   color: #cb0000;
 `
 
-export const Error = styled.p`
-  height: 30px;
-  margin-top: 5px;
-  color: #55c32d;
-  font-size: 12px;
-  line-height: lh(12px, 14px);
-`
-
 export const Background = styled.div`
   background: rgba(11, 105, 81, 0.7);
   opacity: 0.99;
@@ -115,9 +79,6 @@ export const Background = styled.div`
   width: 100%;
 `
 
-export const Row = styled.div`
-  padding-top: 15px;
-`
 const statusColor = {
   [HISTORY_STATUS.PENDING]: '#e11818',
   [HISTORY_STATUS.UPDATED]: '#5BAFC9',
@@ -139,6 +100,7 @@ interface TableCellProps {
   status?: HISTORY_STATUS
   width?: string
 }
+
 export const TypographyTableCell = ({ children, status, width = '250px' }: TableCellProps) => (
   <Typography
     sx={{

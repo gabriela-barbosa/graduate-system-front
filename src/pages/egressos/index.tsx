@@ -139,13 +139,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
 
   return (
     <MainWrapper themeName={Theme.white}>
-      <PageWrapper
-        spacing={2}
-        container
-        alignItems="center"
-        justifyContent="center"
-        direction="column"
-      >
+      <PageWrapper container alignItems="center" justifyContent="center" direction="column">
         <Grid item>
           <Grid container direction="column" spacing={3}>
             <Grid item>
@@ -254,7 +248,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
           </Grid>
         </Grid>
         {pagination && rows?.length !== 0 && (
-          <Grid item>
+          <Grid item pt={2}>
             <Pagination
               count={Math.ceil(pagination.total / DEFAULT_PAGE_SIZE)}
               page={pagination.page + 1}

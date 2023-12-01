@@ -12,6 +12,13 @@ export const theme = createTheme({
     },
     divider: '#BDBDBD',
   },
+  typography: {
+    fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`,
+    fontSize: 14,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+  },
   components: {},
 })
 // export const theme = createTheme({
