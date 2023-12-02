@@ -30,7 +30,7 @@ export const Wrapper = ({ themeName, children }: AppProps) => (
 )
 
 export const Content = ({ children }) => (
-  <Grid item height="100%" padding="0 50px 0 50px" flexDirection="column">
+  <Grid item padding="0 50px 0 50px" flexDirection="column">
     {children}
   </Grid>
 )
