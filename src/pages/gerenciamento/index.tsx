@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Theme } from '@utils/enums'
+import { Routes } from '@utils/enums'
 
 import { useRouter } from 'next/router'
 import MainWrapper from '@components/MainWrapper'
@@ -43,7 +43,7 @@ const Select: React.FC = () => {
       onClick: () => goToPage(Routes.MANAGEMENT_INSTITUTIONS),
     },
     {
-      title: 'Configurar Tipo de Instituição',
+      title: 'Configurar Tipos de Instituição',
       subtitle: 'Adicione, exclua ou edite um tipo de instituição.',
       icon: HomeWorkRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_INSTITUTIONS_TYPES),
@@ -55,52 +55,50 @@ const Select: React.FC = () => {
       onClick: () => goToPage(Routes.MANAGEMENT_CNPQ_LEVELS),
     },
     {
-      title: 'Configurar Conteúdo dos Emails',
-      subtitle: 'Adicione, exclua ou edite um email.',
+      title: 'Configurar Conteúdo de Emails',
+      subtitle: 'Adicione, exclua ou edite um conteúdo de email.',
       icon: EmailRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_EMAILS),
     },
     {
       title: 'Configurar Usuários',
-      subtitle: 'Adicione, exclua ou edite um usuário.',
+      subtitle: 'Adicione ou edite um usuário.',
       icon: ManageAccountsRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_USERS),
     },
   ]
 
   return (
-    <>
-      <MainWrapper themeName={Theme.white} hasContent={true} hasHeader={true}>
-        <PageWrapper container rowSpacing={3}>
-          <Grid item>
-            <Breadcrumbs
-              breadcrumbs={[
-                { name: 'Listagem de Egressos', href: Routes.GRADUATES },
-                { name: 'Gerenciamento' },
-              ]}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Title>Gerenciamento de opções</Title>
-          </Grid>
+    <MainWrapper>
+      <PageWrapper container rowSpacing={3}>
+        <Grid item>
+          <Breadcrumbs
+            breadcrumbs={[
+              { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+              { name: 'Gerenciamento' },
+            ]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Title>Gerenciamento de opções</Title>
+        </Grid>
 
-          <Grid item>
-            <Grid container spacing={8}>
-              {options.map(({ title, subtitle, icon, onClick }, index) => (
-                <Grid item key={index}>
-                  <CardOptions
-                    onClick={onClick}
-                    IconComponent={icon}
-                    subtitle={subtitle}
-                    title={title}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+        <Grid item>
+          <Grid container spacing={8}>
+            {options.map(({ title, subtitle, icon, onClick }, index) => (
+              <Grid item key={index}>
+                <CardOptions
+                  onClick={onClick}
+                  IconComponent={icon}
+                  subtitle={subtitle}
+                  title={title}
+                />
+              </Grid>
+            ))}
           </Grid>
-        </PageWrapper>
-      </MainWrapper>
-    </>
+        </Grid>
+      </PageWrapper>
+    </MainWrapper>
   )
 }
 

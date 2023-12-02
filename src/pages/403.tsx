@@ -1,13 +1,9 @@
 import React from 'react'
-import { MainWrapper } from '@components'
-import { Theme } from '@utils/enums'
-
-import { Grid } from '@mui/material'
-
+import { MainWrapper, Grid } from '@components'
 import { PageWrapper, Title } from '@styles/index.style'
 
 const NotFoundPage = () => (
-  <MainWrapper themeName={Theme.white}>
+  <MainWrapper>
     <PageWrapper
       spacing={2}
       container

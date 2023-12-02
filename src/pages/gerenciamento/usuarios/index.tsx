@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { ActionIcon, Button, Input, MainWrapper, showSavedToast, ToastContainer } from '@components'
-import { RoleTranslation, Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
+import {
+  ActionIcon,
+  Button,
+  Input,
+  MainWrapper,
+  showSavedToast,
+  ToastContainer,
+  Grid,
+} from '@components'
+import { RoleTranslation, Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
-import { Grid, Pagination } from '@mui/material'
+import { Pagination } from '@mui/material'
 import { showErrorToast } from '@components/Toast'
 import { User } from '@context/AuthContext'
 import { PaginationType } from '@modules/Commons/types'
@@ -134,87 +142,89 @@ const UserList = ({ users, meta }: Props) => {
     await handleGetUsers(1)
   }
   return (
-    <>
-      <MainWrapper themeName={Theme.white} hasContent hasHeader>
-        <PageWrapper spacing={2} container direction="column">
-          <Grid item>
-            <Breadcrumbs
-              breadcrumbs={[
-                { name: 'Listagem de Egressos', href: Routes.GRADUATES },
-                { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-                { name: 'Usuários' },
-              ]}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Title>Atualizar Informações de Usuário</Title>
-          </Grid>
-          <Grid item xs={12} minHeight={510}>
-            <FormContainer formContext={formContext} onSuccess={onSend}>
-              <Grid container spacing={3}>
-                <Grid item sx={{ width: '350px' }}>
-                  <FormControl fullWidth>
-                    <Input variant="standard" label="Nome" name="name" />
-                  </FormControl>
-                </Grid>
-                <Grid item sx={{ width: '350px' }}>
-                  <FormControl fullWidth>
-                    <Input variant="standard" label="Email" name="email" />
-                  </FormControl>
-                </Grid>
-                <Grid item alignSelf={'center'}>
-                  <Button size={'large'} variant="contained" type="submit">
-                    <SearchRoundedIcon />
-                  </Button>
-                </Grid>
-                <Grid item alignSelf={'center'}>
-                  <Button size={'large'} variant="outlined" onClick={onClean}>
-                    <ClearRoundedIcon />
+    <MainWrapper>
+      <PageWrapper spacing={2} container direction="column">
+        <Grid item>
+          <Breadcrumbs
+            breadcrumbs={[
+              { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+              { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+              { name: 'Usuários' },
+            ]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Title>Atualizar Informações de Usuário</Title>
+        </Grid>
+        <Grid item xs={12} minHeight={510}>
+          <FormContainer formContext={formContext} onSuccess={onSend}>
+            <Grid container spacing={3}>
+              <Grid item sx={{ width: '350px' }}>
+                <FormControl fullWidth>
+                  <Input variant="standard" label="Nome" name="name" />
+                </FormControl>
+              </Grid>
+              <Grid item sx={{ width: '350px' }}>
+                <FormControl fullWidth>
+                  <Input variant="standard" label="Email" name="email" />
+                </FormControl>
+              </Grid>
+              <Grid item alignSelf={'center'}>
+                <Button size={'large'} variant="contained" type="submit">
+                  <SearchRoundedIcon />
+                </Button>
+              </Grid>
+              <Grid item alignSelf={'center'}>
+                <Button size={'large'} variant="outlined" onClick={onClean}>
+                  <ClearRoundedIcon />
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                {rows?.length !== 0 ? (
+                  <CustomTable columns={columns} rows={rows} />
+                ) : (
+                  <Fields>Nenhum resultado encontrado.</Fields>
+                )}
+              </Grid>
+            </Grid>
+          </FormContainer>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container justifyContent="right">
+            {pagination && rows?.length !== 0 && (
+              <Grid item position="absolute" left="50%">
+                <Pagination
+                  count={Math.ceil(pagination.total / pageSize)}
+                  page={pagination.page + 1}
+                  onChange={onChangePagination}
+                />
+              </Grid>
+            )}
+            <Grid item>
+              <Grid container columnSpacing={2}>
+                <Grid item>
+                  <Button
+                    size={'large'}
+                    variant={'contained'}
+                    onClick={() => {
+                      setCurrentUserEmpty()
+                      handleShow()
+                    }}
+                  >
+                    Criar Usuário
                   </Button>
                 </Grid>
                 <Grid item>
-                  {rows?.length !== 0 ? (
-                    <CustomTable columns={columns} rows={rows} />
-                  ) : (
-                    <Fields>Nenhum resultado encontrado.</Fields>
-                  )}
+                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                    Voltar
+                  </Button>
                 </Grid>
-              </Grid>
-            </FormContainer>
-          </Grid>
-          <Grid item xs={12}>
-            {pagination && rows?.length !== 0 && (
-              <Pagination
-                count={Math.ceil(pagination.total / pageSize)}
-                page={pagination.page + 1}
-                onChange={onChangePagination}
-              />
-            )}
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container columnSpacing={2}>
-              <Grid item>
-                <Button
-                  size={'large'}
-                  variant={'contained'}
-                  onClick={() => {
-                    setCurrentUserEmpty()
-                    handleShow()
-                  }}
-                >
-                  Criar Usuário
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
-                  Voltar
-                </Button>
               </Grid>
             </Grid>
           </Grid>
-          <ToastContainer />
-        </PageWrapper>
-      </MainWrapper>
+        </Grid>
+        <ToastContainer />
+      </PageWrapper>
       <EditAddUserModal
         onFail={onFail}
         onSuccess={onSuccess}
@@ -222,7 +232,7 @@ const UserList = ({ users, meta }: Props) => {
         show={show}
         handleClose={handleClose}
       />
-    </>
+    </MainWrapper>
   )
 }
 

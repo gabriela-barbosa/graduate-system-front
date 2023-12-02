@@ -191,20 +191,20 @@ const EmailConfig = ({ emails, meta }: Props) => {
             breadcrumbs={[
               { name: 'Listagem de Egressos', href: Routes.GRADUATES },
               { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-              { name: 'Conteúdo dos Emails' },
+              { name: 'Informações de Conteúdo de Emails' },
             ]}
           />
         </Grid>
         <Grid item xs={12}>
-          <Title>Atualizar Informações do Email</Title>
+          <Title>Atualizar Informações de Conteúdo de Emails</Title>
         </Grid>
         <Grid item xs={12}>
           <GraduatesTable columns={columns} rows={rows} />
         </Grid>
         <Grid item xs={12}>
-          <Grid container justifyItems="flex-end">
+          <Grid container justifyContent="right">
             {pagination && (
-              <Grid item xs={12}>
+              <Grid item position="absolute" left="50%" xs={12}>
                 <Pagination
                   count={Math.ceil(pagination.total / pageSize)}
                   page={pagination.page + 1}
@@ -223,7 +223,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
                       handleShow()
                     }}
                   >
-                    Adicionar Novo Email
+                    Adicionar Novo Conteúdo
                   </Button>
                 </Grid>
                 <Grid item justifyContent="center">

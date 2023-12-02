@@ -140,8 +140,8 @@ const Institutions = ({ institutionTypes }: Props) => {
             <Fields>Nenhum resultado encontrado.</Fields>
           )}
         </Grid>
-        <Grid item>
-          <Grid container columnSpacing={2}>
+        <Grid item xs={12}>
+          <Grid container columnSpacing={2} justifyContent="right">
             <Grid item>
               <Button
                 size={'large'}
@@ -151,7 +151,7 @@ const Institutions = ({ institutionTypes }: Props) => {
                   handleShow()
                 }}
               >
-                Adicionar Instituição
+                Adicionar Tipo de Instituição
               </Button>
             </Grid>
             <Grid item>

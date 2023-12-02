@@ -183,7 +183,7 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
             breadcrumbs={[
               { name: 'Listagem de Egressos', href: Routes.GRADUATES },
               { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-              { name: 'Tipos de Instituição' },
+              { name: 'Instituições' },
             ]}
           />
         </Grid>
@@ -239,9 +239,9 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
           )}
         </Grid>
         <Grid item xs={12}>
-          <Grid container>
+          <Grid container justifyContent="right">
             {pagination && institutionsList.length > 0 && (
-              <Grid item justifyContent="right" xs={8}>
+              <Grid item position="absolute" left="50%">
                 <Pagination
                   count={Math.ceil(pagination.total / DEFAULT_PAGE_SIZE)}
                   page={pagination.page + 1}
@@ -249,8 +249,8 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
                 />
               </Grid>
             )}
-            <Grid item xs>
-              <Grid container columnSpacing={2} justifyContent="right">
+            <Grid item>
+              <Grid container columnSpacing={2}>
                 <Grid item>
                   <Button
                     size={'large'}

@@ -126,18 +126,6 @@ const MainHeader: React.FC = () => {
                   Sair
                 </MenuItem>
               </Menu>
-              {/* {currentRole === Role.ADMIN && ( */}
-              {/*  <Grid item pl={1}> */}
-              {/*    <IconButton onClick={onClickConfig}> */}
-              {/*      <SettingsIcon fontSize="large" /> */}
-              {/*    </IconButton> */}
-              {/*  </Grid> */}
-              {/* )} */}
-              {/* <Grid item pl={1}> */}
-              {/*  <Button variant="outlined" color="info" size="small" onClick={logout} sx={{}}> */}
-              {/*    Sair */}
-              {/*  </Button> */}
-              {/* </Grid> */}
             </Grid>
           </Grid>
         </Grid>

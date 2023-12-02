@@ -27,9 +27,6 @@ const UserDetail = () => {
       body: JSON.stringify(user),
     }
     await fetch(`${GRADUATE_API}/v1/register`, myInit as RequestInit)
-    // if (result && result.status < 400) {
-    // } else {
-    // }
   }
   const formContext = useForm({
     defaultValues: useMemo(() => {
@@ -96,36 +93,34 @@ const UserDetail = () => {
     id && getUser(id)
   }, [])
   return (
-    <MainWrapper themeName={Theme.white} hasContent hasHeader>
-      <PageWrapper>
-        <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-          <Grid container rowSpacing={2}>
-            <Grid item xs={12}>
-              <Title>{id ? 'Editar' : 'Adicionar'} Usuário</Title>
-            </Grid>
-            <Grid item>
-              <UserInfo control={control} />
-            </Grid>
-            <Grid item>
-              <GraduateInfo control={control} />
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container columnSpacing={2}>
-                <Grid item>
-                  <Button type={'submit'} size={'large'} variant={'contained'}>
-                    Salvar
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
-                    Voltar
-                  </Button>
-                </Grid>
+    <MainWrapper>
+      <FormContainer formContext={formContext} onSuccess={handleSubmit}>
+        <PageWrapper container rowSpacing={2}>
+          <Grid item xs={12}>
+            <Title>{id ? 'Editar' : 'Adicionar'} Usuário</Title>
+          </Grid>
+          <Grid item>
+            <UserInfo control={control} />
+          </Grid>
+          <Grid item>
+            <GraduateInfo control={control} />
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container columnSpacing={2}>
+              <Grid item>
+                <Button type={'submit'} size={'large'} variant={'contained'}>
+                  Salvar
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                  Voltar
+                </Button>
               </Grid>
             </Grid>
           </Grid>
-        </FormContainer>
-      </PageWrapper>
+        </PageWrapper>
+      </FormContainer>
     </MainWrapper>
   )
 }

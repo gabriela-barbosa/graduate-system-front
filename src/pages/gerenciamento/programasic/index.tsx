@@ -138,7 +138,7 @@ const Programs = ({ programs }: Props) => {
         <Grid item xs={12}>
           <Title>Atualizar Programas</Title>
         </Grid>
-        <Grid item xs={12} height={510}>
+        <Grid item xs={12}>
           {rows?.length !== 0 ? (
             <GraduatesTable columns={columns} rows={rows} />
           ) : (
@@ -146,7 +146,7 @@ const Programs = ({ programs }: Props) => {
           )}
         </Grid>
         <Grid item xs={12}>
-          <Grid container columnSpacing={2}>
+          <Grid container columnSpacing={2} justifyContent="right">
             <Grid item>
               <Button
                 size={'large'}

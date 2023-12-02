@@ -54,9 +54,9 @@ const AuthProvider = ({ children }) => {
   }
 
   const logout = async () => {
+    setUser(null)
     setCookie(undefined, USER_TOKEN_NAME, '')
     await router.push('/')
-    setUser(null)
   }
 
   async function getUser() {
@@ -91,6 +91,11 @@ const AuthProvider = ({ children }) => {
       getUser()
     }
   }, [])
+
+  useEffect(() => {
+    const { [USER_TOKEN_NAME]: token } = parseCookies()
+    if (!user && !token) router.push('/')
+  }, [user])
 
   async function signIn({ email, password }: SignInData) {
     const myInit: RequestInit = {
