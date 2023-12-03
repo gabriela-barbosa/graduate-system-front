@@ -11,7 +11,7 @@ interface Props {
   IconComponent: OverridableComponent<SvgIconTypeMap>
 }
 
-export const CardTitle = styled.h3`
+export const CardTitle = styled.h4`
   font-weight: normal;
   color: ${({ theme }) => theme.palette.primary.main};
 `
@@ -29,8 +29,8 @@ const Card = styled.div`
   border-radius: 5px;
   box-shadow: ${({ theme }) => theme.shadows[4]};
   padding: 30px;
-  width: 450px;
-  height: 260px;
+  width: 380px;
+  height: 180px;
   transition: all 0.3s ease-out;
 
   &:hover {
@@ -42,15 +42,15 @@ const Card = styled.div`
 
 export const CardOptions = ({ onClick, title, subtitle, IconComponent }: Props) => (
   <Card onClick={onClick}>
-    <Grid container spacing={1} direction="column">
-      <Grid item>
+    <Grid container alignItems="center">
+      <Grid item pr={1}>
+        <IconComponent sx={{ height: '40px', width: 'auto' }} color={'primary'} />
+      </Grid>
+      <Grid item xs={10}>
         <CardTitle>{title}</CardTitle>
       </Grid>
-      <Grid item>
+      <Grid item pt={2}>
         <Typography>{subtitle}</Typography>
-      </Grid>
-      <Grid item>
-        <IconComponent sx={{ height: '70px', width: 'auto' }} color={'primary'} />
       </Grid>
     </Grid>
   </Card>

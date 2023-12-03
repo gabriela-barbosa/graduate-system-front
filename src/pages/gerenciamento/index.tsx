@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import MainWrapper from '@components/MainWrapper'
 import { PageWrapper, Title } from '@styles/index.style'
 import Grid from '@mui/material/Grid'
-import { CardOptions } from '@components'
+import { CardOptions, SendRoundedIcon } from '@components'
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded'
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded'
 import HomeWorkRoundedIcon from '@mui/icons-material/HomeWorkRounded'
@@ -64,6 +64,12 @@ const Select: React.FC = () => {
       title: 'Configurar Usuários',
       subtitle: 'Adicione ou edite um usuário.',
       icon: ManageAccountsRoundedIcon,
+      onClick: () => goToPage(Routes.MANAGEMENT_USERS),
+    },
+    {
+      title: 'Enviar Emails',
+      subtitle: 'Adicione ou edite um usuário.',
+      icon: SendRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_USERS),
     },
   ]

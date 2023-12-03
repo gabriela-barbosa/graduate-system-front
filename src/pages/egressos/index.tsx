@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { ActionIcon, Button, Input, MainWrapper, Select } from '@components'
+import {
+  ActionIcon,
+  Button,
+  Input,
+  MainWrapper,
+  Select,
+  Grid,
+  FormControl,
+  Pagination,
+  CustomTable as GraduatesTable,
+  showErrorToast,
+  EditRoundedIcon,
+  SearchRoundedIcon,
+  ClearRoundedIcon,
+} from '@components'
 import { Role, Theme, USER_TOKEN_NAME } from '@utils/enums'
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
-
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
-
-import Pagination from '@mui/material/Pagination'
-import Grid from '@mui/material/Grid'
-import FormControl from '@mui/material/FormControl'
 
 import { useRouter } from 'next/router'
 import { Fields, PageWrapper, Title, TypographyTableCell } from '@styles/index.style'
 import { FormContainer } from 'react-hook-form-mui'
 import { useForm } from 'react-hook-form'
 import { Graduate, HISTORY_STATUS, ListGraduatesFilters } from '@modules/Egressos/types'
-import GraduatesTable from '@components/Table/CustomTable'
 import { parseCookies } from 'nookies'
 import { getAPIClient } from '@services/axios'
 import { getCNPQLevels } from '@modules/WorkHistoryEdit'
@@ -24,7 +29,6 @@ import { getGraduates } from '@modules/GraduatesList/api'
 import { GraduatesListDetails } from '@modules/GraduatesList/types'
 import { SelectItem } from '@utils/types'
 import { useAuth } from '@context/AuthProvider'
-import { showErrorToast } from '@components/Toast'
 import { getInstitutionTypesOptions } from '@modules/Commons/api'
 
 const status = {

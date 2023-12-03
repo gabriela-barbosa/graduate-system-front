@@ -1,32 +1,39 @@
 import { Subtitle } from './index.style'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import FormControl from '@mui/material/FormControl'
-import FormLabel from '@mui/material/FormLabel'
-import RadioGroup from '@mui/material/RadioGroup'
-import Radio from '@mui/material/Radio'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Autocomplete from '@mui/material/Autocomplete'
-import Typography from '@mui/material/Typography'
-import MenuItem from '@mui/material/MenuItem'
-import Checkbox from '@mui/material/Checkbox'
 import React, { useCallback, useState } from 'react'
-import { ActionIcon, Button, DatePicker, InputMui, Paper, SelectMui } from '@components'
+import {
+  ActionIcon,
+  Button,
+  DatePicker,
+  InputMui,
+  Paper,
+  SelectMui,
+  Grid,
+  Box,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Autocomplete,
+  Typography,
+  MenuItem,
+  Checkbox,
+  CustomTable as GraduatesTable,
+  InputLabel,
+  FormHelperText,
+  DeleteForeverRoundedIcon,
+  AddRounded,
+  debounce,
+} from '@components'
 import { GraduateWorkHistoriesInfo, Option } from './types'
 import { Role } from '@utils/enums'
 import { SelectItem } from '@utils/types'
-import GraduatesTable from '@components/Table/CustomTable'
 import { Fields, Label } from '@styles/index.style'
 import dayjs, { Dayjs } from 'dayjs'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
-import AddRounded from '@mui/icons-material/AddRounded'
 import { useAuth } from '@context/AuthProvider'
 import { Controller, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
 import { getAPIClient } from '@services/axios'
-import { InputLabel } from '@components/Input'
-import debounce from '@mui/utils/debounce'
-import FormHelperText from '@mui/material/FormHelperText'
 
 interface Props {
   cnpqLevels: SelectItem[]
