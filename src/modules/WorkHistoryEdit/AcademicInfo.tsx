@@ -18,7 +18,7 @@ import {
   Typography,
   MenuItem,
   Checkbox,
-  CustomTable as GraduatesTable,
+  CustomTable,
   InputLabel,
   FormHelperText,
   DeleteForeverRoundedIcon,
@@ -219,7 +219,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
               <Grid container rowSpacing={2}>
                 <Grid item xs={12}>
                   {rows?.length ? (
-                    <GraduatesTable columns={columns} rows={rows} />
+                    <CustomTable columns={columns} rows={rows} />
                   ) : (
                     <Paper variant="outlined" sx={{ borderRadius: '8px', borderStyle: 'dashed' }}>
                       <Box sx={{ padding: 2 }}>

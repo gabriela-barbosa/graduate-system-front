@@ -13,15 +13,26 @@ import {
   showDeletedToast,
   showSavedToast,
   ToastContainer,
+  EditRoundedIcon,
+  DeleteForeverRoundedIcon,
+  showErrorToast,
+  CustomTable,
+  DeleteItem,
+  DeleteModal,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  InputMui as TextField,
+  SearchRoundedIcon,
+  ClearRoundedIcon,
+  Breadcrumbs,
+  FormContainer,
 } from '@components'
-import { FormControl, Grid, InputLabel, MenuItem, Pagination, TextField } from '@mui/material'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
+
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
-import { showErrorToast } from '@components/Toast'
-import { CustomTable } from '@components/Table'
-import { DeleteItem, DeleteModal } from '@components/DeleteModal'
 import {
   createInstitution,
   deleteInstitution,
@@ -36,12 +47,8 @@ import {
 } from '@modules/Institutions/types'
 import { DEFAULT_PAGE_SIZE, PaginationType } from '@modules/Commons/types'
 import { useForm } from 'react-hook-form'
-import { FormContainer } from 'react-hook-form-mui'
 import { getInstitutionTypesOptions } from '@modules/Commons/api'
 import { SelectItem } from '@utils/types'
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
-import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
   institutions: Institution[]

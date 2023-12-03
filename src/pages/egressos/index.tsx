@@ -8,11 +8,11 @@ import {
   Grid,
   FormControl,
   Pagination,
-  CustomTable as GraduatesTable,
   showErrorToast,
   EditRoundedIcon,
   SearchRoundedIcon,
   ClearRoundedIcon,
+  CustomTable,
 } from '@components'
 import { Role, Theme, USER_TOKEN_NAME } from '@utils/enums'
 
@@ -244,7 +244,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
             </Grid>
             <Grid item>
               {rows?.length !== 0 ? (
-                <GraduatesTable columns={columns} rows={rows} />
+                <CustomTable columns={columns} rows={rows} />
               ) : (
                 <Fields>Nenhum resultado encontrado.</Fields>
               )}

@@ -4,37 +4,36 @@ import { useRouter } from 'next/router'
 
 import {
   ActionIcon,
+  Breadcrumbs,
   Button,
-  Grid,
-  MainWrapper,
-  showDeletedToast,
-  showSavedToast,
-  ToastContainer,
-  showErrorToast,
-} from '@components'
-import { Routes, USER_TOKEN_NAME } from '@utils/enums'
-import { Fields, PageWrapper, Title } from '@styles/index.style'
-import {
   Checkbox,
+  CustomTable,
+  DeleteForeverRoundedIcon,
+  DeleteItem,
+  DeleteModal,
+  EditRoundedIcon,
   FormControl,
   FormControlLabel,
   FormGroup,
   FormLabel,
+  Grid,
+  InputMui as TextField,
+  MainWrapper,
   Pagination,
   Radio,
   RadioGroup,
-  TextField,
-} from '@mui/material'
+  showDeletedToast,
+  showErrorToast,
+  showSavedToast,
+  ToastContainer,
+} from '@components'
+import { Routes, USER_TOKEN_NAME } from '@utils/enums'
+import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { deleteEmail, getEmails, saveEmail, updateEmail } from '@modules/Emails/api'
 import { Email } from '@modules/Emails/types'
 import { PaginationType } from '@modules/Commons/types'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
-import GraduatesTable from '@components/Table/CustomTable'
-import { DeleteModal, DeleteItem } from '@components/DeleteModal'
-import { Breadcrumbs } from '@components/Breadcrumbs'
 
 const pageSize = 10
 
@@ -199,7 +198,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
           <Title>Atualizar Informações de Conteúdo de Emails</Title>
         </Grid>
         <Grid item xs={12}>
-          <GraduatesTable columns={columns} rows={rows} />
+          <CustomTable columns={columns} rows={rows} />
         </Grid>
         <Grid item xs={12}>
           <Grid container justifyContent="right">

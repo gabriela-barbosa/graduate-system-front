@@ -3,6 +3,13 @@ import { Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Modal } from 'react-bootstrap'
 
 import { useRouter } from 'next/router'
+
+import { Fields, PageWrapper, Title } from '@styles/index.style'
+
+import { getAPIClient } from '@services/axios'
+import { deleteProgram, getPrograms, saveProgram, updateProgram } from '@modules/Programs/api'
+import { parseCookies } from 'nookies'
+import { CIProgramInfo } from '@modules/Programs/types'
 import {
   Button,
   ToastContainer,
@@ -10,23 +17,18 @@ import {
   MainWrapper,
   showSavedToast,
   showDeletedToast,
+  Breadcrumbs,
+  DeleteItem,
+  DeleteModal,
+  showEditedToast,
+  showErrorToast,
+  CustomTable,
+  DeleteForeverRoundedIcon,
+  EditRoundedIcon,
+  FormControl,
+  Grid,
+  InputMui as TextField,
 } from '@components'
-import { Fields, PageWrapper, Title } from '@styles/index.style'
-import FormControl from '@mui/material/FormControl'
-import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
-
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
-import GraduatesTable from '@components/Table/CustomTable'
-import { getAPIClient } from '@services/axios'
-import { showEditedToast, showErrorToast } from '@components/Toast'
-import { deleteProgram, getPrograms, saveProgram, updateProgram } from '@modules/Programs/api'
-import { parseCookies } from 'nookies'
-import { CIProgramInfo } from '@modules/Programs/types'
-import { DeleteModal } from '@components/DeleteModal'
-import { DeleteItem } from '@components/DeleteModal/types'
-import { Breadcrumbs } from '@components/Breadcrumbs'
 interface Props {
   programs: CIProgramInfo[]
 }
@@ -140,7 +142,7 @@ const Programs = ({ programs }: Props) => {
         </Grid>
         <Grid item xs={12}>
           {rows?.length !== 0 ? (
-            <GraduatesTable columns={columns} rows={rows} />
+            <CustomTable columns={columns} rows={rows} />
           ) : (
             <Fields>Nenhum resultado encontrado.</Fields>
           )}

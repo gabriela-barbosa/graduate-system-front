@@ -17,10 +17,11 @@ import {
   DeleteModal,
   Breadcrumbs,
   CustomTable,
+  EditRoundedIcon,
+  DeleteForeverRoundedIcon,
+  FormControl,
+  InputMui as TextField,
 } from '@components'
-import { FormControl, TextField } from '@mui/material'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import { parseCookies } from 'nookies'
 import { deleteCnpqLevel, getCNPQLevels, saveCNPQ, updateCNPQ } from '@modules/CNPQLevels/api'
 import { CNPQLevelInfo } from '@modules/WorkHistoryEdit'

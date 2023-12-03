@@ -3,32 +3,32 @@ import { useRouter } from 'next/router'
 
 import {
   ActionIcon,
+  Breadcrumbs,
   Button,
+  ClearRoundedIcon,
+  CustomTable,
+  EditRoundedIcon,
+  FormContainer,
+  FormControl,
+  Grid,
   Input,
   MainWrapper,
+  Pagination,
+  SearchRoundedIcon,
+  showErrorToast,
   showSavedToast,
   ToastContainer,
-  Grid,
 } from '@components'
 import { RoleTranslation, Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
-import { Pagination } from '@mui/material'
-import { showErrorToast } from '@components/Toast'
 import { User } from '@context/AuthContext'
 import { PaginationType } from '@modules/Commons/types'
 import EditAddUserModal from '@modules/UserList/EditAddUserModal'
-import { CustomTable } from '@components/Table'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import { getUsers } from '@modules/UserList/api'
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
-import FormControl from '@mui/material/FormControl'
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import { useForm } from 'react-hook-form'
-import { FormContainer } from 'react-hook-form-mui'
 import { toast } from 'react-toastify'
-import { Breadcrumbs } from '@components/Breadcrumbs'
 
 const pageSize = 10
 

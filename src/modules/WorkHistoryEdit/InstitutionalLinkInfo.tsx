@@ -1,25 +1,28 @@
+import { Subtitle } from './index.style'
 import {
-  Box,
+  AddRounded,
+  SelectMui,
+  Paper,
   Checkbox,
+  DeleteForeverRoundedIcon,
   FormControl,
   FormControlLabel,
   FormLabel,
   Grid,
-  InputLabel,
-  MenuItem,
   Radio,
   RadioGroup,
-} from '@mui/material'
-import { Subtitle } from './index.style'
-import { Button, SelectMui, ActionIcon, Paper } from '@components'
+  CustomTable,
+  ActionIcon,
+  Button,
+  Box,
+  InputLabel,
+  MenuItem,
+} from '@components'
 import React, { useState } from 'react'
-import AddRounded from '@mui/icons-material/AddRounded'
-import GraduatesTable from '@components/Table/CustomTable'
 import { ErrorMessage, Fields, Label } from '@styles/index.style'
 import { GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
 import { SelectItem } from '@utils/types'
 import dayjs from 'dayjs'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import { Control, Controller, useController } from 'react-hook-form'
 import { InstitutionalLinkModal } from '@modules/WorkHistoryEdit/InstitutionalLinkModal'
 import { Role } from '@utils/enums'
@@ -29,18 +32,7 @@ interface Props {
   graduateInfo: GraduateWorkHistoriesInfo
   institutionTypes: SelectItem[]
   control: Control<any>
-  // institutionalLinks: InstitutionalLinkInfoType[]
-  // setInstitutionalLinks: (institutionalLink: InstitutionalLinkInfoType) => void
 }
-
-// interface InstitutionalLinkInfoType {
-//   id?: string | null
-//   position?: string | null
-//   institutionTypeId?: string | null
-//   institutionName?: string | null
-//   startedAt?: Dayjs | null
-//   endedAt?: Dayjs | null
-// }
 
 export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control }: Props) => {
   const { workHistories } = graduateInfo
@@ -83,12 +75,6 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
     },
   })
 
-  // useEffect(() => {
-  //   console.log('useEffect', currentInstitutionalLinksOptions)
-  //   setCurrentInstitutionalLinks(currentInstitutionalLinksOptions[0])
-  //   setCurrentInstitutionalLinksSelected(currentInstitutionalLinksOptions.map((wh, index) => index))
-  // }, [])
-
   const rows = [
     ...institutionalLinks.map((link, index) => [
       { body: <Fields status={'UPDATED'}>{link.institution.name}</Fields> },
@@ -117,7 +103,6 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
               setCurrentInstitutionalLinks([])
               setCurrentInstitutionalLinksSelected([])
               setInstitutionalLinks(institutionalLinks.filter((item, i) => i !== index))
-              // setInstitutionalLinks(linkList => linkList.filter((_, i) => i !== index))
             }}
           >
             <DeleteForeverRoundedIcon />
@@ -162,20 +147,6 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
     { name: 'Ações', width: '10%' },
   ]
 
-  // const editInstitutionalLink = selectedInstitution => {
-  //   const { id, institution, position, startedAt, endedAt } = selectedInstitution
-  //   console.log(selectedInstitution)
-  //   setInstitutionalLink({
-  //     id,
-  //     institutionName: institution.name,
-  //     institutionTypeId: institution.typeId,
-  //     position,
-  //     startedAt: dayjs(startedAt),
-  //     endedAt: endedAt && endedAt !== 'null' ? dayjs(endedAt) : null,
-  //   })
-  //   setIsAddWorkHistoryOpen(true)
-  // }
-
   const getSelectText = institutionItem => {
     return `${institutionItem.institution.name} -${
       institutionItem.position ? ` ${institutionItem.position} -` : ''
@@ -194,7 +165,6 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
             sx={{ marginLeft: '20px' }}
             size={'large'}
             variant="contained"
-            // disabled={hasCurrentWorkHistory === -1 || hasCurrentWorkHistory === 0}
             onClick={() => setIsAddWorkHistoryOpen(true)}
           >
             Adicionar
@@ -205,23 +175,9 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
       <Grid item xs={12}>
         <Box sx={{ paddingLeft: '15px' }}>
           <Grid container direction="column" spacing={3}>
-            {/* <Grid item xs={12}> */}
-            {/*  <Grid container spacing={3}> */}
-            {/*    <Grid item alignSelf={'center'}></Grid> */}
-            {/*  </Grid> */}
-            {/* </Grid> */}
             <Grid item xs={12}>
-              {/* <Accordion> */}
-              {/*  <AccordionSummary */}
-              {/*    expandIcon={<ExpandMoreRounded />} */}
-              {/*    aria-controls="panel1a-content" */}
-              {/*    id="panel1a-header" */}
-              {/*  > */}
-              {/*    <Fields>Histórico</Fields> */}
-              {/*  </AccordionSummary> */}
-              {/*  <AccordionDetails> */}
               {rows?.length ? (
-                <GraduatesTable columns={columns} rows={rows} />
+                <CustomTable columns={columns} rows={rows} />
               ) : (
                 <Paper variant="outlined" sx={{ borderRadius: '8px', borderStyle: 'dashed' }}>
                   <Box sx={{ padding: 2 }}>
@@ -229,8 +185,6 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
                   </Box>
                 </Paper>
               )}
-              {/*  </AccordionDetails> */}
-              {/* </Accordion> */}
             </Grid>
             <Grid item xs={12}>
               <FormControl>

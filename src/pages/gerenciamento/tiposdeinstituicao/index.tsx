@@ -10,10 +10,18 @@ import {
   showDeletedToast,
   showSavedToast,
   ToastContainer,
+  CustomTable,
+  DeleteItem,
+  DeleteModal,
+  Breadcrumbs,
+  showErrorToast,
+  EditRoundedIcon,
+  DeleteForeverRoundedIcon,
+  Grid,
+  FormControl,
+  InputMui,
 } from '@components'
-import { FormControl, Grid, TextField } from '@mui/material'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
+
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import {
@@ -22,11 +30,7 @@ import {
   saveInstitutionType,
   updateInstitutionType,
 } from '@modules/InstitutionTypes/api'
-import { showErrorToast } from '@components/Toast'
 import { InstitutionType } from '@modules/InstitutionTypes/types'
-import { CustomTable } from '@components/Table'
-import { DeleteItem, DeleteModal } from '@components/DeleteModal'
-import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
   institutionTypes: InstitutionType[]
@@ -177,7 +181,7 @@ const Institutions = ({ institutionTypes }: Props) => {
         </Modal.Header>
         <Modal.Body>
           <FormControl fullWidth>
-            <TextField
+            <InputMui
               value={currentInstitution.name}
               required
               name={'institution'}

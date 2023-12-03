@@ -2,18 +2,22 @@ import React from 'react'
 import { Routes } from '@utils/enums'
 
 import { useRouter } from 'next/router'
-import MainWrapper from '@components/MainWrapper'
 import { PageWrapper, Title } from '@styles/index.style'
-import Grid from '@mui/material/Grid'
-import { CardOptions, SendRoundedIcon } from '@components'
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded'
-import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded'
-import HomeWorkRoundedIcon from '@mui/icons-material/HomeWorkRounded'
-import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded'
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded'
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded'
+import {
+  AccountBalanceRoundedIcon,
+  Breadcrumbs,
+  BusinessRoundedIcon,
+  CardOptions,
+  EmailRoundedIcon,
+  Grid,
+  HomeWorkRoundedIcon,
+  MainWrapper,
+  ManageAccountsRoundedIcon,
+  SchoolRoundedIcon,
+  SendRoundedIcon,
+} from '@components'
+
 import { OverridableComponent } from '@mui/types'
-import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface OptionProps {
   title: string

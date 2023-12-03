@@ -6,14 +6,24 @@ import React from 'react'
 import { useAuth } from '@context/AuthProvider'
 import Router from 'next/router'
 import { Role, RoleTranslation } from '@utils/enums'
-import SettingsIcon from '@mui/icons-material/Settings'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
-import { Box, Divider, FormControl, InputLabel, ListItemIcon, Menu, MenuItem } from '@mui/material'
-import { Button, Grid, SelectMui } from '@components'
+import {
+  Button,
+  Grid,
+  SelectMui,
+  LogoutRoundedIcon as Logout,
+  Box,
+  Divider,
+  FormControl,
+  InputLabel,
+  KeyboardArrowDownRoundedIcon,
+  AccountCircleIcon,
+  SettingsIcon,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+} from '@components'
 import Head from 'next/head'
 import { getHomeUrlAccordingRole } from '@utils/functions'
-import { Logout } from '@mui/icons-material'
 
 const MainHeader: React.FC = () => {
   const { user, currentRole, logout, updateCurrentRole } = useAuth()
