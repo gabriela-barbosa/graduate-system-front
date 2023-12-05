@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios'
 import { Email, GetEmailResponse } from '@modules/Emails/types'
+import { User } from '@context/AuthContext'
 
 export const getEmails = async (
   apiClient: AxiosInstance,
@@ -27,4 +28,18 @@ export const saveEmail = async (apiClient: AxiosInstance, email: Email) => {
 
 export const updateEmail = async (apiClient: AxiosInstance, email: Email) => {
   await apiClient.put(`/v1/email/${email.id}`, email)
+}
+
+export const getUserByRole = async (apiClient: AxiosInstance, role: string): Promise<User[]> => {
+  const { data } = await apiClient.get<User[]>(`/v1/users/role/${role}`)
+
+  return data
+}
+
+export const sendEmails = async (
+  apiClient: AxiosInstance,
+  usersId: string[],
+  emailContentId: string
+): Promise<void> => {
+  await apiClient.post(`/v1/emails/send`, { usersId, emailContentId })
 }

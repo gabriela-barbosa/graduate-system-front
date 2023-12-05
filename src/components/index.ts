@@ -43,6 +43,13 @@ import MenuItem from '@mui/material/MenuItem'
 import Checkbox from '@mui/material/Checkbox'
 import Divider from '@mui/material/Divider'
 import FormHelperText from '@mui/material/FormHelperText'
+import {
+  DataGrid,
+  GridColDef,
+  GridToolbar,
+  GridRowId,
+  GridToolbarQuickFilter,
+} from '@mui/x-data-grid'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import AddRounded from '@mui/icons-material/AddRounded'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
@@ -146,5 +153,8 @@ export {
   ToastContainer,
   Tooltip,
   Typography,
+  DataGrid,
+  GridToolbar,
+  GridToolbarQuickFilter,
 }
-export type { DeleteItem }
+export type { DeleteItem, GridColDef, GridRowId }

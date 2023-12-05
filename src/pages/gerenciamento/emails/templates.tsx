@@ -20,7 +20,7 @@ import {
   ToastContainer,
   Tooltip,
 } from '@components'
-import { Routes, USER_TOKEN_NAME } from '@utils/enums'
+import { Role, Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { PageWrapper, Title } from '@styles/index.style'
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
@@ -132,14 +132,14 @@ const EmailConfig = ({ emails, meta }: Props) => {
   }
 
   const handleOpenEdit = (current: Email) => {
-    setIsEditModalOpen(true)
     setCurrentEmail(current)
     setPreviousEmail(current)
+    setIsEditModalOpen(true)
   }
 
   const handleOpenSendEmail = (current: Email) => {
-    setIsSendModalOpen(true)
     setCurrentEmail(current)
+    setIsSendModalOpen(true)
   }
 
   const onClickDelete = (id: string | undefined, value: string) => {
@@ -169,7 +169,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
         body: (
           <section>
             <Tooltip title="Enviar email">
-              <ActionIcon onClick={() => handleOpenSendEmail(email)}>
+              <ActionIcon disabled={!email.active} onClick={() => handleOpenSendEmail(email)}>
                 <SendRoundedIcon />
               </ActionIcon>
             </Tooltip>
@@ -261,7 +261,12 @@ const EmailConfig = ({ emails, meta }: Props) => {
         handleSave={handleSaveEmail}
         setCurrentEmail={setCurrentEmail}
       />
-      <SendEmailModal handleClose={handleCloseSendModal} isShowing={isSendModalOpen} users={[]} />
+      <SendEmailModal
+        handleClose={handleCloseSendModal}
+        isShowing={isSendModalOpen}
+        role={currentEmail.isGraduateEmail ? Role.GRADUATE : Role.PROFESSOR}
+        currentEmail={currentEmail}
+      />
     </MainWrapper>
   )
 }

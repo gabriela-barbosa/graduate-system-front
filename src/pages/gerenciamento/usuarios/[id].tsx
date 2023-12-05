@@ -1,7 +1,6 @@
 import { PageWrapper, Title } from '@styles/index.style'
 import { Button, MainWrapper, Grid } from '@components'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Theme } from '@utils/enums'
 import { useRouter } from 'next/router'
 import { User } from '@context/AuthContext'
 import { useForm } from 'react-hook-form'

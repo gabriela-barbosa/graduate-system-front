@@ -14,7 +14,6 @@ import {
   MainWrapper,
   ManageAccountsRoundedIcon,
   SchoolRoundedIcon,
-  SendRoundedIcon,
 } from '@components'
 
 import { OverridableComponent } from '@mui/types'
@@ -60,7 +59,7 @@ const Select: React.FC = () => {
     },
     {
       title: 'Configurar Conteúdo de Emails',
-      subtitle: 'Adicione, exclua ou edite um conteúdo de email.',
+      subtitle: 'Envie emails ou adicione, exclua ou edite conteúdo de emails.',
       icon: EmailRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_EMAILS),
     },
@@ -68,12 +67,6 @@ const Select: React.FC = () => {
       title: 'Configurar Usuários',
       subtitle: 'Adicione ou edite um usuário.',
       icon: ManageAccountsRoundedIcon,
-      onClick: () => goToPage(Routes.MANAGEMENT_USERS),
-    },
-    {
-      title: 'Enviar Emails',
-      subtitle: 'Envie emails.',
-      icon: SendRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_USERS),
     },
   ]
