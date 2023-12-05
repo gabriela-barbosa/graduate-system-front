@@ -29,7 +29,7 @@ const Card = styled.div`
   border-radius: 5px;
   box-shadow: ${({ theme }) => theme.shadows[4]};
   padding: 30px;
-  width: 380px;
+  width: 420px;
   height: 180px;
   transition: all 0.3s ease-out;
 
