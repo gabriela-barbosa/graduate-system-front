@@ -77,8 +77,6 @@ const GraduateInfo = ({
 
   const transformNumberToValue = (n: number) => (n === 1 ? true : n === 0 ? false : undefined)
 
-  // console.log('currentInstitutionalLinks', currentInstitutionalLinks)
-
   useEffect(() => {
     reset({
       ...graduateInfo,
@@ -104,7 +102,6 @@ const GraduateInfo = ({
   }, [graduateInfo])
 
   const onSend = async data => {
-    console.warn('onSend', data)
     const {
       graduateId,
       graduateName,

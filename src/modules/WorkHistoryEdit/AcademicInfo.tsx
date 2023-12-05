@@ -176,9 +176,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
       `v1/institutions?name=${searchTerm}&pageSize=1000`
     )
     const { data } = dataResponse
-    console.warn('data', data)
     setOptions(data)
-    // setNewInstitutions(data)
   }
 
   const debounceGetData = useCallback(
@@ -186,7 +184,6 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
     []
   )
   const onInputChange = (inputValue, onChangeInstitution) => {
-    console.warn('passeo aqui', inputValue)
     if (inputValue) {
       onChangeInstitution(inputValue)
       debounceGetData(inputValue)

@@ -91,7 +91,6 @@ const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) =
   const handleOnSend = async () => {
     if (currentEmail && currentEmail.id) {
       try {
-        console.warn('passeio aqui', selectedRows, currentEmail.id)
         sendEmails(apiClient, selectedRows as string[], currentEmail.id)
         showToast('O envio foi requisitado.', 'info')
       } catch (e) {
