@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { styled as styledMUI } from '@mui/material/styles'
 import { Grid, Typography } from '@mui/material'
-import { theme } from './theme'
 import { HISTORY_STATUS } from '@modules/Egressos/types'
+import { theme } from '@styles/theme'
 
 const fontFamily = 'font-family: Roboto, sans-serif'
 
@@ -36,7 +36,7 @@ export const TitleLogin = styled.h1`
   font-size: 40px;
   line-height: 47px;
 
-  color: ${theme.palette.primary.contrastText};
+  color: ${({ theme }) => theme.palette.primary.contrastText};
 `
 
 export const Title = styled.h1`
@@ -48,7 +48,7 @@ export const Title = styled.h1`
   font-size: 36px;
   line-height: 47px;
 
-  color: ${theme.palette.primary.main};
+  color: ${({ theme }) => theme.palette.primary.main};
 `
 
 export const PageWrapper = styledMUI(Grid)`
@@ -120,6 +120,12 @@ export const TypographyTableCell = ({ children, status, width = '250px' }: Table
   </Typography>
 )
 
+export const DialogTitleTypography = ({ children }) => (
+  <Typography variant="h6" color="primary.main">
+    {children}
+  </Typography>
+)
+
 export const Subtitle = styled.h1`
   white-space: nowrap;
   overflow: hidden;
@@ -133,5 +139,5 @@ export const Subtitle = styled.h1`
   font-size: 22px;
   line-height: 47px;
 
-  color: #0b6951b2;
+  color: ${({ theme }) => theme.palette.primary.main};
 `

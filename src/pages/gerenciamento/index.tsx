@@ -72,7 +72,7 @@ const Select: React.FC = () => {
     },
     {
       title: 'Enviar Emails',
-      subtitle: 'Adicione ou edite um usuário.',
+      subtitle: 'Envie emails.',
       icon: SendRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_USERS),
     },

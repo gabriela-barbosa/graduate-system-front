@@ -23,14 +23,6 @@ const TableRow = TableRowComponent
 
 const TableBody = TableBodyComponent
 
-// const ActionIcon = styled.button`
-//   font-size: 18px;
-//   line-height: 24px;
-//   cursor: pointer;
-//   color: #00000066;
-//   border: none;
-//   background: transparent;
-// `
 const ActionIcon = IconButton
 
 export {

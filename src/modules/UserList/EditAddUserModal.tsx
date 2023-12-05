@@ -1,5 +1,5 @@
 import { Modal } from 'react-bootstrap'
-import { Fields } from '@styles/index.style'
+import { DialogTitleTypography } from '@styles/index.style'
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { Button } from '@components'
 import React from 'react'
@@ -43,7 +43,7 @@ const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props)
     <Modal show={show} onHide={handleClose}>
       <Box component={'form'} onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Fields>{id ? 'Editar' : 'Adicionar'} Usuário</Fields>
+          <DialogTitleTypography>{id ? 'Editar' : 'Adicionar'} Usuário</DialogTitleTypography>
         </Modal.Header>
         <Modal.Body>
           <Grid container rowSpacing={4}>
