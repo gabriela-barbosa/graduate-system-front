@@ -1,12 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import {
-  Button,
-  MainWrapper,
-  showSavedToast,
-  ToastContainer,
-  showErrorToast,
-  Grid,
-} from '@components'
+import { Button, MainWrapper, showSavedToast, showErrorToast, Grid } from '@components'
 import { Role, Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 
@@ -17,7 +10,6 @@ import { FormContainer } from 'react-hook-form-mui'
 import {
   AcademicInfo,
   Fields,
-  getCNPQLevels,
   getGraduateInfoAndWorkHistory,
   GraduateWorkHistoriesInfo,
   InstitutionalLinkInfo,
@@ -26,7 +18,7 @@ import {
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { SelectItem } from '@utils/types'
-import { getInstitutionTypesOptions } from '@modules/Commons/api'
+import { getCNPQLevelsOptions, getInstitutionTypesOptions } from '@modules/Commons/api'
 import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
@@ -223,7 +215,6 @@ const GraduateInfo = ({
             </Grid>
           </FormContainer>
         </Grid>
-        <ToastContainer />
       </PageWrapper>
     </MainWrapper>
   )
@@ -246,7 +237,7 @@ export async function getServerSideProps(ctx) {
   const promises = [
     getGraduateInfoAndWorkHistory(apiClient, userId),
     getInstitutionTypesOptions(apiClient),
-    getCNPQLevels(apiClient),
+    getCNPQLevelsOptions(apiClient),
   ]
 
   const response = await Promise.all(promises)

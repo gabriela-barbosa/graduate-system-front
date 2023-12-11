@@ -25,7 +25,6 @@ import {
   showDeletedToast,
   showErrorToast,
   showSavedToast,
-  ToastContainer,
 } from '@components'
 import { Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
@@ -151,7 +150,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
     { name: 'Nome' },
     { name: 'Tipo do Email' },
     { name: 'Status' },
-    { name: 'Ações' },
+    { name: 'Ações', width: '20%' },
   ]
 
   const rows = emailsList?.map(email => {
@@ -234,8 +233,6 @@ const EmailConfig = ({ emails, meta }: Props) => {
             </Grid>
           </Grid>
         </Grid>
-
-        <ToastContainer />
       </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}

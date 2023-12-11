@@ -12,7 +12,6 @@ import { parseCookies } from 'nookies'
 import { CIProgramInfo } from '@modules/Programs/types'
 import {
   Button,
-  ToastContainer,
   ActionIcon,
   MainWrapper,
   showSavedToast,
@@ -102,6 +101,7 @@ const Programs = ({ programs }: Props) => {
     },
     {
       name: 'Ações',
+      width: '20%',
     },
   ]
 
@@ -168,8 +168,6 @@ const Programs = ({ programs }: Props) => {
             </Grid>
           </Grid>
         </Grid>
-
-        <ToastContainer />
       </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}

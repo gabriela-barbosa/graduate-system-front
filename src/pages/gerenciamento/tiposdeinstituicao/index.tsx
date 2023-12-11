@@ -9,7 +9,6 @@ import {
   MainWrapper,
   showDeletedToast,
   showSavedToast,
-  ToastContainer,
   CustomTable,
   DeleteItem,
   DeleteModal,
@@ -98,6 +97,7 @@ const Institutions = ({ institutionTypes }: Props) => {
     },
     {
       name: 'Ações',
+      width: '20%',
     },
   ]
 
@@ -165,7 +165,6 @@ const Institutions = ({ institutionTypes }: Props) => {
             </Grid>
           </Grid>
         </Grid>
-        <ToastContainer />
       </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}

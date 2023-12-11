@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Theme } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { Button, MainWrapper, Input } from '@components'
+import { Button, MainWrapper, Input, showErrorToast } from '@components'
 
 import { Background, Content, FormInputGroup, ImageLogo, TitleLogin } from '@styles/index.style'
 import fotoIcUff from '@public/fotoicuff.jpg'
@@ -20,9 +20,13 @@ import Head from 'next/head'
 styled(FormInputGroup)`
   width: 320px;
 `
+interface FormProps {
+  email: string
+  password: string
+}
 const Home = () => {
   const formContext = useForm()
-  const { user, signIn, currentRole } = useAuth()
+  const { user, login, currentRole } = useAuth()
 
   const router = useRouter()
 
@@ -30,8 +34,12 @@ const Home = () => {
     if (currentRole && user) redirectAccordingRole(currentRole, user.id, router)
   }, [currentRole])
 
-  const onSubmit = async body => {
-    await signIn(body)
+  const onSubmit = async ({ email, password }: FormProps) => {
+    try {
+      await login(email, password)
+    } catch (err) {
+      showErrorToast('Email ou senha incorretos.')
+    }
   }
 
   const getEmailErrorMessageByType = type => {

@@ -1,6 +1,7 @@
 import { AxiosError, AxiosInstance } from 'axios'
-import { CNPQLevelInfo, GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
+import { GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
 import { SelectItem } from '@utils/types'
+import { getAPIClient } from '@services/axios'
 
 export const getGraduateInfoAndWorkHistory = async (
   apiClient: AxiosInstance,
@@ -12,18 +13,9 @@ export const getGraduateInfoAndWorkHistory = async (
   return data
 }
 
-export const getCNPQLevels = async (
-  apiClient: AxiosInstance
+export const getCourses = async (
+  apiClient: AxiosInstance = getAPIClient()
 ): Promise<SelectItem[] | AxiosError> => {
-  const { data } = await apiClient.get<CNPQLevelInfo[]>(`/v1/cnpq_levels`)
-
-  return [
-    { id: 0, label: 'Nenhuma bolsa selecionada' },
-    ...data.map(({ name, id }) => ({ id, label: name })),
-  ]
-}
-
-export const getCourses = async (apiClient: AxiosInstance): Promise<SelectItem[] | AxiosError> => {
   const { data } = await apiClient.get(`/v1/courses`)
 
   return data.map(({ level, id }) => ({ id, label: level }))

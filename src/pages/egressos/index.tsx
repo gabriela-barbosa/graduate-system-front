@@ -23,13 +23,12 @@ import { useForm } from 'react-hook-form'
 import { Graduate, HISTORY_STATUS, ListGraduatesFilters } from '@modules/Egressos/types'
 import { parseCookies } from 'nookies'
 import { getAPIClient } from '@services/axios'
-import { getCNPQLevels } from '@modules/WorkHistoryEdit'
 import { DEFAULT_PAGE_SIZE, PaginationType } from '@modules/Commons/types'
 import { getGraduates } from '@modules/GraduatesList/api'
 import { GraduatesListDetails } from '@modules/GraduatesList/types'
 import { SelectItem } from '@utils/types'
 import { useAuth } from '@context/AuthProvider'
-import { getInstitutionTypesOptions } from '@modules/Commons/api'
+import { getCNPQLevelsOptions, getInstitutionTypesOptions } from '@modules/Commons/api'
 
 const status = {
   [HISTORY_STATUS.PENDING]: 'Pendente',
@@ -280,9 +279,11 @@ export async function getServerSideProps(ctx) {
   const promises = [
     getGraduates(apiClient),
     getInstitutionTypesOptions(apiClient),
-    getCNPQLevels(apiClient),
+    getCNPQLevelsOptions(apiClient),
   ]
   const responses = await Promise.all(promises)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const someResult = responses.some(item => 'response' in item && item.response?.status === 403)
   if (someResult)
     return {

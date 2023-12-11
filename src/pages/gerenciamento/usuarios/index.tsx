@@ -17,7 +17,6 @@ import {
   SearchRoundedIcon,
   showErrorToast,
   showSavedToast,
-  ToastContainer,
 } from '@components'
 import { RoleTranslation, Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { Fields, PageWrapper, Title } from '@styles/index.style'
@@ -105,6 +104,7 @@ const UserList = ({ users, meta }: Props) => {
     },
     {
       name: 'Ações',
+      width: '20%',
     },
   ]
 
@@ -223,7 +223,6 @@ const UserList = ({ users, meta }: Props) => {
             </Grid>
           </Grid>
         </Grid>
-        <ToastContainer />
       </PageWrapper>
       <EditAddUserModal
         onFail={onFail}

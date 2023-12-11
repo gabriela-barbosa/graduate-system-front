@@ -12,7 +12,6 @@ import {
   SelectMui,
   showDeletedToast,
   showSavedToast,
-  ToastContainer,
   EditRoundedIcon,
   DeleteForeverRoundedIcon,
   showErrorToast,
@@ -157,6 +156,7 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
     },
     {
       name: 'Ações',
+      width: '20%',
     },
   ]
 
@@ -279,8 +279,6 @@ const Institutions = ({ institutions, meta, institutionTypes }: Props) => {
             </Grid>
           </Grid>
         </Grid>
-
-        <ToastContainer />
       </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}

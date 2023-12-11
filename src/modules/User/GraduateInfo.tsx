@@ -11,13 +11,13 @@ import {
 } from '@mui/material'
 import { Subtitle } from '@styles/index.style'
 import React, { useEffect, useState } from 'react'
-import { getCNPQLevels, getCourses } from '../WorkHistoryEdit/api'
+import { getCourses } from '../WorkHistoryEdit/api'
 import { Input } from '@components'
 import { Controller } from 'react-hook-form'
 import { getAPIClient } from '@services/axios'
 import { SelectItem } from '@utils/types'
 import { useRouter } from 'next/router'
-import { getInstitutionTypesOptions } from '@modules/Commons/api'
+import { getCNPQLevelsOptions, getInstitutionTypesOptions } from '@modules/Commons/api'
 
 const GraduateInfo = ({ control }) => {
   const router = useRouter()
@@ -38,15 +38,15 @@ const GraduateInfo = ({ control }) => {
   }
 
   useEffect(() => {
-    getInstitutionTypesOptions(apiClient).then(response => {
+    getInstitutionTypesOptions().then(response => {
       redirectToLoginIfError(response)
       setInstitutionTypes(response as SelectItem[])
     })
-    getCNPQLevels(apiClient).then(response => {
+    getCNPQLevelsOptions().then(response => {
       redirectToLoginIfError(response)
       setCNPQLevels(response as SelectItem[])
     })
-    getCourses(apiClient).then(response => {
+    getCourses().then(response => {
       redirectToLoginIfError(response)
       setCourses(response as SelectItem[])
     })

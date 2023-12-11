@@ -119,16 +119,14 @@ const MainHeader: React.FC = () => {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
                 {currentRole === Role.ADMIN && (
-                  <>
-                    <MenuItem onClick={onClickConfig}>
-                      <ListItemIcon>
-                        <SettingsIcon fontSize="small" />
-                      </ListItemIcon>
-                      Gerenciamento
-                    </MenuItem>
-                    <Divider />
-                  </>
+                  <MenuItem onClick={onClickConfig}>
+                    <ListItemIcon>
+                      <SettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    Gerenciamento
+                  </MenuItem>
                 )}
+                {currentRole === Role.ADMIN && <Divider />}
                 <MenuItem onClick={logout}>
                   <ListItemIcon>
                     <Logout fontSize="small" />

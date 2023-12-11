@@ -9,6 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import NextNProgress from 'nextjs-progressbar'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from '@components'
 
 const App = ({ Component, pageProps }) => {
   return (
@@ -18,6 +19,7 @@ const App = ({ Component, pageProps }) => {
           <AuthProvider>
             <NextNProgress color={theme.palette.primary.main} />
             <Component {...pageProps} />
+            <ToastContainer />
           </AuthProvider>
           <GlobalStyle />
         </LocalizationProvider>

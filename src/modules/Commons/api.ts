@@ -1,9 +1,10 @@
 import { AxiosInstance } from 'axios'
 import { CNPQLevelInfo } from '@modules/WorkHistoryEdit/types'
 import { SelectItem } from '@utils/types'
+import { getAPIClient } from '@services/axios'
 
 export const getInstitutionTypesOptions = async (
-  apiClient: AxiosInstance
+  apiClient: AxiosInstance = getAPIClient()
 ): Promise<SelectItem[]> => {
   const { data } = await apiClient.get(`/v1/institution/type`)
 
@@ -13,7 +14,9 @@ export const getInstitutionTypesOptions = async (
   ]
 }
 
-export const getCNPQLevels = async (apiClient: AxiosInstance): Promise<SelectItem[]> => {
+export const getCNPQLevelsOptions = async (
+  apiClient: AxiosInstance = getAPIClient()
+): Promise<SelectItem[]> => {
   const { data } = await apiClient.get<CNPQLevelInfo[]>(`/v1/cnpq_levels`)
 
   return [

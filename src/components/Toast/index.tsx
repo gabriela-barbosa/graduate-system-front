@@ -13,7 +13,7 @@ const ToastContainer = () => (
     pauseOnFocusLoss
     draggable
     pauseOnHover
-  ></Toast>
+  />
 )
 
 const showSavedToast = () => toast.success('Salvo com sucesso!')

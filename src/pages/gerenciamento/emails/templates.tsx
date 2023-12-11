@@ -17,7 +17,6 @@ import {
   showDeletedToast,
   showErrorToast,
   showSavedToast,
-  ToastContainer,
   Tooltip,
 } from '@components'
 import { Role, Routes, USER_TOKEN_NAME } from '@utils/enums'
@@ -243,7 +242,6 @@ const EmailConfig = ({ emails, meta }: Props) => {
             </Grid>
           </Grid>
         </Grid>
-        <ToastContainer />
       </PageWrapper>
       <DeleteModal
         isOpen={isDeleteModalOpen}

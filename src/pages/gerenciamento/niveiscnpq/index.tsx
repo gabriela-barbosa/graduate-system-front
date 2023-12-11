@@ -9,7 +9,6 @@ import {
   MainWrapper,
   showDeletedToast,
   showSavedToast,
-  ToastContainer,
   Grid,
   showEditedToast,
   showErrorToast,
@@ -104,6 +103,7 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
     },
     {
       name: 'Ações',
+      width: '20%',
     },
   ]
 
@@ -138,7 +138,6 @@ const Levels: React.FC = ({ cnpqLevels }: Props) => {
         <Grid item xs={12}>
           <Title>Atualizar Níveis CNPQ</Title>
         </Grid>
-        <ToastContainer />
         <Grid item xs={12}>
           {cnpqLevels.length ? (
             <CustomTable columns={columns} rows={rows} />
