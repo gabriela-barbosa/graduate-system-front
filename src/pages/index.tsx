@@ -2,7 +2,16 @@ import React, { useEffect } from 'react'
 import { Theme } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
-import { Button, MainWrapper, Input, showErrorToast } from '@components'
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  Input,
+  MainWrapper,
+  Password,
+  showErrorToast,
+} from '@components'
 
 import { Background, Content, FormInputGroup, ImageLogo, TitleLogin } from '@styles/index.style'
 import fotoIcUff from '@public/fotoicuff.jpg'
@@ -11,9 +20,6 @@ import Image from 'next/image'
 import { useAuth } from '@context/AuthProvider'
 import styled from 'styled-components'
 import { FormContainer } from 'react-hook-form-mui'
-import { Box, FormControl } from '@mui/material'
-import Grid from '@mui/material/Unstable_Grid2'
-import { Password } from '@components/Input'
 import { redirectAccordingRole } from '@utils/functions'
 import Head from 'next/head'
 
@@ -38,7 +44,9 @@ const Home = () => {
     try {
       await login(email, password)
     } catch (err) {
-      showErrorToast('Email ou senha incorretos.')
+      console.log(err)
+      if (err.response?.status === 401) return showErrorToast('Email ou senha incorretos.')
+      return showErrorToast('Ocorreu um erro ao fazer login. Tente novamente mais tarde.')
     }
   }
 
@@ -82,7 +90,7 @@ const Home = () => {
             <Box sx={{ width: '300px', backgroundColor: '#ffffffd6', borderRadius: 6, padding: 4 }}>
               <FormContainer formContext={formContext} onSuccess={onSubmit}>
                 <Grid container direction={'column'} spacing={4} alignItems={'center'}>
-                  <Grid height={100} width={'100%'}>
+                  <Grid item height={100} width={'100%'}>
                     <FormControl fullWidth>
                       <Input
                         parseError={({ type }) => {
@@ -96,7 +104,7 @@ const Home = () => {
                       />
                     </FormControl>
                   </Grid>
-                  <Grid height={100} width={'100%'}>
+                  <Grid item height={100} width={'100%'}>
                     <FormControl fullWidth>
                       <Password
                         parseError={() => 'Digite a senha.'}
@@ -107,7 +115,7 @@ const Home = () => {
                       />
                     </FormControl>
                   </Grid>
-                  <Grid>
+                  <Grid item>
                     <FormControl>
                       <Button size={'large'} variant="contained" type="submit">
                         Continuar
