@@ -3,9 +3,11 @@ import { useRouter } from 'next/router'
 
 import {
   ActionIcon,
+  Box,
   Breadcrumbs,
   Button,
   ClearRoundedIcon,
+  CloudUploadRoundedIcon,
   CustomTable,
   EditRoundedIcon,
   FormContainer,
@@ -28,6 +30,7 @@ import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import ImportCSVModal from '@modules/UserList/ImportCSVModal'
 
 const pageSize = 10
 
@@ -41,26 +44,46 @@ interface FormInfo {
   email?: string
 }
 
+const columns = [
+  {
+    name: 'Nome',
+  },
+  {
+    name: 'Email',
+  },
+  {
+    name: 'Papel do Usuário',
+  },
+  {
+    name: 'Ações',
+    width: '20%',
+  },
+]
+
+const breadcrumbs = [
+  { name: 'Listagem de Egressos', href: Routes.GRADUATES },
+  { name: 'Gerenciamento', href: Routes.MANAGEMENT },
+  { name: 'Usuários' },
+]
+
 const UserList = ({ users, meta }: Props) => {
   const apiClient = getAPIClient()
   const [usersList, setUsersList] = useState<User[]>(users)
   const [pagination, setPagination] = useState<PaginationType>(meta)
   const [currentUser, setCurrentUser] = useState<User>({} as User)
-  const [show, setShow] = useState(false)
+  const [showUserDialog, setShowUserDialog] = useState(false)
+  const [showImportCSVDialog, setShowImportCSVDialog] = useState(false)
   const router = useRouter()
   const formContext = useForm()
   const { getValues, reset } = formContext
 
-  const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
-  const onClickBack = () => {
-    router.push('/gerenciamento')
-  }
+  const handleOnCloseCSVDialog = () => setShowImportCSVDialog(false)
+  const handleOnCloseUserDialog = () => setShowUserDialog(false)
 
-  useEffect(() => {
-    setUsersList(users)
-    setPagination(meta)
-  }, [users, meta])
+  const onClickCreateUser = () => {
+    setCurrentUser({} as User)
+    setShowUserDialog(true)
+  }
 
   const handleGetUsers = async (page: number, formInfo?: FormInfo) => {
     try {
@@ -75,38 +98,46 @@ const UserList = ({ users, meta }: Props) => {
   const onSuccess = async () => {
     await handleGetUsers(1)
     showSavedToast()
-    setShow(false)
+    setShowUserDialog(false)
   }
 
-  const onFail = () => {
-    showErrorToast('Erro ao cadastrar/atualizar usuário')
+  const onClickBack = () => {
+    router.push('/gerenciamento')
   }
+  const onSuccessImport = async () => {
+    await handleGetUsers(1)
+    showSavedToast()
+    setShowImportCSVDialog(false)
+  }
+
+  const onFail = message => {
+    showErrorToast(message)
+  }
+
   const onChangePagination = async (event: any, value: number) => {
     const form = getValues()
     await handleGetUsers(value, form)
   }
+  const onSend = async (form: FormInfo) => {
+    try {
+      await handleGetUsers(1, form)
+    } catch (e) {
+      toast.error('Erro ao buscar usuários.')
+    }
+  }
 
-  const setCurrentUserEmpty = () => setCurrentUser({} as User)
+  const onClean = async () => {
+    reset()
+    await handleGetUsers(1)
+  }
+
+  const onClickImportCSV = async () => {
+    setShowImportCSVDialog(true)
+  }
 
   const handleClickEdit = (id: string) => {
     router.push(`usuarios/${id}`)
   }
-
-  const columns = [
-    {
-      name: 'Nome',
-    },
-    {
-      name: 'Email',
-    },
-    {
-      name: 'Papel do Usuário',
-    },
-    {
-      name: 'Ações',
-      width: '20%',
-    },
-  ]
 
   const rows = usersList?.map(user => [
     { body: user.name },
@@ -129,29 +160,16 @@ const UserList = ({ users, meta }: Props) => {
     },
   ])
 
-  const onSend = async (form: FormInfo) => {
-    try {
-      await handleGetUsers(1, form)
-    } catch (e) {
-      toast.error('Erro ao buscar usuários.')
-    }
-  }
+  useEffect(() => {
+    setUsersList(users)
+    setPagination(meta)
+  }, [users, meta])
 
-  const onClean = async () => {
-    reset()
-    await handleGetUsers(1)
-  }
   return (
     <MainWrapper>
       <PageWrapper spacing={2} container direction="column">
         <Grid item>
-          <Breadcrumbs
-            breadcrumbs={[
-              { name: 'Listagem de Egressos', href: Routes.GRADUATES },
-              { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-              { name: 'Usuários' },
-            ]}
-          />
+          <Breadcrumbs breadcrumbs={breadcrumbs} />
         </Grid>
         <Grid item xs={12}>
           <Title>Atualizar Informações de Usuário</Title>
@@ -179,6 +197,18 @@ const UserList = ({ users, meta }: Props) => {
                   <ClearRoundedIcon />
                 </Button>
               </Grid>
+              <Grid item xs alignSelf={'center'}>
+                <Box display="flex" justifyContent="flex-end">
+                  <Button
+                    size={'large'}
+                    variant="contained"
+                    onClick={onClickImportCSV}
+                    startIcon={<CloudUploadRoundedIcon />}
+                  >
+                    Importar Planilha
+                  </Button>
+                </Box>
+              </Grid>
               <Grid item xs={12}>
                 {rows?.length !== 0 ? (
                   <CustomTable columns={columns} rows={rows} />
@@ -203,14 +233,7 @@ const UserList = ({ users, meta }: Props) => {
             <Grid item>
               <Grid container columnSpacing={2}>
                 <Grid item>
-                  <Button
-                    size={'large'}
-                    variant={'contained'}
-                    onClick={() => {
-                      setCurrentUserEmpty()
-                      handleShow()
-                    }}
-                  >
+                  <Button size={'large'} variant={'contained'} onClick={onClickCreateUser}>
                     Criar Usuário
                   </Button>
                 </Grid>
@@ -225,11 +248,17 @@ const UserList = ({ users, meta }: Props) => {
         </Grid>
       </PageWrapper>
       <EditAddUserModal
-        onFail={onFail}
+        onFail={onFail.bind('Erro ao cadastrar/atualizar usuário')}
         onSuccess={onSuccess}
         currentUser={currentUser}
-        show={show}
-        handleClose={handleClose}
+        show={showUserDialog}
+        handleClose={handleOnCloseUserDialog}
+      />
+      <ImportCSVModal
+        onFail={onFail.bind('Erro ao importar planilha')}
+        onSuccess={onSuccessImport}
+        show={showImportCSVDialog}
+        handleClose={handleOnCloseCSVDialog}
       />
     </MainWrapper>
   )

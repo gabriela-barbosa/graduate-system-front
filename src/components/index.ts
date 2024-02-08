@@ -66,6 +66,7 @@ import HomeWorkRoundedIcon from '@mui/icons-material/HomeWorkRounded'
 import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded'
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded'
 import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded'
+import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import FormGroup from '@mui/material/FormGroup'
 import Menu from '@mui/material/Menu'
@@ -94,6 +95,7 @@ export {
   Checkbox,
   ClearRoundedIcon,
   CloseRoundedIcon,
+  CloudUploadRoundedIcon,
   CustomTable,
   DatePicker,
   debounce,

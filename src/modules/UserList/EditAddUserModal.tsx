@@ -39,6 +39,7 @@ const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props)
       onFail()
     }
   }
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Box component={'form'} onSubmit={handleSubmit}>
