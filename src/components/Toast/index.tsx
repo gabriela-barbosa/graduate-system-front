@@ -5,7 +5,7 @@ import React from 'react'
 const ToastContainer = () => (
   <Toast
     position="bottom-center"
-    autoClose={5000}
+    autoClose={10000}
     hideProgressBar={false}
     newestOnTop={false}
     closeOnClick

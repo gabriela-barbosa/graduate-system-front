@@ -110,7 +110,7 @@ const UserList = ({ users, meta }: Props) => {
     setShowImportCSVDialog(false)
   }
 
-  const onFail = message => {
+  const onFail = (message: string) => {
     showErrorToast(message)
   }
 
@@ -248,14 +248,14 @@ const UserList = ({ users, meta }: Props) => {
         </Grid>
       </PageWrapper>
       <EditAddUserModal
-        onFail={onFail.bind('Erro ao cadastrar/atualizar usuário')}
+        onFail={() => onFail('Erro ao cadastrar/atualizar usuário')}
         onSuccess={onSuccess}
         currentUser={currentUser}
         show={showUserDialog}
         handleClose={handleOnCloseUserDialog}
       />
       <ImportCSVModal
-        onFail={onFail.bind('Erro ao importar planilha')}
+        onFail={onFail}
         onSuccess={onSuccessImport}
         show={showImportCSVDialog}
         handleClose={handleOnCloseCSVDialog}
