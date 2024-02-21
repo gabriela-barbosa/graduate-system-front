@@ -3,11 +3,9 @@ import { useRouter } from 'next/router'
 
 import {
   ActionIcon,
-  Box,
   Breadcrumbs,
   Button,
   ClearRoundedIcon,
-  CloudUploadRoundedIcon,
   CustomTable,
   EditRoundedIcon,
   FormContainer,
@@ -30,7 +28,6 @@ import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import ImportCSVModal from '@modules/UserList/ImportCSVModal'
 
 const pageSize = 10
 
@@ -72,12 +69,10 @@ const UserList = ({ users, meta }: Props) => {
   const [pagination, setPagination] = useState<PaginationType>(meta)
   const [currentUser, setCurrentUser] = useState<User>({} as User)
   const [showUserDialog, setShowUserDialog] = useState(false)
-  const [showImportCSVDialog, setShowImportCSVDialog] = useState(false)
   const router = useRouter()
   const formContext = useForm()
   const { getValues, reset } = formContext
 
-  const handleOnCloseCSVDialog = () => setShowImportCSVDialog(false)
   const handleOnCloseUserDialog = () => setShowUserDialog(false)
 
   const onClickCreateUser = () => {
@@ -104,17 +99,12 @@ const UserList = ({ users, meta }: Props) => {
   const onClickBack = () => {
     router.push('/gerenciamento')
   }
-  const onSuccessImport = async () => {
-    await handleGetUsers(1)
-    showSavedToast()
-    setShowImportCSVDialog(false)
-  }
 
   const onFail = (message: string) => {
     showErrorToast(message)
   }
 
-  const onChangePagination = async (event: any, value: number) => {
+  const onChangePagination = async (_event: never, value: number) => {
     const form = getValues()
     await handleGetUsers(value, form)
   }
@@ -129,10 +119,6 @@ const UserList = ({ users, meta }: Props) => {
   const onClean = async () => {
     reset()
     await handleGetUsers(1)
-  }
-
-  const onClickImportCSV = async () => {
-    setShowImportCSVDialog(true)
   }
 
   const handleClickEdit = (id: string) => {
@@ -197,18 +183,6 @@ const UserList = ({ users, meta }: Props) => {
                   <ClearRoundedIcon />
                 </Button>
               </Grid>
-              <Grid item xs alignSelf={'center'}>
-                <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    size={'large'}
-                    variant="contained"
-                    onClick={onClickImportCSV}
-                    startIcon={<CloudUploadRoundedIcon />}
-                  >
-                    Importar Planilha
-                  </Button>
-                </Box>
-              </Grid>
               <Grid item xs={12}>
                 {rows?.length !== 0 ? (
                   <CustomTable columns={columns} rows={rows} />
@@ -253,12 +227,6 @@ const UserList = ({ users, meta }: Props) => {
         currentUser={currentUser}
         show={showUserDialog}
         handleClose={handleOnCloseUserDialog}
-      />
-      <ImportCSVModal
-        onFail={onFail}
-        onSuccess={onSuccessImport}
-        show={showImportCSVDialog}
-        handleClose={handleOnCloseCSVDialog}
       />
     </MainWrapper>
   )

@@ -53,6 +53,7 @@ import {
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 import AddRounded from '@mui/icons-material/AddRounded'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
+import FileDownloadRoundedIcon from '@mui/icons-material/FileDownloadRounded'
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
@@ -158,5 +159,6 @@ export {
   DataGrid,
   GridToolbar,
   GridToolbarQuickFilter,
+  FileDownloadRoundedIcon,
 }
 export type { DeleteItem, GridColDef, GridRowId }

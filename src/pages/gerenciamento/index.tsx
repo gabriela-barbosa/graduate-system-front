@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Routes } from '@utils/enums'
 
 import { useRouter } from 'next/router'
@@ -9,14 +9,18 @@ import {
   BusinessRoundedIcon,
   CardOptions,
   EmailRoundedIcon,
+  FileDownloadRoundedIcon,
   Grid,
   HomeWorkRoundedIcon,
   MainWrapper,
   ManageAccountsRoundedIcon,
   SchoolRoundedIcon,
+  showErrorToast,
+  showSavedToast,
 } from '@components'
 
 import { OverridableComponent } from '@mui/types'
+import ImportCSVModal from '@modules/UserList/ImportCSVModal'
 
 interface OptionProps {
   title: string
@@ -26,10 +30,26 @@ interface OptionProps {
 }
 
 const Select: React.FC = () => {
+  const [showImportCSVDialog, setShowImportCSVDialog] = useState(false)
   const router = useRouter()
 
   const goToPage = (option: Routes) => {
     router.push(option)
+  }
+
+  const onFail = (message: string) => {
+    showErrorToast(message)
+  }
+
+  const handleOnCloseCSVDialog = () => setShowImportCSVDialog(false)
+
+  const onSuccessImport = async () => {
+    showSavedToast()
+    setShowImportCSVDialog(false)
+  }
+
+  const onClickImportCSV = async () => {
+    setShowImportCSVDialog(true)
   }
 
   const options: OptionProps[] = [
@@ -69,6 +89,12 @@ const Select: React.FC = () => {
       icon: ManageAccountsRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_USERS),
     },
+    {
+      title: 'Importar Planilha',
+      subtitle: 'Adicione egressos e suas informações através de planilhas.',
+      icon: FileDownloadRoundedIcon,
+      onClick: onClickImportCSV,
+    },
   ]
 
   return (
@@ -100,6 +126,12 @@ const Select: React.FC = () => {
             ))}
           </Grid>
         </Grid>
+        <ImportCSVModal
+          onFail={onFail}
+          onSuccess={onSuccessImport}
+          show={showImportCSVDialog}
+          handleClose={handleOnCloseCSVDialog}
+        />
       </PageWrapper>
     </MainWrapper>
   )
