@@ -12,3 +12,8 @@ export const redirectAccordingRole = async (
   const url = getHomeUrlAccordingRole(currentRole, userId)
   url && (await router.push(url))
 }
+
+export const hexWithOpacity = (hex: string, opacity: number): string => {
+  const opacityHex = Math.round(opacity * 255).toString(16)
+  return `${hex}${opacityHex}`
+}

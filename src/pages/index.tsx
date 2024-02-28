@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Theme } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
@@ -11,8 +11,10 @@ import {
   MainWrapper,
   Password,
   showErrorToast,
+  showSuccessToast,
+  Link as MuiLink,
+  Typography,
 } from '@components'
-
 import { Background, Content, FormInputGroup, ImageLogo, TitleLogin } from '@styles/index.style'
 import fotoIcUff from '@public/fotoicuff.jpg'
 import logo from '@public/logo-ic-uff-branca.png'
@@ -21,7 +23,7 @@ import { useAuth } from '@context/AuthProvider'
 import styled from 'styled-components'
 import { FormContainer } from 'react-hook-form-mui'
 import { redirectAccordingRole } from '@utils/functions'
-import Head from 'next/head'
+import { sendResetPasswordEmail } from '@modules/Login/api'
 
 styled(FormInputGroup)`
   width: 320px;
@@ -33,6 +35,7 @@ interface FormProps {
 const Home = () => {
   const formContext = useForm()
   const { user, login, currentRole } = useAuth()
+  const [email, setEmail] = useState('')
 
   const router = useRouter()
 
@@ -50,7 +53,7 @@ const Home = () => {
     }
   }
 
-  const getEmailErrorMessageByType = type => {
+  const getEmailErrorMessageByType = (type: string) => {
     switch (type) {
       case 'pattern':
         return 'Insira um email válido.'
@@ -61,74 +64,90 @@ const Home = () => {
     }
   }
 
+  const handleOnClickForgotPassword = async () => {
+    try {
+      if (!email || email === '') {
+        showErrorToast('Digite o email para recuperar a senha ou fazer o primeiro acesso.')
+        return
+      }
+      await sendResetPasswordEmail(email)
+      showSuccessToast(
+        'Foi enviado um email com um link para alteração/criação de senha. Verifique sua caixa de entrada.'
+      )
+    } catch (e) {
+      showErrorToast(e.response.data)
+    }
+  }
+
   return (
-    <>
-      <Head>
-        <title>Sistema Egressos</title>
-      </Head>
-      <MainWrapper hasHeader={false} themeName={Theme.gray} hasContent={false}>
-        <Image
-          alt={'Fotografia do IC UFF'}
-          src={fotoIcUff}
-          style={{ objectFit: 'cover', overflow: 'hidden' }}
-          fill
-          priority
-        />
-        <Background>
-          <Content>
-            <ImageLogo>
-              <Image
-                src={logo}
-                width="370"
-                height="265"
-                priority
-                fill={false}
-                alt={'Logo ICC UFF'}
-              />
-            </ImageLogo>
-            <TitleLogin>Sistema de Egressos</TitleLogin>
-            <Box sx={{ width: '300px', backgroundColor: '#ffffffd6', borderRadius: 6, padding: 4 }}>
-              <FormContainer formContext={formContext} onSuccess={onSubmit}>
-                <Grid container direction={'column'} spacing={4} alignItems={'center'}>
-                  <Grid item height={100} width={'100%'}>
-                    <FormControl fullWidth>
-                      <Input
-                        parseError={({ type }) => {
-                          return getEmailErrorMessageByType(type)
-                        }}
-                        margin={'dense'}
-                        type={'email'}
-                        label={'Email'}
-                        name={'email'}
-                        required
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item height={100} width={'100%'}>
-                    <FormControl fullWidth>
-                      <Password
-                        parseError={() => 'Digite a senha.'}
-                        margin={'dense'}
-                        name={'password'}
-                        label={'Senha'}
-                        required
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item>
-                    <FormControl>
-                      <Button size={'large'} variant="contained" type="submit">
-                        Continuar
-                      </Button>
-                    </FormControl>
-                  </Grid>
+    <MainWrapper hasHeader={false} themeName={Theme.gray} hasContent={false}>
+      <Image
+        alt={'Fotografia do IC UFF'}
+        src={fotoIcUff}
+        style={{ objectFit: 'cover', overflow: 'hidden' }}
+        fill
+        priority
+      />
+      <Background>
+        <Content>
+          <ImageLogo>
+            <Image src={logo} width="370" height="265" priority fill={false} alt={'Logo ICC UFF'} />
+          </ImageLogo>
+          <TitleLogin>Sistema de Egressos</TitleLogin>
+          <Box sx={{ width: '320px', backgroundColor: '#ffffffd6', borderRadius: 6, padding: 4 }}>
+            <FormContainer formContext={formContext} onSuccess={onSubmit}>
+              <Grid container direction={'column'} spacing={4} alignItems={'center'}>
+                <Grid item height={100} width={'100%'}>
+                  <FormControl fullWidth>
+                    <Input
+                      parseError={({ type }) => {
+                        return getEmailErrorMessageByType(type)
+                      }}
+                      margin={'dense'}
+                      type={'email'}
+                      label={'Email'}
+                      name={'email'}
+                      onChange={e => setEmail(e.target.value)}
+                      required
+                    />
+                  </FormControl>
                 </Grid>
-              </FormContainer>
-            </Box>
-          </Content>
-        </Background>
-      </MainWrapper>
-    </>
+                <Grid item height={100} width={'100%'}>
+                  <FormControl fullWidth>
+                    <Password
+                      parseError={() => 'Digite a senha.'}
+                      margin={'dense'}
+                      name={'password'}
+                      label={'Senha'}
+                      required
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <MuiLink
+                    component={Typography}
+                    align="center"
+                    fontSize={'16px'}
+                    alignContent={'center'}
+                    onClick={handleOnClickForgotPassword}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    Esqueci minha senha ou primeiro acesso.
+                  </MuiLink>
+                </Grid>
+                <Grid item>
+                  <FormControl>
+                    <Button size={'large'} variant="contained" type="submit">
+                      Continuar
+                    </Button>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </FormContainer>
+          </Box>
+        </Content>
+      </Background>
+    </MainWrapper>
   )
 }
 

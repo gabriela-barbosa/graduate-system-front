@@ -31,4 +31,5 @@ export enum Routes {
   MANAGEMENT_USER = '/gerenciamento/usuarios/:id',
   MANAGEMENT_CNPQ_LEVELS = '/gerenciamento/niveiscnpq',
   MANAGEMENT_CI_PROGRAMS = '/gerenciamento/programasic',
+  FORGOT_PASSWORD = '/esqueci-minha-senha',
 }

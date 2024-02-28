@@ -10,6 +10,7 @@ import NextNProgress from 'nextjs-progressbar'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from '@components'
+import Head from 'next/head'
 
 const App = ({ Component, pageProps }) => {
   return (
@@ -17,6 +18,9 @@ const App = ({ Component, pageProps }) => {
       <StyledThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <AuthProvider>
+            <Head>
+              <title>Sistema Egressos</title>
+            </Head>
             <NextNProgress color={theme.palette.primary.main} />
             <Component {...pageProps} />
             <ToastContainer />
