@@ -15,7 +15,7 @@ export const login = async (email: string, password: string) => {
 
 export const updateCurrentRole = async (currentRole: Role) => {
   const apiClient = getAPIClient()
-  const { data } = await apiClient.put<User>('v1/user/current_role', { currentRole })
+  const { data } = await apiClient.put<User>('v1/user/current-role', { currentRole })
   return data
 }
 

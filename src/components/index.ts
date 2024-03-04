@@ -62,6 +62,9 @@ import DialogActions from '@mui/material/DialogActions'
 import IconButton from '@mui/material/IconButton'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import Link from '@mui/material/Link'
+import InputAdornment from '@mui/material/InputAdornment'
+import VisibilityRounded from '@mui/icons-material/VisibilityRounded'
+import VisibilityOffRounded from '@mui/icons-material/VisibilityOffRounded'
 
 export * from './Toast'
 export * from './Table'
@@ -80,6 +83,7 @@ export {
   ClearRoundedIcon,
   CloseRoundedIcon,
   CloudUploadRoundedIcon,
+  DataGrid,
   DatePicker,
   debounce,
   DeleteForeverRoundedIcon,
@@ -92,6 +96,7 @@ export {
   Divider,
   EditRoundedIcon,
   EmailRoundedIcon,
+  FileDownloadRoundedIcon,
   FormContainer,
   FormControl,
   FormControlLabel,
@@ -99,14 +104,17 @@ export {
   FormHelperText,
   FormLabel,
   Grid,
+  GridToolbar,
+  GridToolbarQuickFilter,
   HomeWorkRoundedIcon,
   IconButton,
   Input,
+  InputAdornment,
   InputLabel,
   InputMui,
   KeyboardArrowDownRoundedIcon,
-  ListItemIcon,
   Link,
+  ListItemIcon,
   LogoutRoundedIcon,
   MainHeader,
   MainWrapper,
@@ -126,9 +134,7 @@ export {
   SettingsIcon,
   Tooltip,
   Typography,
-  DataGrid,
-  GridToolbar,
-  GridToolbarQuickFilter,
-  FileDownloadRoundedIcon,
+  VisibilityOffRounded,
+  VisibilityRounded,
 }
 export type { DeleteItem, GridColDef, GridRowId }

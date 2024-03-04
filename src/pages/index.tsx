@@ -80,7 +80,7 @@ const Home = () => {
   }
 
   return (
-    <MainWrapper hasHeader={false} themeName={Theme.gray} hasContent={false}>
+    <MainWrapper hasHeader={false} hasContent={false}>
       <Image
         alt={'Fotografia do IC UFF'}
         src={fotoIcUff}

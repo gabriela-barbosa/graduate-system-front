@@ -17,7 +17,7 @@ export const getInstitutionTypesOptions = async (
 export const getCNPQLevelsOptions = async (
   apiClient: AxiosInstance = getAPIClient()
 ): Promise<SelectItem[]> => {
-  const { data } = await apiClient.get<CNPQLevelInfo[]>(`/v1/cnpq_levels`)
+  const { data } = await apiClient.get<CNPQLevelInfo[]>(`/v1/cnpq-levels`)
 
   return [
     { id: 0, label: 'Nenhuma bolsa selecionada' },

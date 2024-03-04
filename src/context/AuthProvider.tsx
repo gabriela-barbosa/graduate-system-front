@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import { useRouter } from 'next/router'
 import { User } from '@context/AuthContext'
-import { Role, USER_TOKEN_NAME } from '@utils/enums'
+import { Role, Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { parseCookies, setCookie } from 'nookies'
 import { redirectAccordingRole } from '@utils/functions'
 import { getUser, login, updateCurrentRole } from '@context/api'
@@ -26,10 +26,13 @@ export type AuthContextType = {
   updateCurrentRole: (currentRole: Role) => void
 }
 
+const publicRoutes: string[] = [Routes.LOGIN, Routes.RESET_PASSWORD]
+
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const { currentRole } = user || {}
   const router = useRouter()
+  const path = router.pathname
 
   const isAuthenticated = () => {
     const { [USER_TOKEN_NAME]: token } = parseCookies()
@@ -46,7 +49,7 @@ const AuthProvider = ({ children }) => {
   const handleLogout = async () => {
     setUser(null)
     setCookie(undefined, USER_TOKEN_NAME, '')
-    await router.push('/')
+    await router.push(Routes.LOGIN)
   }
 
   async function handleGetUser() {
@@ -61,14 +64,16 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const { [USER_TOKEN_NAME]: token } = parseCookies()
 
-    if (token || token === '') {
+    const includesRoutes = publicRoutes.includes(path)
+    console.warn('includesRoutes', publicRoutes, path, includesRoutes)
+    if (!publicRoutes.includes(path) && (token || token === '')) {
       handleGetUser()
     }
   }, [])
 
   useEffect(() => {
     const { [USER_TOKEN_NAME]: token } = parseCookies()
-    if (!user && !token) router.push('/')
+    if (!publicRoutes.includes(path) && !user && !token) router.push(Routes.LOGIN)
   }, [user])
 
   async function handleLogin(email: string, password: string) {
@@ -77,10 +82,15 @@ const AuthProvider = ({ children }) => {
     setCookie(undefined, USER_TOKEN_NAME, token)
 
     setUser(user)
+    console.warn('redirectAccordingRole', user.currentRole, user.id)
+
     if (user.currentRole === Role.PROFESSOR || user.currentRole === Role.ADMIN) {
-      await router.push('/egressos')
+      await router.push(Routes.GRADUATES)
     } else {
-      await router.push(`/egressos/${user.id}`)
+      await router.push({
+        pathname: Routes.GRADUATES,
+        query: { id: user.id },
+      })
     }
   }
 
