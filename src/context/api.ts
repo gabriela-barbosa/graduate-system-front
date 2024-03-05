@@ -3,7 +3,7 @@ import { Role } from '@utils/enums'
 import { User } from '@context/AuthContext'
 
 export const login = async (email: string, password: string) => {
-  const apiClient = getAPIClient()
+  const apiClient = getAPIClient(undefined, true)
 
   const { data } = await apiClient.post('/v1/login', {
     email,

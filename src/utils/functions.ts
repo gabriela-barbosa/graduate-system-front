@@ -1,16 +1,26 @@
-import { Role } from '@utils/enums'
+import { Role, Routes } from '@utils/enums'
 import { NextRouter } from 'next/router'
 
-export const getHomeUrlAccordingRole = (currentRole: Role, userId: string): string =>
-  currentRole === Role.GRADUATE ? `/egressos/${userId}` : '/egressos'
+interface HomeUrlAccordingRoleProps {
+  pathname: Routes
+  query?: { id: string }
+}
+
+export const getHomeUrlAccordingRole = (
+  currentRole: Role,
+  userId: string
+): HomeUrlAccordingRoleProps =>
+  currentRole === Role.GRADUATE
+    ? { pathname: Routes.GRADUATE, query: { id: userId } }
+    : { pathname: Routes.GRADUATES }
 
 export const redirectAccordingRole = async (
   currentRole: Role,
   userId: string,
   router: NextRouter
 ) => {
-  const url = getHomeUrlAccordingRole(currentRole, userId)
-  url && (await router.push(url))
+  const routeInfo = getHomeUrlAccordingRole(currentRole, userId)
+  routeInfo && (await router.push(routeInfo))
 }
 
 export const hexWithOpacity = (hex: string, opacity: number): string => {

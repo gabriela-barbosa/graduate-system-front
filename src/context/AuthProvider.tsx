@@ -9,7 +9,7 @@ import React, {
 import { useRouter } from 'next/router'
 import { User } from '@context/AuthContext'
 import { Role, Routes, USER_TOKEN_NAME } from '@utils/enums'
-import { parseCookies, setCookie } from 'nookies'
+import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { redirectAccordingRole } from '@utils/functions'
 import { getUser, login, updateCurrentRole } from '@context/api'
 
@@ -48,7 +48,7 @@ const AuthProvider = ({ children }) => {
 
   const handleLogout = async () => {
     setUser(null)
-    setCookie(undefined, USER_TOKEN_NAME, '')
+    destroyCookie(undefined, USER_TOKEN_NAME)
     await router.push(Routes.LOGIN)
   }
 
@@ -65,8 +65,7 @@ const AuthProvider = ({ children }) => {
     const { [USER_TOKEN_NAME]: token } = parseCookies()
 
     const includesRoutes = publicRoutes.includes(path)
-    console.warn('includesRoutes', publicRoutes, path, includesRoutes)
-    if (!publicRoutes.includes(path) && (token || token === '')) {
+    if (!includesRoutes && (token || token === '')) {
       handleGetUser()
     }
   }, [])
@@ -78,20 +77,10 @@ const AuthProvider = ({ children }) => {
 
   async function handleLogin(email: string, password: string) {
     const { user, token } = await login(email, password)
-
+    if (!user || !token) return
     setCookie(undefined, USER_TOKEN_NAME, token)
-
     setUser(user)
-    console.warn('redirectAccordingRole', user.currentRole, user.id)
-
-    if (user.currentRole === Role.PROFESSOR || user.currentRole === Role.ADMIN) {
-      await router.push(Routes.GRADUATES)
-    } else {
-      await router.push({
-        pathname: Routes.GRADUATES,
-        query: { id: user.id },
-      })
-    }
+    await redirectAccordingRole(user.currentRole, user.id, router)
   }
 
   return (

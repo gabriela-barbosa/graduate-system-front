@@ -20,7 +20,7 @@ interface Props {
   show: boolean
   handleClose: () => void
   onSuccess: () => void
-  onFail: (error: any) => void
+  onFail: (error: string) => void
 }
 
 const VisuallyHiddenInput = styled('input')({
@@ -53,7 +53,6 @@ const ImportCSVModal = ({ show, handleClose, onSuccess, onFail }: Props) => {
       await importCSV(file, event.target.isDoctorateGraduates.value === 'true')
       onSuccess()
     } catch (e) {
-      console.error(e.response.data)
       onFail(e.response.data)
     }
   }

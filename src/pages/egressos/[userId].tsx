@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { Button, MainWrapper, showSavedToast, showErrorToast, Grid } from '@components'
+import { Button, MainWrapper, showSavedToast, showErrorToast, Grid, Breadcrumbs } from '@components'
 import { Role, Routes, Theme, USER_TOKEN_NAME } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 
@@ -16,10 +16,9 @@ import {
   PersonalInfo,
 } from '@modules/WorkHistoryEdit'
 import { getAPIClient } from '@services/axios'
-import { parseCookies } from 'nookies'
+import nookies from 'nookies'
 import { SelectItem } from '@utils/types'
 import { getCNPQLevelsOptions, getInstitutionTypesOptions } from '@modules/Commons/api'
-import { Breadcrumbs } from '@components/Breadcrumbs'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -223,9 +222,9 @@ const GraduateInfo = ({
 export async function getServerSideProps(ctx) {
   const { userId } = ctx.query
   const apiClient = getAPIClient(ctx)
-  const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
+  const cookies = nookies.get(ctx)
 
-  if (!token) {
+  if (!cookies[USER_TOKEN_NAME]) {
     return {
       redirect: {
         destination: '/',

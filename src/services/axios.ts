@@ -4,19 +4,19 @@ import { parseCookies } from 'nookies'
 
 const GRADUATE_API = process.env.GRADUATE_API
 
-export function getAPIClient(ctx?: never) {
+export function getAPIClient(ctx?: never, isLogin = false) {
+  if (isLogin) {
+    return axios.create({
+      baseURL: GRADUATE_API,
+    })
+  }
+
   const { [USER_TOKEN_NAME]: token } = parseCookies(ctx)
 
-  const api = axios.create({
+  return axios.create({
     baseURL: GRADUATE_API,
     headers: {
       Authorization: `Bearer ${token}`,
     },
   })
-
-  // if (token) {
-  //   api.defaults.headers.Cookie = `${USER_TOKEN_NAME}=${token}`
-  // }
-
-  return api
 }

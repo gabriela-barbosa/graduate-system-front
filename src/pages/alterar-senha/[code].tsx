@@ -6,7 +6,6 @@ import {
   FormControl,
   Grid,
   IconButton,
-  InputLabel,
   InputMui,
   MainWrapper,
   Typography,
@@ -18,7 +17,7 @@ import {
 } from '@components'
 import Image from 'next/image'
 import fotoIcUff from '@public/fotoicuff.jpg'
-import { Background, Content, TitleLogin } from '@styles/index.style'
+import { Background } from '@styles/index.style'
 import { isNullOrUndefinedOrEmpty, passwordIsValid } from '@utils/functions'
 import { useRouter } from 'next/router'
 import { Routes } from '@utils/enums'
@@ -102,7 +101,6 @@ const helperPassword =
   'A senha deve conter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.'
 
 const getErrorMessage = (value: string, confirmValue: string) => {
-  console.warn('getErrorMessage', value, confirmValue, value !== confirmValue)
   if (value !== confirmValue) return 'As senhas não coincidem.'
   if (!passwordIsValid(value)) return helperPassword
   return ''

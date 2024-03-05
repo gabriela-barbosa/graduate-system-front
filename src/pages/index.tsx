@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Theme } from '@utils/enums'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import {
@@ -47,7 +46,7 @@ const Home = () => {
     try {
       await login(email, password)
     } catch (err) {
-      console.log(err)
+      console.log('error', err)
       if (err.response?.status === 401) return showErrorToast('Email ou senha incorretos.')
       return showErrorToast('Ocorreu um erro ao fazer login. Tente novamente mais tarde.')
     }
