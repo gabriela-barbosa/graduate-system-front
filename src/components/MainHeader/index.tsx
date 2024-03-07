@@ -47,6 +47,8 @@ const MainHeader: React.FC = () => {
       : userNames[0]
     : ''
 
+  const logoLink = currentRole && user ? getHomeUrlAccordingRole(currentRole, user.id) : '/'
+
   return (
     <Grid item minWidth="1000px">
       <Header>
@@ -55,10 +57,7 @@ const MainHeader: React.FC = () => {
         </Head>
         <Grid container px={11} alignItems="center" height="100%" width="100%">
           <Box>
-            <Link
-              href={`${currentRole && user && getHomeUrlAccordingRole(currentRole, user.id)}`}
-              passHref
-            >
+            <Link href={logoLink} passHref>
               <Image src={logo} width={108} alt="Logo IC-UFF" />
             </Link>
           </Box>

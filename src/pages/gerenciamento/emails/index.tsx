@@ -93,7 +93,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleChangePagination = async (page: number) => {
     try {
-      const { data, meta } = await getEmails(apiClient, pageSize, page)
+      const { data, meta } = await getEmails(pageSize, page, apiClient)
       setEmailsList(data)
       setPagination(meta)
     } catch (error) {
@@ -103,7 +103,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleDeleteEmail = async (id: string) => {
     try {
-      await deleteEmail(apiClient, id)
+      await deleteEmail(id, apiClient)
       showDeletedToast()
       await router.replace(router.asPath)
     } catch (error) {
@@ -113,7 +113,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleSaveEmail = async (email: Email) => {
     try {
-      await saveEmail(apiClient, email)
+      await saveEmail(email, apiClient)
       showSavedToast()
       setShow(false)
       cleanEmailFields()
@@ -125,7 +125,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleUpdateInstitution = async (email: Email) => {
     try {
-      await updateEmail(apiClient, email)
+      await updateEmail(email, apiClient)
       showSavedToast()
       setShow(false)
       cleanEmailFields()
@@ -390,7 +390,7 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
-  const { data, meta } = await getEmails(apiClient, pageSize)
+  const { data, meta } = await getEmails(pageSize, undefined, apiClient)
 
   return {
     props: {
