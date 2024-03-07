@@ -14,7 +14,6 @@ import React, { useEffect, useState } from 'react'
 import { getCourses } from '../WorkHistoryEdit/api'
 import { Input } from '@components'
 import { Controller } from 'react-hook-form'
-import { getAPIClient } from '@services/axios'
 import { SelectItem } from '@utils/types'
 import { useRouter } from 'next/router'
 import { getCNPQLevelsOptions, getInstitutionTypesOptions } from '@modules/Commons/api'
@@ -24,14 +23,6 @@ const GraduateInfo = ({ control }) => {
   const [institutionTypes, setInstitutionTypes] = useState<SelectItem[]>([])
   const [cnpqLevels, setCNPQLevels] = useState<SelectItem[]>([])
   const [, setCourses] = useState<SelectItem[]>([])
-
-  // const [hasObject] = useState({
-  //   hasPostDoctorate: null,
-  //   hasCNPQScholarship: null,
-  // })
-
-  // const { hasPostDoctorate, hasCNPQScholarship } = hasObject
-  const apiClient = getAPIClient()
 
   const redirectToLoginIfError = response => {
     if ('response' in response) router.push('/')

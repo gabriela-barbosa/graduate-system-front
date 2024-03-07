@@ -170,7 +170,7 @@ const UserList = ({ users, meta }: Props) => {
               </Grid>
               <Grid item sx={{ width: '350px' }}>
                 <FormControl fullWidth>
-                  <Input variant="standard" label="Email" name="email" />
+                  <Input variant="standard" label="E-mail" name="email" />
                 </FormControl>
               </Grid>
               <Grid item alignSelf={'center'}>

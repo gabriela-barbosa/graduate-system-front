@@ -37,7 +37,6 @@ interface Props {
 }
 
 const EmailConfig = ({ emails, meta }: Props) => {
-  const apiClient = getAPIClient()
   const [emailsList, setEmailsList] = useState<Email[]>(emails)
   const [pagination, setPagination] = useState<PaginationType>(meta)
   const [previousEmail, setPreviousEmail] = useState<Email>({
@@ -88,7 +87,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleChangePagination = async (page: number) => {
     try {
-      const { data, meta } = await getEmails(apiClient, pageSize, page)
+      const { data, meta } = await getEmails(pageSize, page)
       setEmailsList(data)
       setPagination(meta)
     } catch (error) {
@@ -98,7 +97,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleDeleteEmail = async (id: string) => {
     try {
-      await deleteEmail(apiClient, id)
+      await deleteEmail(id)
       showDeletedToast()
       await router.replace(router.asPath)
     } catch (error) {
@@ -108,7 +107,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleSaveEmail = async (email: Email) => {
     try {
-      await saveEmail(apiClient, email)
+      await saveEmail(email)
       showSavedToast()
       setIsEditModalOpen(false)
       cleanEmailFields()
@@ -120,7 +119,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleUpdateEmail = async (email: Email) => {
     try {
-      await updateEmail(apiClient, email)
+      await updateEmail(email)
       showSavedToast()
       setIsEditModalOpen(false)
       cleanEmailFields()
@@ -280,7 +279,7 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
-  const { data, meta } = await getEmails(apiClient, pageSize)
+  const { data, meta } = await getEmails(pageSize, undefined, apiClient)
 
   return {
     props: {

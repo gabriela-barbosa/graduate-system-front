@@ -15,11 +15,11 @@ import {
   GridToolbarQuickFilter,
   GridRowId,
   showToast,
+  showSuccessToast,
 } from '@components'
 import React, { useEffect } from 'react'
 import { User } from '@context/AuthContext'
 import { getUserByRole, sendEmails } from '@modules/Emails/api'
-import { getAPIClient } from '@services/axios'
 import { Role } from '@utils/enums'
 import { Email } from '@modules/Emails/types'
 interface Props {
@@ -32,7 +32,6 @@ interface Props {
 const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) => {
   const [users, setUsers] = React.useState<User[]>([])
   const [selectedRows, setSelectedRows] = React.useState<GridRowId[]>([])
-  const apiClient = getAPIClient()
 
   const localizedTextsMap = {
     columnMenuUnsort: 'não classificado',
@@ -53,7 +52,7 @@ const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) =
     },
     {
       field: 'email',
-      headerName: 'Email',
+      headerName: 'E-mail',
       width: 400,
       editable: false,
     },
@@ -66,7 +65,7 @@ const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) =
   )
   const getUsers = async () => {
     try {
-      const users = await getUserByRole(apiClient, role)
+      const users = await getUserByRole(role)
       setUsers(users)
     } catch (e) {
       showErrorToast('Erro ao buscar usuários.')
@@ -91,10 +90,13 @@ const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) =
   const handleOnSend = async () => {
     if (currentEmail && currentEmail.id) {
       try {
-        sendEmails(apiClient, selectedRows as string[], currentEmail.id)
         showToast('O envio foi requisitado.', 'info')
+        await sendEmails(selectedRows as string[], currentEmail.id)
+        showSuccessToast(
+          'O envio foi feito. Verifique a caixa de entrada para possíveis e-mails retornados.'
+        )
       } catch (e) {
-        showErrorToast('Erro ao enviar emails.')
+        showErrorToast('Erro ao enviar e-mails.')
       }
     }
   }

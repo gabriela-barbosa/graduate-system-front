@@ -78,8 +78,8 @@ const Select: React.FC = () => {
       onClick: () => goToPage(Routes.MANAGEMENT_CNPQ_LEVELS),
     },
     {
-      title: 'Configurar Conteúdo de Emails',
-      subtitle: 'Envie emails ou adicione, exclua ou edite conteúdo de emails.',
+      title: 'Configurar E-mails',
+      subtitle: 'Envie e-mails ou adicione, exclua ou edite conteúdo de e-mails.',
       icon: EmailRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_EMAILS),
     },
