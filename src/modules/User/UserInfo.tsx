@@ -1,6 +1,6 @@
 import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material'
 import { Subtitle } from '@styles/index.style'
-import { Input } from '@components'
+import { Divider, Input } from '@components'
 import { Controller } from 'react-hook-form'
 import { Role, RoleTranslation } from '@utils/enums'
 import React from 'react'
@@ -12,26 +12,28 @@ const UserInfo = ({ control }) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Subtitle>Informações do Usuário</Subtitle>
+        <Divider textAlign="left">
+          <Subtitle>Informações do Usuário</Subtitle>
+        </Divider>
       </Grid>
       <Grid item xs={12}>
         <Grid container rowSpacing={4} columnSpacing={4}>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <Input required name={'name'} label={'Nome'} />
+              <Input required name={'user.name'} label={'Nome'} />
             </FormControl>
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <Input required name={'email'} label={'Email'} />
+              <Input required name={'user.email'} label={'Email'} />
             </FormControl>
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel htmlFor={'roles'}>Papel do Usuário</InputLabel>
+              <InputLabel htmlFor={'user.roles'}>Papel do Usuário</InputLabel>
               <Controller
                 control={control}
-                name={'roles'}
+                name={'user.roles'}
                 render={({ field: { onChange, onBlur, name, value, ref } }) => (
                   <Select
                     multiple

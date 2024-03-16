@@ -132,7 +132,7 @@ export const Subtitle = styled.h1`
   text-overflow: ellipsis;
   padding-top: 0;
   padding-bottom: 0;
-  padding-right: 140px;
+  //padding-right: 140px;
   font-family: ${fontFamily};
   font-style: normal;
   font-weight: normal;

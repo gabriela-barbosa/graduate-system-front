@@ -10,7 +10,7 @@ import React from 'react'
 import { FieldValues } from 'react-hook-form/dist/types/fields'
 
 export const Input = (props: TextFieldElementProps) => (
-  <TextFieldElement variant="standard" {...props} />
+  <TextFieldElement variant="outlined" {...props} />
 )
 export const Password = (props: PasswordElementProps<FieldValues>) => (
   <PasswordElement variant="standard" {...props} />

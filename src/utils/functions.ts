@@ -35,3 +35,8 @@ export const passwordIsValid = (password: string): boolean => {
   const regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$/
   return regex.test(password)
 }
+
+export const transformNumberToValue = (n: number) => (n === 1 ? true : n === 0 ? false : undefined)
+
+export const transformBoolToNumber = (value?: boolean | null) =>
+  value === true ? 1 : value === false ? 0 : -1

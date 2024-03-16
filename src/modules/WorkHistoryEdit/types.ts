@@ -55,6 +55,25 @@ enum Fields {
   POST_DOCTORATE = 'postDoctorate',
 }
 
+interface CIProgram {
+  initials: string
+}
+
+interface UserLean {
+  id: string
+  name: string
+  email: string
+}
+
+interface Course {
+  id?: string
+  program: CIProgram
+  graduate: UserLean
+  defenseMinute: string
+  titleDate: Date
+  advisor: UserLean
+}
+
 interface GraduateWorkHistoriesInfo {
   graduateId: string
   graduateName: string
@@ -63,6 +82,7 @@ interface GraduateWorkHistoriesInfo {
   hasFinishedDoctorateOnUFF?: boolean
   hasFinishedMasterDegreeOnUFF?: boolean
   successCase?: string
+  courses: Course[]
   cnpqScholarships: CNPQScholarshipInfo[]
   workHistories: WorkHistoryInfo[]
   pendingFields: string[]
@@ -81,6 +101,8 @@ export type {
   GraduateWorkHistoriesInfo,
   CNPQLevelInfo,
   WorkHistoryInfo,
+  Course,
+  UserLean,
 }
 
 export { Fields }

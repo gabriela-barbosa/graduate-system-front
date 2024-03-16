@@ -12,21 +12,16 @@ import {
 import { Subtitle } from '@styles/index.style'
 import React, { useEffect, useState } from 'react'
 import { getCourses } from '../WorkHistoryEdit/api'
-import { DatePicker, Divider, Input } from '@components'
-import { Controller, useController } from 'react-hook-form'
+import { Input } from '@components'
+import { Controller } from 'react-hook-form'
 import { SelectItem } from '@utils/types'
 import { useRouter } from 'next/router'
 import { getCNPQLevelsOptions, getInstitutionTypesOptions } from '@modules/Commons/api'
-import dayjs, { Dayjs } from 'dayjs'
-import { PostDoctorateInfo } from '@modules/User/index'
 
-interface Props {
-  institutionTypes: SelectItem[]
-  control: any
-}
-
-const GraduateInfo = ({ control, institutionTypes }: Props) => {
+// TODO
+const GraduateInfo = ({ control }) => {
   const router = useRouter()
+  const [institutionTypes, setInstitutionTypes] = useState<SelectItem[]>([])
   const [cnpqLevels, setCNPQLevels] = useState<SelectItem[]>([])
   const [, setCourses] = useState<SelectItem[]>([])
 
@@ -35,6 +30,10 @@ const GraduateInfo = ({ control, institutionTypes }: Props) => {
   }
 
   useEffect(() => {
+    getInstitutionTypesOptions().then(response => {
+      redirectToLoginIfError(response)
+      setInstitutionTypes(response as SelectItem[])
+    })
     getCNPQLevelsOptions().then(response => {
       redirectToLoginIfError(response)
       setCNPQLevels(response as SelectItem[])
@@ -48,54 +47,78 @@ const GraduateInfo = ({ control, institutionTypes }: Props) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Divider textAlign="left">
-          <Subtitle>Informações do Egresso</Subtitle>
-        </Divider>
+        <Subtitle>Informações do Egresso</Subtitle>
       </Grid>
       <Grid item xs={12}>
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <PostDoctorateInfo control={control} institutionTypes={institutionTypes} />
+                <Grid container rowSpacing={4} columnSpacing={4}>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <Input
+                        name={'graduate.postDoctorateName'}
+                        label={'Nome da instituição que foi realizada a pós-graduação'}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor={'graduate.institutionType'}>
+                        Tipo da instituição da pós-graduação
+                      </InputLabel>
+                      <Controller
+                        control={control}
+                        name={'graduate.institutionType'}
+                        render={({ field: { value, ...rest } }) => (
+                          <Select
+                            {...rest}
+                            value={value ?? '0'}
+                            label={'Tipo da instituição da pós-graduação'}
+                          >
+                            {institutionTypes.map(type => (
+                              <MenuItem key={type.id} value={type.id}>
+                                {type.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Grid container rowSpacing={4} columnSpacing={4}>
-              <Grid item xs={6}>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor={'cnpqId'}>Bolsa CNPQ</InputLabel>
-                  <Controller
-                    control={control}
-                    name={'graduate.cnpqScholarship'}
-                    render={({ field: { value, ...rest } }) => (
-                      <Select {...rest} multiple value={value ?? []} label={'Bolsa CNPQ'}>
-                        {cnpqLevels.map(level => (
-                          <MenuItem key={level.id} value={level.id}>
-                            {level.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    )}
-                  />
-                </FormControl>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Grid container rowSpacing={4} columnSpacing={4}>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor={'cnpqId'}>Bolsa CNPQ</InputLabel>
+                      <Controller
+                        control={control}
+                        name={'graduate.cnpqScholarship'}
+                        render={({ field: { value, ...rest } }) => (
+                          <Select {...rest} multiple value={value ?? []} label={'Bolsa CNPQ'}>
+                            {cnpqLevels.map(level => (
+                              <MenuItem key={level.id} value={level.id}>
+                                {level.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-
-      <Grid item xs={12}>
-        <FormControl fullWidth>
-          <Input label={'Casos de Sucesso'} name={'successCase'} rows={4} multiline />
-        </FormControl>
-      </Grid>
-
       <Grid item xs={12}>
         <Grid container spacing={4}>
           <Grid item xs={12}>
