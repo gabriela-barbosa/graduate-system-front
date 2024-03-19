@@ -34,7 +34,7 @@ interface Props {
   graduateInfo: GraduateWorkHistoriesInfo
 }
 
-export const CNPQScholarShipInfo = ({ graduateInfo, cnpqLevels, control }: Props) => {
+export const CNPQScholarshipInfo = ({ graduateInfo, cnpqLevels, control }: Props) => {
   const { currentRole } = useAuth()
   const isCurrentUserGraduate = currentRole === Role.GRADUATE
 

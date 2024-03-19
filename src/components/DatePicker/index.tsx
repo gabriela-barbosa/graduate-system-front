@@ -5,7 +5,7 @@ export const DatePicker = (props: any) => (
   <DP
     slotProps={{
       textField: {
-        variant: 'standard',
+        variant: 'outlined',
       },
     }}
     {...props}

@@ -26,7 +26,7 @@ import { useAuth } from '@context/AuthProvider'
 import { Controller, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
 import { getAPIClient } from '@services/axios'
-import { CNPQScholarShipInfo } from '@modules/WorkHistoryEdit/CNPQScholarShipInfoInfo'
+import { CNPQScholarshipInfo } from '@modules/WorkHistoryEdit/CNPQScholarshipInfo'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -87,7 +87,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
   return (
     <Grid container spacing={4}>
       <Grid item xs={12}>
-        <CNPQScholarShipInfo
+        <CNPQScholarshipInfo
           cnpqLevels={cnpqLevels}
           control={control}
           graduateInfo={graduateInfo}
@@ -174,7 +174,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                             <InputMui
                               {...params}
                               label="Nome da instituição"
-                              variant="standard"
+                              variant="outlined"
                               pa={() => 'Campo obrigatório.'}
                               error={!!error}
                               helperText={error ? 'Campo obrigatório.' : ''}
@@ -254,7 +254,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                           }}
                           slotProps={{
                             textField: {
-                              variant: 'standard',
+                              variant: 'outlined',
                               error: !!error,
                               helperText: error ? 'Campo obrigatório.' : '',
                             },
@@ -282,7 +282,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                           }}
                           slotProps={{
                             textField: {
-                              variant: 'standard',
+                              variant: 'outlined',
                               error: !!error,
                               helperText: error ? 'Campo obrigatório.' : '',
                             },

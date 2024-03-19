@@ -56,6 +56,7 @@ enum Fields {
 }
 
 interface CIProgram {
+  id?: string
   initials: string
 }
 

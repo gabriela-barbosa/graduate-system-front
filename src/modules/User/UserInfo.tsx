@@ -40,7 +40,7 @@ const UserInfo = ({ control }) => {
                     onChange={onChange}
                     onBlur={onBlur}
                     name={name}
-                    id={'roles'}
+                    id={'user.roles'}
                     value={value ?? []}
                     ref={ref}
                     label={'Papel do Usuário'}

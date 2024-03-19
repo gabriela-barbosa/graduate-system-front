@@ -1,19 +1,11 @@
 import { FormControl, Grid, InputLabel, MenuItem, Tooltip } from '@mui/material'
 import React, { useState } from 'react'
-import { Button, DatePicker, SelectMui } from '@components'
+import { Autocomplete, Button, DatePicker, InputMui, SelectMui, showErrorToast } from '@components'
 import { SelectItem } from '@utils/types'
 import { Fields } from '@styles/index.style'
 import { Modal } from 'react-bootstrap'
-import { Dayjs } from 'dayjs'
 import { UserLean } from '@modules/WorkHistoryEdit/types'
-
-interface Props {
-  courses: CourseInfoType[]
-  setCourses: any
-  programs: SelectItem[]
-  isAddCourseOpen: boolean
-  setIsAddCourseOpen: (value: boolean) => void
-}
+import { getAdvisors, getGraduates } from '@modules/User/api'
 
 interface CIProgram {
   id?: string
@@ -29,12 +21,35 @@ interface CourseInfoType {
   advisor?: UserLean
 }
 
+interface Props {
+  isGraduate?: boolean
+  courses?: CourseInfoType[]
+  setCourses: (courses: CourseInfoType[]) => void
+  programs: SelectItem[]
+  isAddCourseOpen: boolean
+  setIsAddCourseOpen: (value: boolean) => void
+}
+
+const itemsAccordingToRole = {
+  graduate: {
+    label: 'Nome do Orientador',
+    errorMessage: 'egressos',
+    notFoundMessage: 'Nenhum egresso encontrado',
+  },
+  advisor: {
+    label: 'Nome do Egresso',
+    errorMessage: 'orientadores',
+    notFoundMessage: 'Nenhum professor encontrado',
+  },
+}
+
 export const CourseModal = ({
-  courses,
+  courses = [],
   setCourses,
   programs,
   isAddCourseOpen,
   setIsAddCourseOpen,
+  isGraduate = true,
 }: Props) => {
   const courseDefaultState: CourseInfoType = {
     id: undefined,
@@ -44,37 +59,67 @@ export const CourseModal = ({
     titleDate: undefined,
     advisor: undefined,
   }
+  const keyAccordingToRole = isGraduate ? 'graduate' : 'advisor'
   const [course, setCourse] = useState<CourseInfoType>({
     ...courseDefaultState,
   })
 
+  const [options, setOptions] = useState<UserLean[]>([])
+  const [isAutocompleteLoading, setIsAutocompleteLoading] = useState<boolean>(false)
   const onModalClose = () => {
     setIsAddCourseOpen(false)
     setCourse({ ...courseDefaultState })
   }
 
   const handleSave = () => {
-    setCourses([...courses, course])
+    console.warn('course', course, courses)
+    setCourses([...(courses ?? []), course])
     onModalClose()
   }
 
-  const checkIfCourseIsValid = !!(course.levelId && course.startedAt)
+  const getData = async (searchTerm: string) => {
+    try {
+      const result = isGraduate ? await getAdvisors(searchTerm) : await getGraduates(searchTerm)
+      setOptions(result)
+    } catch (error) {
+      showErrorToast(
+        `Não foi possível buscar os ${itemsAccordingToRole[keyAccordingToRole]}. Tente novamente mais tarde.`
+      )
+    }
+  }
+
+  const onAdvisorChange = async (_, value) => {
+    setIsAutocompleteLoading(true)
+    if (value) {
+      await getData(value)
+    } else {
+      setOptions([])
+    }
+    setIsAutocompleteLoading(false)
+  }
+
+  const checkIfCourseIsValid = !!(
+    course.titleDate &&
+    course.defenseMinute &&
+    course.program?.id &&
+    (isGraduate ? course.advisor?.id : course.graduate?.id)
+  )
 
   return (
     <Modal show={isAddCourseOpen} onHide={onModalClose}>
       <Modal.Header closeButton>
-        <Fields>{course.id ? 'Editar' : 'Adicionar'} Bolsa de Produtividade CNPQ</Fields>
+        <Fields>{course.id ? 'Editar' : 'Adicionar'} Curso de Pós-graduação</Fields>
       </Modal.Header>
       <Modal.Body>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="labelCNPQLevel">Nível da Bolsa*</InputLabel>
+              <InputLabel id="program">Programa*</InputLabel>
               <SelectMui
-                labelId={'labelCNPQLevel'}
-                id={'cnpqLevel'}
-                name={'cnpqLevel'}
-                label={'Nível da Bolsa*'}
+                labelId={'program'}
+                id={'program'}
+                name={'program'}
+                label={'Programa*'}
                 value={course.program?.id || ''}
                 onChange={event => {
                   if (event.target.value)
@@ -84,9 +129,9 @@ export const CourseModal = ({
                     }))
                 }}
               >
-                {programs.map(level => (
-                  <MenuItem key={level.id} value={level.id}>
-                    {level.label}
+                {programs.map(program => (
+                  <MenuItem key={program.id} value={program.id}>
+                    {program.label}
                   </MenuItem>
                 ))}
               </SelectMui>
@@ -94,17 +139,46 @@ export const CourseModal = ({
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <DatePicker
-                format={'DD/MM/YYYY'}
-                label={'Data de início*'}
-                value={course.startedAt}
-                disableFuture
-                onChange={(startedAt: Dayjs) => {
-                  setCourse(scholarship => ({
-                    ...scholarship,
-                    startedAt,
+              <Autocomplete
+                loading={isAutocompleteLoading}
+                renderInput={params => (
+                  <InputMui
+                    {...params}
+                    label={itemsAccordingToRole[keyAccordingToRole].label}
+                    variant={'outlined'}
+                  />
+                )}
+                loadingText={'Carregando...'}
+                noOptionsText={itemsAccordingToRole[keyAccordingToRole].notFoundMessage}
+                isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                options={options}
+                onInputChange={onAdvisorChange}
+                getOptionLabel={option => option.name}
+                value={isGraduate ? course.advisor : course.graduate}
+                onChange={(_, value) => {
+                  setCourse(oldCourse => ({
+                    ...oldCourse,
+                    advisor: isGraduate ? value || undefined : undefined,
+                    graduate: !isGraduate ? value || undefined : undefined,
                   }))
                 }}
+                disablePortal
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputMui
+                type={'number'}
+                value={course.defenseMinute}
+                onChange={(event: { target: { value: never } }) =>
+                  setCourse(oldCourse => ({
+                    ...oldCourse,
+                    defenseMinute: event.target.value,
+                  }))
+                }
+                name={'defenseMinute'}
+                label={'Minuta de Defesa*'}
               />
             </FormControl>
           </Grid>
@@ -112,13 +186,13 @@ export const CourseModal = ({
             <FormControl fullWidth>
               <DatePicker
                 format={'DD/MM/YYYY'}
-                label={'Data de término'}
-                value={course.endedAt}
+                label={'Data de titulação*'}
+                value={course.titleDate}
                 disableFuture
-                onChange={(endedAt: Dayjs) => {
-                  setCourse(scholarship => ({
-                    ...scholarship,
-                    endedAt,
+                onChange={(titleDate: any) => {
+                  setCourse(oldCourse => ({
+                    ...oldCourse,
+                    titleDate,
                   }))
                 }}
               />
@@ -136,7 +210,7 @@ export const CourseModal = ({
               size={'large'}
               variant={'contained'}
               disabled={!checkIfCourseIsValid}
-              onClick={() => handleSave()}
+              onClick={handleSave}
             >
               Salvar
             </Button>

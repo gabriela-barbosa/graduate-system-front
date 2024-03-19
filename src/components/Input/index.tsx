@@ -13,7 +13,7 @@ export const Input = (props: TextFieldElementProps) => (
   <TextFieldElement variant="outlined" {...props} />
 )
 export const Password = (props: PasswordElementProps<FieldValues>) => (
-  <PasswordElement variant="standard" {...props} />
+  <PasswordElement variant="outlined" {...props} />
 )
-export const InputMui = (props: any) => <TextField variant="standard" {...props} />
-export const InputLabel = (props: any) => <InputLabelMui variant="standard" {...props} />
+export const InputMui = (props: any) => <TextField variant="outlined" {...props} />
+export const InputLabel = (props: any) => <InputLabelMui variant="outlined" {...props} />

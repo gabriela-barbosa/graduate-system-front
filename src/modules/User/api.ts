@@ -1,4 +1,5 @@
 import { AxiosInstance } from 'axios'
+import { getAPIClient } from '@services/axios'
 
 interface User {
   id: string
@@ -56,13 +57,13 @@ interface WorkHistory {
 }
 
 interface Graduate {
-  courses: Course[]
+  courses?: Course[]
   postDoctorate?: PostDoctorate
   hasFinishedDoctorateOnUFF?: boolean
   hasFinishedMasterDegreeOnUFF?: boolean
   successCase?: string
-  cnpqScholarships: CNPQScholarship[]
-  workHistories: WorkHistory[]
+  cnpqScholarships?: CNPQScholarship[]
+  workHistories?: WorkHistory[]
 }
 
 interface Advisor {
@@ -75,6 +76,23 @@ export interface UserInfo {
   advisor?: Advisor
 }
 export const getUser = async (id: string, apiClient: AxiosInstance): Promise<UserInfo> => {
+  console.log('getUser', id)
   const { data } = await apiClient.get('/v1/user/' + id)
+  return data
+}
+
+export const getAdvisors = async (
+  name: string,
+  apiClient: AxiosInstance = getAPIClient()
+): Promise<UserLean[]> => {
+  const { data } = await apiClient.get(`v1/advisors?name=${name}&pageSize=100`)
+  return data
+}
+
+export const getGraduates = async (
+  name: string,
+  apiClient: AxiosInstance = getAPIClient()
+): Promise<UserLean[]> => {
+  const { data } = await apiClient.get(`v1/graduates-lean?name=${name}&pageSize=100`)
   return data
 }

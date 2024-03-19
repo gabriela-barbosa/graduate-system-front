@@ -69,15 +69,15 @@ const MainHeader: React.FC = () => {
             <Grid container alignItems="center" justifyContent="flex-end">
               <Grid item pr={1}>
                 <FormControl>
-                  <InputLabel variant="standard" id="currentRoleLabel">
-                    Papel do usuário
+                  <InputLabel variant="outlined" id="currentRoleLabel">
+                    Papel do Usuário
                   </InputLabel>
                   <SelectMui
                     sx={{ minWidth: '120px' }}
                     labelId={'currentRoleLabel'}
-                    id={'currentRole'}
+                    id={'currentRoleLabel'}
                     name={'currentRole'}
-                    label={'Papel'}
+                    label={'Papel do Usuário'}
                     value={currentRole || ''}
                     onChange={async event => {
                       if (event.target.value) {
