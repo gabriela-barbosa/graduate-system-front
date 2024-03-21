@@ -67,7 +67,7 @@ const UserList = ({ users, meta }: Props) => {
   const apiClient = getAPIClient()
   const [usersList, setUsersList] = useState<User[]>(users)
   const [pagination, setPagination] = useState<PaginationType>(meta)
-  const [currentUser, setCurrentUser] = useState<User>({} as User)
+  const [currentUser] = useState<User>({} as User)
   const [showUserDialog, setShowUserDialog] = useState(false)
   const router = useRouter()
   const formContext = useForm()
@@ -76,8 +76,7 @@ const UserList = ({ users, meta }: Props) => {
   const handleOnCloseUserDialog = () => setShowUserDialog(false)
 
   const onClickCreateUser = () => {
-    setCurrentUser({} as User)
-    setShowUserDialog(true)
+    router.push(`usuarios/novo`)
   }
 
   const handleGetUsers = async (page: number, formInfo?: FormInfo) => {
