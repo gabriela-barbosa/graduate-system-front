@@ -24,7 +24,6 @@ interface Props {
   hasCurrentWorkHistory: number
   hasPostDoctorate: number
   institutionTypes: SelectItem[]
-  isCourseEnabled?: boolean
 }
 
 const GraduateForm = ({
@@ -34,7 +33,6 @@ const GraduateForm = ({
   hasCurrentWorkHistory,
   hasPostDoctorate,
   institutionTypes,
-  isCourseEnabled = false,
 }: Props) => {
   const router = useRouter()
   const { currentRole } = useAuth()
@@ -187,7 +185,6 @@ const GraduateForm = ({
                   institutionTypes={institutionTypes}
                 />
               </Grid>
-              {isCourseEnabled && <Grid item xs={12}></Grid>}
               <Grid item xs={12} alignSelf={'center'}>
                 <Grid container justifyContent={'center'} columnSpacing={3}>
                   {currentRole !== Role.GRADUATE ? (

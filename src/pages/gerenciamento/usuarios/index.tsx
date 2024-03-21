@@ -76,8 +76,7 @@ const UserList = ({ users, meta }: Props) => {
   const handleOnCloseUserDialog = () => setShowUserDialog(false)
 
   const onClickCreateUser = () => {
-    setCurrentUser({} as User)
-    setShowUserDialog(true)
+    router.push(`usuarios/novo`)
   }
 
   const handleGetUsers = async (page: number, formInfo?: FormInfo) => {

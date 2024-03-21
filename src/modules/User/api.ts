@@ -2,11 +2,11 @@ import { AxiosInstance } from 'axios'
 import { getAPIClient } from '@services/axios'
 
 interface User {
-  id: string
-  name: string
-  email: string
-  currentRole: string
-  roles: string[]
+  id?: string
+  name?: string
+  email?: string
+  currentRole?: string
+  roles?: string[]
 }
 
 interface UserLean {
@@ -35,9 +35,9 @@ interface Institution {
 }
 
 interface PostDoctorate {
-  id: string
-  institution: Institution
-  startedAt: Date
+  id?: string
+  institution?: Institution
+  startedAt?: Date
   endedAt?: Date
 }
 
@@ -57,7 +57,9 @@ interface WorkHistory {
 }
 
 interface Graduate {
+  id?: string
   courses?: Course[]
+  newCourses?: Course[]
   postDoctorate?: PostDoctorate
   hasFinishedDoctorateOnUFF?: boolean
   hasFinishedMasterDegreeOnUFF?: boolean
@@ -67,11 +69,13 @@ interface Graduate {
 }
 
 interface Advisor {
+  id?: string
   courses: Course[]
+  newCourses?: Course[]
 }
 
 export interface UserInfo {
-  user: User
+  user?: User
   graduate?: Graduate
   advisor?: Advisor
 }
@@ -95,4 +99,36 @@ export const getGraduates = async (
 ): Promise<UserLean[]> => {
   const { data } = await apiClient.get(`v1/graduates-lean?name=${name}&pageSize=100`)
   return data
+}
+
+export interface CreateCourse {
+  program?: string
+  defenseMinute: string
+  titleDate: Date
+  graduate?: string
+  advisor?: string
+}
+
+interface CreateGraduate {
+  id?: string
+  courses?: CreateCourse[]
+}
+
+interface CreateAdvisor {
+  id?: string
+  courses?: CreateCourse[]
+}
+
+interface CreateUser {
+  user: User
+  graduate: CreateGraduate
+  advisor: CreateAdvisor
+}
+
+export const createUpdateUser = async (
+  user: CreateUser,
+  apiClient: AxiosInstance = getAPIClient()
+) => {
+  console.warn('createUpdateUser', user)
+  await apiClient.post('v1/register', user)
 }

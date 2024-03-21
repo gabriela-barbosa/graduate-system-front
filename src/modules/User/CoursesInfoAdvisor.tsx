@@ -9,6 +9,7 @@ import {
   CustomTable,
   DeleteForeverRoundedIcon,
   Divider,
+  FormHelperText,
   Paper,
 } from '@components'
 import { useController } from 'react-hook-form'
@@ -44,7 +45,8 @@ const CoursesInfoGraduate = ({ control, historyCourses = [], programs }: Props) 
 
   const {
     field: { value: courses, onChange: setCourses },
-  } = useController({ control, name: 'advisor.courses' })
+    fieldState: { error },
+  } = useController({ control, name: 'advisor.newCourses' })
 
   const rows = [
     ...(courses ?? []).map((course, index) => [
@@ -83,24 +85,16 @@ const CoursesInfoGraduate = ({ control, historyCourses = [], programs }: Props) 
     ]),
     ...historyCourses.map(course => [
       {
-        body: <Fields status={'UPDATED'}>{course.graduate?.name}</Fields>,
+        body: course.graduate?.name,
       },
       {
-        body: <Fields status={'UPDATED'}>{course.defenseMinute}</Fields>,
+        body: course.defenseMinute,
       },
       {
-        body: (
-          <Fields status={'UPDATED'}>
-            {programs.find(p => p.id === course.program?.id)?.label}
-          </Fields>
-        ),
+        body: programs.find(p => p.id === course.program?.id)?.label,
       },
       {
-        body: (
-          <Fields status={'UPDATED'}>
-            {!course.titleDate ? '-' : dayjs(course.titleDate).format('DD/MM/YYYY')}
-          </Fields>
-        ),
+        body: !course.titleDate ? '-' : dayjs(course.titleDate).format('DD/MM/YYYY'),
       },
     ]),
   ]
@@ -141,6 +135,7 @@ const CoursesInfoGraduate = ({ control, historyCourses = [], programs }: Props) 
             </Grid>
           </Grid>
         </Grid>
+        {error && <FormHelperText error={!!error}>{error.message}</FormHelperText>}
       </Grid>
       <CourseModal
         isGraduate={false}

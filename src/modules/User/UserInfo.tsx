@@ -1,10 +1,29 @@
 import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material'
 import { Subtitle } from '@styles/index.style'
-import { Divider, Input } from '@components'
+import { Divider, FormHelperText, Input } from '@components'
 import { Controller } from 'react-hook-form'
 import { Role, RoleTranslation } from '@utils/enums'
 import React from 'react'
 
+const getEmailErrorMessageByType = (type: string) => {
+  switch (type) {
+    case 'pattern':
+      return 'Insira um e-mail válido.'
+    case 'required':
+      return 'Digite o e-mail.'
+    default:
+      return 'Campo inválido.'
+  }
+}
+
+const getNameErrorMessageByType = (type: string) => {
+  switch (type) {
+    case 'required':
+      return 'Digite o nome.'
+    default:
+      return 'Campo inválido.'
+  }
+}
 const UserInfo = ({ control }) => {
   const roles = Object.keys(Role).filter(item => {
     return isNaN(Number(item))
@@ -20,12 +39,23 @@ const UserInfo = ({ control }) => {
         <Grid container rowSpacing={4} columnSpacing={4}>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <Input required name={'user.name'} label={'Nome'} />
+              <Input
+                required
+                name={'user.name'}
+                label={'Nome'}
+                parseError={({ type }) => getNameErrorMessageByType(type)}
+              />
             </FormControl>
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth>
-              <Input required name={'user.email'} label={'Email'} />
+              <Input
+                parseError={({ type }) => getEmailErrorMessageByType(type)}
+                type={'email'}
+                required
+                name={'user.email'}
+                label={'E-mail'}
+              />
             </FormControl>
           </Grid>
           <Grid item xs={6}>
@@ -34,23 +64,33 @@ const UserInfo = ({ control }) => {
               <Controller
                 control={control}
                 name={'user.roles'}
-                render={({ field: { onChange, onBlur, name, value, ref } }) => (
-                  <Select
-                    multiple
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    name={name}
-                    id={'user.roles'}
-                    value={value ?? []}
-                    ref={ref}
-                    label={'Papel do Usuário'}
-                  >
-                    {roles.map(role => (
-                      <MenuItem key={role} value={role}>
-                        {RoleTranslation[role]}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                rules={{ required: true }}
+                render={({
+                  field: { onChange, onBlur, name, value, ref },
+                  fieldState: { invalid },
+                }) => (
+                  <>
+                    <Select
+                      error={invalid}
+                      multiple
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      name={name}
+                      id={'user.roles'}
+                      value={value ?? []}
+                      ref={ref}
+                      label={'Papel do Usuário'}
+                    >
+                      {roles.map(role => (
+                        <MenuItem key={role} value={role}>
+                          {RoleTranslation[role]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {invalid && (
+                      <FormHelperText error={invalid}>Selecione algum papel.</FormHelperText>
+                    )}
+                  </>
                 )}
               />
             </FormControl>
