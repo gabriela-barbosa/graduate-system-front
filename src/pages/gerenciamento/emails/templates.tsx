@@ -148,7 +148,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
   const columns = [
     { name: 'Nome' },
     { name: 'Tipo do Email' },
-    { name: 'Status' },
+    { name: 'Assunto' },
     { name: 'Ações' },
   ]
 
@@ -161,7 +161,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
         body: email.isGraduateEmail ? 'Egresso' : 'Orientador',
       },
       {
-        body: email.active ? 'Ativo' : 'Inativo',
+        body: email.title,
       },
       {
         body: (

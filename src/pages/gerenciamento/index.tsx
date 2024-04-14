@@ -72,8 +72,8 @@ const Select: React.FC = () => {
       onClick: () => goToPage(Routes.MANAGEMENT_INSTITUTIONS_TYPES),
     },
     {
-      title: 'Configurar Níveis CNPQ',
-      subtitle: 'Adicione, exclua ou edite um nível CNPQ.',
+      title: 'Configurar Níveis CNPq',
+      subtitle: 'Adicione, exclua ou edite um nível CNPq.',
       icon: SchoolRoundedIcon,
       onClick: () => goToPage(Routes.MANAGEMENT_CNPQ_LEVELS),
     },

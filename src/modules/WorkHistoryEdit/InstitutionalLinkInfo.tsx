@@ -17,6 +17,7 @@ import {
   Box,
   InputLabel,
   MenuItem,
+  Divider,
 } from '@components'
 import React, { useState } from 'react'
 import { ErrorMessage, Fields, Label } from '@styles/index.style'
@@ -159,18 +160,20 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Subtitle>
-          Informações sobre vínculos institucionais{' '}
-          <Button
-            sx={{ marginLeft: '20px' }}
-            size={'large'}
-            variant="contained"
-            onClick={() => setIsAddWorkHistoryOpen(true)}
-          >
-            Adicionar
-            <AddRounded />
-          </Button>
-        </Subtitle>
+        <Divider textAlign="left">
+          <Subtitle>
+            Informações sobre vínculos institucionais{' '}
+            <Button
+              sx={{ marginLeft: '20px' }}
+              size={'large'}
+              variant="contained"
+              onClick={() => setIsAddWorkHistoryOpen(true)}
+            >
+              Adicionar
+              <AddRounded />
+            </Button>
+          </Subtitle>
+        </Divider>
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ paddingLeft: '15px' }}>

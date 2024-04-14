@@ -43,7 +43,8 @@ export const getUserByRole = async (
 export const sendEmails = async (
   usersId: string[],
   emailContentId: string,
+  sendToPendingHistories: boolean,
   apiClient: AxiosInstance = getAPIClient()
 ): Promise<void> => {
-  await apiClient.post(`/v1/emails/send`, { usersId, emailContentId })
+  await apiClient.post(`/v1/emails/send`, { usersId, emailContentId, sendToPendingHistories })
 }

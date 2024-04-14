@@ -255,7 +255,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
                   disabled={!!id}
                   required
                   name={'name'}
-                  label={'Nome do emails'}
+                  label={'Nome do email'}
                   onChange={({ target }) =>
                     setCurrentEmail({ ...currentEmail, name: target.value })
                   }
@@ -315,28 +315,8 @@ const EmailConfig = ({ emails, meta }: Props) => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name={'active'}
-                      disabled={previousEmail.active}
-                      checked={currentEmail.active}
-                      onChange={() =>
-                        setCurrentEmail({
-                          ...currentEmail,
-                          active: !currentEmail.active,
-                        })
-                      }
-                    />
-                  }
-                  label="Email ativo?"
-                />
-              </FormGroup>
-            </Grid>
-            <Grid item xs={12}>
               <FormControl>
-                <FormLabel id={'isGraduateEmailLabel'}> Destinatário do email:</FormLabel>
+                <FormLabel id={'isGraduateEmailLabel'}> Destinatário do e-mail:</FormLabel>
                 <RadioGroup
                   row
                   aria-labelledby="isGraduateEmailLabel"

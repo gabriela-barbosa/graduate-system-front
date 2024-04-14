@@ -1,6 +1,6 @@
 import { Box, FormControl, Grid } from '@mui/material'
 import { Subtitle } from './index.style'
-import { Input } from '@components'
+import { Divider, Input } from '@components'
 import React from 'react'
 import { useAuth } from '@context/AuthProvider'
 import { Role } from '@utils/enums'
@@ -21,7 +21,9 @@ export const PersonalInfo = () => {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Subtitle>Informações pessoais</Subtitle>
+        <Divider textAlign="left">
+          <Subtitle>Informações pessoais</Subtitle>
+        </Divider>
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ paddingLeft: '15px' }}>

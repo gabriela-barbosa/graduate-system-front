@@ -126,18 +126,8 @@ export const DialogTitleTypography = ({ children }) => (
   </Typography>
 )
 
-export const Subtitle = styled.h1`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-top: 0;
-  padding-bottom: 0;
-  //padding-right: 140px;
-  font-family: ${fontFamily};
-  font-style: normal;
-  font-weight: normal;
-  font-size: 22px;
-  line-height: 47px;
-
-  color: ${({ theme }) => theme.palette.primary.main};
-`
+export const Subtitle = ({ children }) => (
+  <Typography color="primary.main" fontWeight="medium" variant="h5">
+    {children}
+  </Typography>
+)

@@ -1,4 +1,3 @@
-import { Subtitle } from './index.style'
 import React, { useState } from 'react'
 import {
   ActionIcon,
@@ -27,6 +26,7 @@ import dayjs from 'dayjs'
 import { useAuth } from '@context/AuthProvider'
 import { Controller, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
+import { Typography } from '@mui/material'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -147,8 +147,8 @@ export const CNPQScholarshipInfo = ({ graduateInfo, cnpqLevels, control }: Props
   return (
     <Grid container direction="column" spacing={1}>
       <Grid item xs={12}>
-        <Subtitle>
-          Bolsa de Produtividade CNPQ
+        <Typography color="primary.main" variant="h6" fontWeight="light">
+          Bolsa de Produtividade CNPq
           <Button
             sx={{ marginLeft: '20px' }}
             size={'large'}
@@ -159,7 +159,7 @@ export const CNPQScholarshipInfo = ({ graduateInfo, cnpqLevels, control }: Props
             Adicionar
             <AddRounded />
           </Button>
-        </Subtitle>
+        </Typography>
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ paddingLeft: '15px' }}>
@@ -178,7 +178,7 @@ export const CNPQScholarshipInfo = ({ graduateInfo, cnpqLevels, control }: Props
             <Grid item xs={12}>
               <FormControl>
                 <FormLabel id="labelHasCNPQScholarship">
-                  Possui Bolsa de Produtividade CNPQ atualmente?
+                  Possui Bolsa de Produtividade CNPq atualmente?
                 </FormLabel>
                 <Controller
                   name={'hasCurrentCNPQScholarship'}

@@ -17,6 +17,7 @@ import {
   InputLabel,
   FormHelperText,
   debounce,
+  Divider,
 } from '@components'
 import { GraduateWorkHistoriesInfo, Option } from './types'
 import { Role } from '@utils/enums'
@@ -87,16 +88,18 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
   return (
     <Grid container spacing={4}>
       <Grid item xs={12}>
-        <CNPQScholarshipInfo
-          cnpqLevels={cnpqLevels}
-          control={control}
-          graduateInfo={graduateInfo}
-        />
-      </Grid>
-      <Grid item xs={12}>
         <Grid container direction="column" spacing={1}>
-          <Grid item xs={12}>
-            <Subtitle>Informações acadêmicas</Subtitle>
+          <Grid item xs={12} pb={2}>
+            <Divider textAlign="left">
+              <Subtitle>Informações acadêmicas</Subtitle>
+            </Divider>
+          </Grid>
+          <Grid item xs={12} pb={3}>
+            <CNPQScholarshipInfo
+              cnpqLevels={cnpqLevels}
+              control={control}
+              graduateInfo={graduateInfo}
+            />
           </Grid>
           <Grid item xs={12}>
             <Box sx={{ paddingLeft: '15px' }}>

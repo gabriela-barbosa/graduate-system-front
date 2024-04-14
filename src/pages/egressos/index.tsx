@@ -222,7 +222,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                       <Select
                         variant="standard"
                         name={'cnpqLevel'}
-                        label={'Nível da bolsa CNPQ'}
+                        label={'Nível da bolsa CNPq'}
                         options={cnpqLevels}
                       />
                     </FormControl>

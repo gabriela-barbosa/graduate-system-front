@@ -16,8 +16,10 @@ import {
   GridRowId,
   showToast,
   showSuccessToast,
+  FormControlLabel,
+  Checkbox,
 } from '@components'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { User } from '@context/AuthContext'
 import { getUserByRole, sendEmails } from '@modules/Emails/api'
 import { Role } from '@utils/enums'
@@ -30,8 +32,9 @@ interface Props {
 }
 
 const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) => {
-  const [users, setUsers] = React.useState<User[]>([])
-  const [selectedRows, setSelectedRows] = React.useState<GridRowId[]>([])
+  const [users, setUsers] = useState<User[]>([])
+  const [selectedRows, setSelectedRows] = useState<GridRowId[]>([])
+  const [sendToPendingHistories, setSendToPendingHistories] = useState(false)
 
   const localizedTextsMap = {
     columnMenuUnsort: 'não classificado',
@@ -59,7 +62,7 @@ const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) =
   ]
   const VISIBLE_FIELDS = ['name', 'email']
 
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => columns1.filter(column => VISIBLE_FIELDS.includes(column.field)),
     [columns1]
   )
@@ -91,7 +94,7 @@ const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) =
     if (currentEmail && currentEmail.id) {
       try {
         showToast('O envio foi requisitado.', 'info')
-        await sendEmails(selectedRows as string[], currentEmail.id)
+        await sendEmails(selectedRows as string[], currentEmail.id, sendToPendingHistories)
         showSuccessToast(
           'O envio foi feito. Verifique a caixa de entrada para possíveis e-mails retornados.'
         )
@@ -104,7 +107,7 @@ const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) =
   return (
     <Dialog open={isShowing} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <DialogTitleTypography>Enviar Emails</DialogTitleTypography>
+        <DialogTitleTypography>Enviar E-mails</DialogTitleTypography>
       </DialogTitle>
       <IconButton
         aria-label="close"
@@ -119,9 +122,23 @@ const SendEmailModal = ({ handleClose, isShowing, role, currentEmail }: Props) =
         <CloseRoundedIcon />
       </IconButton>
       <DialogContent dividers>
+        <FormControlLabel
+          control={
+            <Checkbox
+              name={'active'}
+              checked={sendToPendingHistories}
+              onChange={() =>
+                setSendToPendingHistories(oldSetGetPendingHistory => !oldSetGetPendingHistory)
+              }
+            />
+          }
+          label={`Enviar para ${
+            role === Role.GRADUATE ? 'egressos' : 'orientadores'
+          } com histórico pendente.`}
+        />
         <Box sx={{ height: 700, width: '100%' }}>
           <DataGrid
-            rows={users}
+            rows={!sendToPendingHistories ? users : []}
             columns={columns}
             initialState={{
               pagination: {

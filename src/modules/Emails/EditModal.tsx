@@ -49,7 +49,7 @@ const EditModal = ({
                 disabled={!!currentEmail.id}
                 required
                 name={'name'}
-                label={'Nome do emails'}
+                label={'Nome do email'}
                 onChange={({ target }) => setCurrentEmail({ ...currentEmail, name: target.value })}
               />
             </FormControl>
@@ -60,7 +60,7 @@ const EditModal = ({
                 value={currentEmail.title}
                 required
                 name={'title'}
-                label={'Título'}
+                label={'Assunto'}
                 onChange={({ target }) => setCurrentEmail({ ...currentEmail, title: target.value })}
               />
             </FormControl>
@@ -103,26 +103,6 @@ const EditModal = ({
                 }
               />
             </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name={'active'}
-                    disabled={previousEmail.active}
-                    checked={currentEmail.active}
-                    onChange={() =>
-                      setCurrentEmail({
-                        ...currentEmail,
-                        active: !currentEmail.active,
-                      })
-                    }
-                  />
-                }
-                label="Email ativo?"
-              />
-            </FormGroup>
           </Grid>
           <Grid item xs={12}>
             <FormControl>
