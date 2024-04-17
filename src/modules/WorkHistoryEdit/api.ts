@@ -1,5 +1,5 @@
 import { AxiosError, AxiosInstance } from 'axios'
-import { GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
+import { GraduateWorkHistoriesInfo, InstitutionInfoDTO } from '@modules/WorkHistoryEdit/types'
 import { SelectItem } from '@utils/types'
 import { getAPIClient } from '@services/axios'
 
@@ -19,4 +19,15 @@ export const getCourses = async (
   const { data } = await apiClient.get(`/v1/courses`)
 
   return data.map(({ level, id }) => ({ id, label: level }))
+}
+
+export const getInstitutionAutocomplete = async (
+  searchTerm: string,
+  apiClient: AxiosInstance = getAPIClient()
+): Promise<InstitutionInfoDTO[]> => {
+  const { data: dataResponse } = await apiClient.get(
+    `v1/institutions?name=${searchTerm}&pageSize=1000`
+  )
+  const { data } = dataResponse
+  return data
 }

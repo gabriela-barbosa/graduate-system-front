@@ -18,16 +18,17 @@ import {
   FormHelperText,
   debounce,
   Divider,
+  showErrorToast,
 } from '@components'
-import { GraduateWorkHistoriesInfo, Option } from './types'
+import { GraduateWorkHistoriesInfo, InstitutionInfoDTO, Option } from './types'
 import { Role } from '@utils/enums'
 import { SelectItem } from '@utils/types'
 import dayjs, { Dayjs } from 'dayjs'
 import { useAuth } from '@context/AuthProvider'
 import { Controller, useController } from 'react-hook-form'
 import { CNPQScholarshipsModal } from '@modules/WorkHistoryEdit/CNPQScholarshipModal'
-import { getAPIClient } from '@services/axios'
 import { CNPQScholarshipInfo } from '@modules/WorkHistoryEdit/CNPQScholarshipInfo'
+import { getInstitutionAutocomplete } from '@modules/WorkHistoryEdit/api'
 
 interface Props {
   cnpqLevels: SelectItem[]
@@ -39,7 +40,6 @@ interface Props {
 export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, control }: Props) => {
   const { currentRole } = useAuth()
   const isCurrentUserGraduate = currentRole === Role.GRADUATE
-  const apiClient = getAPIClient()
 
   const [isAddCNPQScholarshipOpen, setIsAddCNPQScholarshipOpen] = useState<boolean>(false)
 
@@ -62,14 +62,15 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
     name: 'hasPostDoctorate',
   })
 
-  const [options, setOptions] = useState([])
+  const [options, setOptions] = useState<InstitutionInfoDTO[]>([])
 
-  const getData = async searchTerm => {
-    const { data: dataResponse } = await apiClient.get(
-      `v1/institutions?name=${searchTerm}&pageSize=1000`
-    )
-    const { data } = dataResponse
-    setOptions(data)
+  const getData = async (searchTerm: string) => {
+    try {
+      const data = await getInstitutionAutocomplete(searchTerm)
+      setOptions(data)
+    } catch (error) {
+      showErrorToast('Erro ao buscar instituições.')
+    }
   }
 
   const debounceGetData = useCallback(
@@ -152,7 +153,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                           disabled={hasPostDoctorate !== 1}
                           noOptionsText="Nenhuma instituição encontrada"
                           disablePortal
-                          onInputChange={(event, inputValue) =>
+                          onInputChange={(_event, inputValue) =>
                             onInputChange(inputValue, onChangePostDoctorateInstitution)
                           }
                           renderOption={(props, option) => (
@@ -183,7 +184,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                               helperText={error ? 'Campo obrigatório.' : ''}
                             />
                           )}
-                          onChange={(event, value, reason) => {
+                          onChange={(_event, value, reason) => {
                             let name = value?.name
                             let typeId = value?.type.id
                             let id = value?.id

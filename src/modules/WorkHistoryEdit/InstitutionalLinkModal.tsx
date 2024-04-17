@@ -1,12 +1,23 @@
 import { FormControl, Grid, InputLabel, MenuItem, Tooltip } from '@mui/material'
-import React, { useState } from 'react'
-import { Button, DatePicker, InputMui, SelectMui } from '@components'
+import React, { useCallback, useState } from 'react'
+import {
+  Autocomplete,
+  Button,
+  DatePicker,
+  debounce,
+  InputMui,
+  SelectMui,
+  showErrorToast,
+  Typography,
+} from '@components'
 import { SelectItem } from '@utils/types'
 import { Fields } from '@styles/index.style'
 import { Modal } from 'react-bootstrap'
 import { Dayjs } from 'dayjs'
 import { useAuth } from '@context/AuthProvider'
 import { Role } from '@utils/enums'
+import { getInstitutionAutocomplete } from '@modules/WorkHistoryEdit/api'
+import { InstitutionInfoDTO } from '@modules/WorkHistoryEdit/types'
 
 interface Props {
   institutionalLinks: any[]
@@ -19,6 +30,7 @@ interface Props {
 interface InstitutionalLinkInfoType {
   id?: string | null
   position?: string | null
+  institutionId?: string | null
   institutionTypeId?: string | null
   institutionName?: string | null
   startedAt?: Dayjs | null
@@ -37,20 +49,27 @@ export const InstitutionalLinkModal = ({
   const isCurrentUserGraduate = currentRole === Role.GRADUATE
 
   const institutionalLinkDefaultState: InstitutionalLinkInfoType = {
-    id: undefined,
-    position: undefined,
-    institutionTypeId: undefined,
-    institutionName: undefined,
-    startedAt: undefined,
-    endedAt: undefined,
+    id: null,
+    position: null,
+    institutionId: null,
+    institutionTypeId: null,
+    institutionName: null,
+    startedAt: null,
+    endedAt: null,
   }
   const [institutionalLink, setInstitutionalLink] = useState<InstitutionalLinkInfoType>({
     ...institutionalLinkDefaultState,
   })
+  const [selectedInstitution, setSelectedInstitution] = useState<InstitutionInfoDTO | null>(null)
+
+  const { institutionId, institutionName } = institutionalLink
+
+  const [options, setOptions] = useState<InstitutionInfoDTO[]>([])
 
   const onModalClose = () => {
+    setSelectedInstitution(null)
     setIsAddWorkHistoryOpen(false)
-    setInstitutionalLink({ ...institutionalLinkDefaultState })
+    setInstitutionalLink(institutionalLinkDefaultState)
   }
 
   const handleSave = () => {
@@ -75,6 +94,37 @@ export const InstitutionalLinkModal = ({
     institutionalLink.startedAt &&
     (isCurrentUserGraduate ? institutionalLink.position : true)
   )
+
+  const getData = async searchTerm => {
+    try {
+      const data = await getInstitutionAutocomplete(searchTerm)
+      setOptions(data)
+    } catch (error) {
+      showErrorToast('Erro ao buscar instituições.')
+    }
+  }
+
+  const setInstitutionName = (institutionName?: string) => {
+    setInstitutionalLink({
+      ...institutionalLink,
+      institutionName,
+    })
+  }
+
+  const debounceGetData = useCallback(
+    debounce(inputValue => getData(inputValue), 1000),
+    []
+  )
+
+  const onInputChange = async (_: any, institutionName?: string) => {
+    if (institutionName) {
+      setInstitutionName(institutionName)
+      await debounceGetData(institutionName)
+    } else {
+      setOptions([])
+    }
+  }
+
   return (
     <Modal show={isAddWorkHistoryOpen} onHide={onModalClose}>
       <Modal.Header closeButton>
@@ -84,16 +134,68 @@ export const InstitutionalLinkModal = ({
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputMui
-                value={institutionalLink.institutionName}
-                onChange={event =>
-                  setInstitutionalLink({
-                    ...institutionalLink,
-                    institutionName: event.target.value,
-                  })
-                }
-                name={'institutionName'}
-                label={'Nome da instituição*'}
+              <Autocomplete
+                freeSolo
+                noOptionsText="Nenhuma instituição encontrada"
+                disablePortal
+                onInputChange={onInputChange}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => (
+                  <li {...props}>
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle1">{option.name}</Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="body2" color="gray">
+                          {option?.type?.name}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </li>
+                )}
+                inputValue={institutionName ?? ''}
+                options={options}
+                renderInput={params => (
+                  <InputMui
+                    {...params}
+                    label="Nome da instituição"
+                    variant="outlined"
+                    pa={() => 'Campo obrigatório.'}
+                  />
+                )}
+                value={selectedInstitution}
+                getOptionLabel={option => (typeof option === 'string' ? option : option?.name)}
+                onChange={(_event, value, reason) => {
+                  const newValue = value as unknown as InstitutionInfoDTO
+                  const getInstitutionFieldsValueByReason = () => {
+                    console.warn('reason', reason)
+                    if (reason === 'clear') {
+                      return institutionalLinkDefaultState
+                    }
+                    return {
+                      institutionName: newValue?.name,
+                      institutionTypeId: newValue?.type.id,
+                      institutionId: newValue?.id,
+                    }
+                  }
+                  const { institutionName, institutionTypeId, institutionId } =
+                    getInstitutionFieldsValueByReason()
+                  console.warn(
+                    'name, typeId, id',
+                    institutionName,
+                    institutionTypeId,
+                    institutionId
+                  )
+
+                  setSelectedInstitution(newValue)
+                  setInstitutionalLink(oldLink => ({
+                    ...oldLink,
+                    institutionId,
+                    institutionName,
+                    institutionTypeId,
+                  }))
+                }}
               />
             </FormControl>
           </Grid>
@@ -105,6 +207,7 @@ export const InstitutionalLinkModal = ({
                 id={'institutionType'}
                 name={'institutionType'}
                 label={'Tipo de Instituição*'}
+                disabled={institutionId}
                 value={institutionalLink.institutionTypeId || ''}
                 onChange={event => {
                   if (event.target.value)

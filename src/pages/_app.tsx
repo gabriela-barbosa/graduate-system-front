@@ -21,7 +21,7 @@ const App = ({ Component, pageProps }) => {
             <Head>
               <title>Sistema Egressos</title>
             </Head>
-            <NextNProgress color={theme.palette.primary.main} />
+            <NextNProgress height={7} color={theme.palette.primary.main} />
             <Component {...pageProps} />
             <ToastContainer />
           </AuthProvider>

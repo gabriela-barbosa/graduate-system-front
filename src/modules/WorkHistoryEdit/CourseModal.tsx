@@ -88,7 +88,7 @@ export const CourseModal = ({
     }
   }
 
-  const onAdvisorChange = async (_, value) => {
+  const onAdvisorChange = async (_: any, value: string) => {
     setIsAutocompleteLoading(true)
     if (value) {
       await getData(value)

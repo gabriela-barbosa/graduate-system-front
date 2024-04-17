@@ -23,6 +23,8 @@ import styled from 'styled-components'
 import { FormContainer } from 'react-hook-form-mui'
 import { redirectAccordingRole } from '@utils/functions'
 import { sendResetPasswordEmail } from '@modules/Login/api'
+import NextNProgress from 'nextjs-progressbar'
+import { theme } from '@styles/theme'
 
 styled(FormInputGroup)`
   width: 320px;
@@ -87,6 +89,7 @@ const Home = () => {
         fill
         priority
       />
+      <NextNProgress height={7} color={theme.palette.primary.contrastText} />
       <Background>
         <Content>
           <ImageLogo>

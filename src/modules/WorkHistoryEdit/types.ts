@@ -95,9 +95,22 @@ interface CNPQLevelInfo {
   name: string
 }
 
+interface InstitutionTypeDTO {
+  id: string
+  name: string
+}
+
+interface InstitutionInfoDTO {
+  id: string
+  name: string
+  type: InstitutionTypeDTO
+}
+
 export type {
   FormType,
   InstitutionType,
+  InstitutionInfo,
+  InstitutionInfoDTO,
   Option,
   GraduateWorkHistoriesInfo,
   CNPQLevelInfo,
