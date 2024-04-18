@@ -1,8 +1,10 @@
 import React from 'react'
-import { Typography } from '@components'
+import { Box, Typography } from '@components'
 
 export const Subtitle = ({ children }) => (
-  <Typography color="primary.main" fontWeight="medium" variant="h5">
-    {children}
-  </Typography>
+  <Box pb={2}>
+    <Typography color="primary.main" fontWeight="medium" variant="h5">
+      {children}
+    </Typography>
+  </Box>
 )

@@ -18,6 +18,7 @@ import {
   InputLabel,
   MenuItem,
   Divider,
+  EditRoundedIcon,
 } from '@components'
 import React, { useState } from 'react'
 import { ErrorMessage, Fields, Label } from '@styles/index.style'
@@ -99,15 +100,20 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
       },
       {
         body: (
-          <ActionIcon
-            onClick={() => {
-              setCurrentInstitutionalLinks([])
-              setCurrentInstitutionalLinksSelected([])
-              setInstitutionalLinks(institutionalLinks.filter((item, i) => i !== index))
-            }}
-          >
-            <DeleteForeverRoundedIcon />
-          </ActionIcon>
+          <section>
+            <ActionIcon onClick={() => {}}>
+              <EditRoundedIcon />
+            </ActionIcon>
+            <ActionIcon
+              onClick={() => {
+                setCurrentInstitutionalLinks([])
+                setCurrentInstitutionalLinksSelected([])
+                setInstitutionalLinks(institutionalLinks.filter((item: any, i: any) => i !== index))
+              }}
+            >
+              <DeleteForeverRoundedIcon />
+            </ActionIcon>
+          </section>
         ),
         width: '10%',
       },
@@ -124,7 +130,11 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
         body: !wh.endedAt || wh.endedAt === 'null' ? '-' : dayjs(wh.endedAt).format('DD/MM/YYYY'),
       },
       {
-        body: '-',
+        body: (
+          <ActionIcon onClick={() => {}}>
+            <EditRoundedIcon />
+          </ActionIcon>
+        ),
       },
     ]),
   ]
