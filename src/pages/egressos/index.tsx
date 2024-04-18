@@ -37,6 +37,7 @@ const status = {
 }
 
 const searchInputStyle = { width: '350px' }
+const bigSearchInputStyle = { width: '500px' }
 
 interface Props {
   graduates: Graduate[]
@@ -153,14 +154,14 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                 <Grid container spacing={2}>
                   <Grid item sx={searchInputStyle}>
                     <FormControl fullWidth>
-                      <Input variant="standard" label="Nome do egresso" name="name" />
+                      <Input variant="standard" label="Nome do Egresso" name="name" />
                     </FormControl>
                   </Grid>
                   <Grid item sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Input
                         variant="standard"
-                        label="Nome da instituição"
+                        label="Nome da Instituição"
                         name="institutionName"
                       />
                     </FormControl>
@@ -170,20 +171,20 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                       <Select
                         variant="standard"
                         name={'institutionType'}
-                        label={'Tipo da instituição'}
+                        label={'Tipo da Instituição'}
                         options={institutionTypes}
                       />
                     </FormControl>
                   </Grid>
                   <Grid item sx={searchInputStyle}>
                     <FormControl fullWidth>
-                      <Input variant="standard" label="Cargo atual" name="position" />
+                      <Input variant="standard" label="Cargo Atual" name="position" />
                     </FormControl>
                   </Grid>
                   {isUserAdmin && (
                     <Grid item sx={searchInputStyle}>
                       <FormControl fullWidth>
-                        <Input variant="standard" label="Nome do orientador" name="advisorName" />
+                        <Input variant="standard" label="Nome do Orientador" name="advisorName" />
                       </FormControl>
                     </Grid>
                   )}
@@ -192,23 +193,29 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                       <Select
                         variant="standard"
                         name={'cnpqLevel'}
-                        label={'Nível da bolsa CNPq'}
+                        label={'Nível da Bolsa CNPq'}
                         options={cnpqLevels}
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item sx={searchInputStyle}>
+                  <Grid item sx={bigSearchInputStyle}>
                     <FormControl fullWidth>
-                      <Input variant="standard" label="Casos de sucesso" name="successCase" />
+                      <Input
+                        variant="standard"
+                        label="Casos de Sucesso"
+                        name="successCase"
+                        rows={4}
+                        multiline
+                      />
                     </FormControl>
                   </Grid>
 
-                  <Grid item alignSelf={'center'}>
+                  <Grid item alignSelf={'start'}>
                     <Button size={'large'} variant="contained" type="submit">
                       <SearchRoundedIcon />
                     </Button>
                   </Grid>
-                  <Grid item alignSelf={'center'}>
+                  <Grid item alignSelf={'start'}>
                     <Button size={'large'} variant="outlined" onClick={onClickClean}>
                       <ClearRoundedIcon />
                     </Button>
