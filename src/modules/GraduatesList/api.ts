@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios'
 import { ListGraduatesFilters } from '@modules/Egressos/types'
 import { GraduatesListDetails } from '@modules/GraduatesList/types'
+import { getAPIClient } from '@services/axios'
 
 const pageSize = 10
 
@@ -15,9 +16,9 @@ const getFilledFilters = (filters?: ListGraduatesFilters) => {
 }
 
 export const getGraduates = async (
-  apiClient: AxiosInstance,
   page = 1,
-  filters?: ListGraduatesFilters
+  filters?: ListGraduatesFilters,
+  apiClient: AxiosInstance = getAPIClient()
 ): Promise<GraduatesListDetails> => {
   const filledFilters = getFilledFilters(filters)
   filledFilters.push(['page', `${page - 1}`], ['pageSize', `${pageSize}`])

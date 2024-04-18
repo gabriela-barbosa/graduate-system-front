@@ -36,6 +36,8 @@ const status = {
   [HISTORY_STATUS.UPDATED_PARTIALLY]: 'Atualizado parcialmente',
 }
 
+const searchInputStyle = { width: '350px' }
+
 interface Props {
   graduates: Graduate[]
   institutionTypes: SelectItem[]
@@ -44,7 +46,6 @@ interface Props {
 }
 
 const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) => {
-  const apiClient = getAPIClient()
   const [graduatesList, setGraduatesList] = useState<Graduate[]>(graduates)
   const [pagination, setPagination] = useState<PaginationType>(meta)
   const router = useRouter()
@@ -61,7 +62,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
 
   const onSend = async (data: ListGraduatesFilters) => {
     try {
-      const { graduates: graduatesSend, meta: metaSend } = await getGraduates(apiClient, 1, data)
+      const { graduates: graduatesSend, meta: metaSend } = await getGraduates(1, data)
       setGraduatesList(graduatesSend)
       setPagination(metaSend)
     } catch (e) {
@@ -69,15 +70,14 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
     }
   }
 
-  const onClickEdit = graduate => {
+  const onClickEdit = (graduate: Graduate) => {
     router.push(`/egressos/${graduate.userId}`)
   }
 
-  const onChangePagination = async (event, value) => {
+  const onChangePagination = async (_event: any, value: number | undefined) => {
     const filters = getValues() as ListGraduatesFilters
     try {
       const { graduates: graduatesPagination, meta: metaPagination } = await getGraduates(
-        apiClient,
         value,
         filters
       )
@@ -91,7 +91,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
   const onClickClean = async () => {
     reset()
     try {
-      const { graduates: graduatesClean, meta: metaClean } = await getGraduates(apiClient, 1)
+      const { graduates: graduatesClean, meta: metaClean } = await getGraduates(1)
       setGraduatesList(graduatesClean)
       setPagination(metaClean)
     } catch (e) {
@@ -151,22 +151,12 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
             <Grid item sx={{ paddingBottom: '20px' }}>
               <FormContainer formContext={formContext} onSuccess={onSend}>
                 <Grid container spacing={2}>
-                  <Grid
-                    item
-                    sx={{
-                      width: '350px',
-                    }}
-                  >
+                  <Grid item sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Input variant="standard" label="Nome do egresso" name="name" />
                     </FormControl>
                   </Grid>
-                  <Grid
-                    item
-                    sx={{
-                      width: '350px',
-                    }}
-                  >
+                  <Grid item sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Input
                         variant="standard"
@@ -175,12 +165,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                       />
                     </FormControl>
                   </Grid>
-                  <Grid
-                    item
-                    sx={{
-                      width: '350px',
-                    }}
-                  >
+                  <Grid item sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Select
                         variant="standard"
@@ -190,34 +175,19 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                       />
                     </FormControl>
                   </Grid>
-                  <Grid
-                    item
-                    sx={{
-                      width: '350px',
-                    }}
-                  >
+                  <Grid item sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Input variant="standard" label="Cargo atual" name="position" />
                     </FormControl>
                   </Grid>
                   {isUserAdmin && (
-                    <Grid
-                      item
-                      sx={{
-                        width: '350px',
-                      }}
-                    >
+                    <Grid item sx={searchInputStyle}>
                       <FormControl fullWidth>
                         <Input variant="standard" label="Nome do orientador" name="advisorName" />
                       </FormControl>
                     </Grid>
                   )}
-                  <Grid
-                    item
-                    sx={{
-                      width: '350px',
-                    }}
-                  >
+                  <Grid item sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Select
                         variant="standard"
@@ -225,6 +195,11 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                         label={'Nível da bolsa CNPq'}
                         options={cnpqLevels}
                       />
+                    </FormControl>
+                  </Grid>
+                  <Grid item sx={searchInputStyle}>
+                    <FormControl fullWidth>
+                      <Input variant="standard" label="Casos de sucesso" name="successCase" />
                     </FormControl>
                   </Grid>
 
@@ -277,7 +252,7 @@ export async function getServerSideProps(ctx) {
   }
 
   const promises = [
-    getGraduates(apiClient),
+    getGraduates(undefined, undefined, apiClient),
     getInstitutionTypesOptions(apiClient),
     getCNPQLevelsOptions(apiClient),
   ]

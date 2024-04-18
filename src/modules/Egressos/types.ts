@@ -5,6 +5,7 @@ export interface ListGraduatesFilters {
   advisorName: string
   position: string
   cnpqLevel: string
+  successCase: string
 }
 
 interface WorkHistoryInfo {
