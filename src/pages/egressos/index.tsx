@@ -152,12 +152,12 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
             <Grid item sx={{ paddingBottom: '20px' }}>
               <FormContainer formContext={formContext} onSuccess={onSend}>
                 <Grid container spacing={2}>
-                  <Grid item sx={searchInputStyle}>
+                  <Grid item xs={4} sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Input variant="standard" label="Nome do Egresso" name="name" />
                     </FormControl>
                   </Grid>
-                  <Grid item sx={searchInputStyle}>
+                  <Grid item xs={4} sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Input
                         variant="standard"
@@ -166,7 +166,7 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item sx={searchInputStyle}>
+                  <Grid item xs={4} sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Select
                         variant="standard"
@@ -176,19 +176,19 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item sx={searchInputStyle}>
+                  <Grid item xs={4} sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Input variant="standard" label="Cargo Atual" name="position" />
                     </FormControl>
                   </Grid>
                   {isUserAdmin && (
-                    <Grid item sx={searchInputStyle}>
+                    <Grid item xs={4} sx={searchInputStyle}>
                       <FormControl fullWidth>
                         <Input variant="standard" label="Nome do Orientador" name="advisorName" />
                       </FormControl>
                     </Grid>
                   )}
-                  <Grid item sx={searchInputStyle}>
+                  <Grid item xs={4} sx={searchInputStyle}>
                     <FormControl fullWidth>
                       <Select
                         variant="standard"
@@ -198,13 +198,13 @@ const GraduateList = ({ meta, graduates, institutionTypes, cnpqLevels }: Props) 
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item sx={bigSearchInputStyle}>
+                  <Grid item xs={5} sx={bigSearchInputStyle}>
                     <FormControl fullWidth>
                       <Input
                         variant="standard"
                         label="Casos de Sucesso"
                         name="successCase"
-                        rows={4}
+                        rows={2}
                         multiline
                       />
                     </FormControl>
