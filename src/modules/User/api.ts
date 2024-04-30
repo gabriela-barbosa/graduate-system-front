@@ -102,6 +102,7 @@ export const getGraduates = async (
 }
 
 export interface CreateCourse {
+  id?: string
   program?: string
   defenseMinute: string
   titleDate: Date

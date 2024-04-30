@@ -113,7 +113,7 @@ const UserInfo = ({ control }) => {
           {userRoles.includes(Role.ADMIN) && (
             <Grid item xs={6}>
               <CheckboxHookForm
-                name="sendEmailToAdminOnSave"
+                name="user.sendEmailToAdminOnSave"
                 label="Receber e-mail quando histórico de egressos for atualizado."
               />
             </Grid>

@@ -60,6 +60,7 @@ const validateCourses = (role: Role, formValues: UserInfo, value?: Course[]) => 
 }
 
 const extractCourseInfoFromForm = (course: Course): CreateCourse => ({
+  id: course.id,
   program: course.program?.id,
   defenseMinute: course.defenseMinute,
   titleDate: course.titleDate,
