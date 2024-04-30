@@ -7,6 +7,7 @@ interface User {
   email?: string
   currentRole?: string
   roles?: string[]
+  sendEmailToAdminOnSave?: boolean
 }
 
 interface UserLean {
@@ -80,7 +81,6 @@ export interface UserInfo {
   advisor?: Advisor
 }
 export const getUser = async (id: string, apiClient: AxiosInstance): Promise<UserInfo> => {
-  console.log('getUser', id)
   const { data } = await apiClient.get('/v1/user/' + id)
   return data
 }
@@ -129,6 +129,5 @@ export const createUpdateUser = async (
   user: CreateUser,
   apiClient: AxiosInstance = getAPIClient()
 ) => {
-  console.warn('createUpdateUser', user)
   await apiClient.post('v1/register', user)
 }

@@ -1,7 +1,16 @@
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material'
 import { Subtitle } from '@styles/index.style'
-import { Divider, FormHelperText, Input } from '@components'
-import { Controller } from 'react-hook-form'
+import {
+  Divider,
+  FormHelperText,
+  Input,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  SelectMui as Select,
+  CheckboxHookForm,
+} from '@components'
+import { Controller, useController } from 'react-hook-form'
 import { Role, RoleTranslation } from '@utils/enums'
 import React from 'react'
 
@@ -28,6 +37,12 @@ const UserInfo = ({ control }) => {
   const roles = Object.keys(Role).filter(item => {
     return isNaN(Number(item))
   })
+  const {
+    field: { value: userRoles },
+  } = useController({ control, name: 'user.roles' })
+
+  console.log(userRoles, roles)
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -95,6 +110,14 @@ const UserInfo = ({ control }) => {
               />
             </FormControl>
           </Grid>
+          {userRoles.includes(Role.ADMIN) && (
+            <Grid item xs={6}>
+              <CheckboxHookForm
+                name="sendEmailToAdminOnSave"
+                label="Receber e-mail quando histórico de egressos for atualizado."
+              />
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Grid>

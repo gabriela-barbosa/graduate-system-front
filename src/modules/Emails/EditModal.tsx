@@ -2,10 +2,8 @@ import { Modal } from 'react-bootstrap'
 import { DialogTitleTypography } from '@styles/index.style'
 import {
   Button,
-  Checkbox,
   FormControl,
   FormControlLabel,
-  FormGroup,
   FormLabel,
   Grid,
   InputMui as TextField,
@@ -28,7 +26,6 @@ const EditModal = ({
   handleClose,
   isShowing,
   currentEmail,
-  previousEmail,
   handleUpdate,
   handleSave,
   setCurrentEmail,

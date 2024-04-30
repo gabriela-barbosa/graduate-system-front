@@ -1,6 +1,7 @@
 import InputLabelMui from '@mui/material/InputLabel'
 import TextField from '@mui/material/TextField'
 import {
+  CheckboxElement,
   PasswordElement,
   PasswordElementProps,
   TextFieldElement,
@@ -17,3 +18,4 @@ export const Password = (props: PasswordElementProps<FieldValues>) => (
 )
 export const InputMui = (props: any) => <TextField variant="outlined" {...props} />
 export const InputLabel = (props: any) => <InputLabelMui variant="outlined" {...props} />
+export const CheckboxHookForm = (props: any) => <CheckboxElement {...props} />
