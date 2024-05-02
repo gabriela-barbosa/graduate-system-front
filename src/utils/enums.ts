@@ -12,6 +12,7 @@ export enum Role {
 }
 
 export const RoleTranslation = {
+  null: 'Nenhum selecionado',
   [Role.PROFESSOR]: 'Orientador',
   [Role.ADMIN]: 'Administrador',
   [Role.GRADUATE]: 'Egresso',

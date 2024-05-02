@@ -2,17 +2,23 @@ import { AxiosInstance } from 'axios'
 import { Email, GetEmailResponse } from '@modules/Emails/types'
 import { User } from '@context/AuthContext'
 import { getAPIClient } from '@services/axios'
+import { FormInfo } from '../../pages/gerenciamento/emails/templates'
 
 export const getEmails = async (
   pageSize: number,
   page = 1,
+  formInfo?: FormInfo,
   apiClient: AxiosInstance = getAPIClient()
 ): Promise<GetEmailResponse> => {
+  const userRole = formInfo?.userRole === 'null' ? undefined : formInfo?.userRole
+  const name = formInfo?.name === '' ? undefined : formInfo?.name
   const { data } = await apiClient.get<GetEmailResponse>(
     `/v1/emails?` +
       new URLSearchParams({
         page: (page - 1).toString(),
         pageSize: pageSize.toString(),
+        ...(userRole ? { userRole } : {}),
+        ...(name ? { name } : {}),
       })
   )
 

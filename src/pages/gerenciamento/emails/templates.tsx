@@ -4,22 +4,27 @@ import {
   ActionIcon,
   Breadcrumbs,
   Button,
+  ClearRoundedIcon,
   CustomTable,
   DeleteForeverRoundedIcon,
   DeleteItem,
   DeleteModal,
   EditRoundedIcon,
+  FormContainer,
+  FormControl,
   Grid,
   MainWrapper,
   Pagination,
+  SearchRoundedIcon,
   SendRoundedIcon,
   showDeletedToast,
   showErrorToast,
   showSavedToast,
+  Select,
   Tooltip,
 } from '@components'
 import { Role, RoleTranslation, Routes, USER_TOKEN_NAME } from '@utils/enums'
-import { PageWrapper, Title } from '@styles/index.style'
+import { Fields, PageWrapper, Title } from '@styles/index.style'
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
 import { deleteEmail, getEmails, saveEmail, updateEmail } from '@modules/Emails/api'
@@ -27,8 +32,20 @@ import { Email } from '@modules/Emails/types'
 import { PaginationType } from '@modules/Commons/types'
 import EditModal from '@modules/Emails/EditModal'
 import SendEmailModal from '@modules/Emails/SendEmailModal'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 const pageSize = 10
+
+export interface FormInfo {
+  name?: string
+  userRole?: Role | 'null'
+}
+
+const defaultValues: FormInfo = {
+  name: '',
+  userRole: 'null',
+}
 
 interface Props {
   emails: Email[]
@@ -46,6 +63,55 @@ const emailInitialState: Email = {
   active: false,
 }
 
+const getRowInfo = (
+  email: Email,
+  onClickSend: React.MouseEventHandler<HTMLButtonElement> | undefined,
+  onClickEdit: React.MouseEventHandler<HTMLButtonElement> | undefined,
+  onClickDelete: React.MouseEventHandler<HTMLButtonElement> | undefined
+) => [
+  {
+    body: email.name,
+  },
+  {
+    body: RoleTranslation[email.userRole],
+  },
+  {
+    body: email.title,
+  },
+  {
+    body: (
+      <section>
+        <Tooltip title="Enviar email">
+          <ActionIcon disabled={email.userRole === Role.ADMIN} onClick={onClickSend}>
+            <SendRoundedIcon />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip title="Editar template">
+          <ActionIcon onClick={onClickEdit}>
+            <EditRoundedIcon />
+          </ActionIcon>
+        </Tooltip>
+        {email.id && (
+          <Tooltip title="Excluir template">
+            <ActionIcon onClick={onClickDelete}>
+              <DeleteForeverRoundedIcon />
+            </ActionIcon>
+          </Tooltip>
+        )}
+      </section>
+    ),
+  },
+]
+
+const roles = [
+  { id: 'null', label: RoleTranslation.null },
+  ...Object.keys(Role)
+    .filter(item => {
+      return isNaN(Number(item))
+    })
+    .map(role => ({ id: role, label: RoleTranslation[role] })),
+]
+
 const EmailConfig = ({ emails, meta }: Props) => {
   const [emailsList, setEmailsList] = useState<Email[]>(emails)
   const [pagination, setPagination] = useState<PaginationType>(meta)
@@ -56,6 +122,8 @@ const EmailConfig = ({ emails, meta }: Props) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [deleteItem, setDeleteItem] = useState<DeleteItem>({ id: undefined, value: undefined })
   const router = useRouter()
+  const formContext = useForm({ defaultValues })
+  const { reset } = formContext
 
   const handleCloseEditModal = () => setIsEditModalOpen(false)
   const handleCloseSendModal = () => setIsSendModalOpen(false)
@@ -77,9 +145,9 @@ const EmailConfig = ({ emails, meta }: Props) => {
     setPagination(meta)
   }, [meta])
 
-  const handleChangePagination = async (page: number) => {
+  const handleChangePagination = async (page: number, form?: FormInfo) => {
     try {
-      const { data, meta } = await getEmails(pageSize, page)
+      const { data, meta } = await getEmails(pageSize, page, form)
       setEmailsList(data)
       setPagination(meta)
     } catch (error) {
@@ -139,50 +207,33 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const columns = [
     { name: 'Nome' },
-    { name: 'Tipo do E-mail' },
+    { name: 'Papel do Usuário a receber e-mail' },
     { name: 'Assunto' },
     { name: 'Ações' },
   ]
 
-  const rows = emailsList?.map(email => {
-    return [
-      {
-        body: email.name,
-      },
-      {
-        body: RoleTranslation[email.userRole],
-      },
-      {
-        body: email.title,
-      },
-      {
-        body: (
-          <section>
-            <Tooltip title="Enviar email">
-              <ActionIcon
-                disabled={email.userRole === Role.ADMIN}
-                onClick={() => handleOpenSendEmail(email)}
-              >
-                <SendRoundedIcon />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip title="Editar template">
-              <ActionIcon onClick={() => handleOpenEdit(email)}>
-                <EditRoundedIcon />
-              </ActionIcon>
-            </Tooltip>
-            {email.id && (
-              <Tooltip title="Excluir template">
-                <ActionIcon onClick={() => onClickDelete(email.id, email.name)}>
-                  <DeleteForeverRoundedIcon />
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </section>
-        ),
-      },
-    ]
-  })
+  const onSend = async (form: FormInfo) => {
+    const userRole = form.userRole === 'null' ? undefined : form.userRole
+    try {
+      await handleChangePagination(1, form)
+    } catch (e) {
+      toast.error('Erro ao buscar usuários.')
+    }
+  }
+
+  const onClean = async () => {
+    reset()
+    await handleChangePagination(1)
+  }
+
+  const rows = emailsList?.map(email =>
+    getRowInfo(
+      email,
+      () => handleOpenSendEmail(email),
+      () => handleOpenEdit(email),
+      () => onClickDelete(email.id, email.name)
+    )
+  )
 
   return (
     <MainWrapper>
@@ -199,8 +250,40 @@ const EmailConfig = ({ emails, meta }: Props) => {
         <Grid item xs={12}>
           <Title>Atualizar Informações de Conteúdo de E-mails</Title>
         </Grid>
-        <Grid item xs={12}>
-          <CustomTable columns={columns} rows={rows} />
+        <Grid item xs={12} minHeight={510}>
+          <FormContainer formContext={formContext} onSuccess={onSend}>
+            <Grid container spacing={3}>
+              <Grid item sx={{ width: '350px' }}>
+                <FormControl fullWidth>
+                  <Select
+                    labelId="userRoleToReceiveLabel"
+                    variant="standard"
+                    name={'userRole'}
+                    id={'userRole'}
+                    label={'Papel do Usuário a receber e-mail'}
+                    options={roles}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item alignSelf={'center'}>
+                <Button size={'large'} variant="contained" type="submit">
+                  <SearchRoundedIcon />
+                </Button>
+              </Grid>
+              <Grid item alignSelf={'center'}>
+                <Button size={'large'} variant="outlined" onClick={onClean}>
+                  <ClearRoundedIcon />
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                {rows?.length !== 0 ? (
+                  <CustomTable columns={columns} rows={rows} />
+                ) : (
+                  <Fields>Nenhum resultado encontrado.</Fields>
+                )}
+              </Grid>
+            </Grid>
+          </FormContainer>
         </Grid>
         <Grid item xs={12}>
           <Grid container justifyContent="right">
@@ -274,7 +357,7 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
-  const { data, meta } = await getEmails(pageSize, undefined, apiClient)
+  const { data, meta } = await getEmails(pageSize, undefined, undefined, apiClient)
 
   return {
     props: {
