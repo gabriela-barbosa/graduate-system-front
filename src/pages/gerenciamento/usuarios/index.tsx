@@ -46,7 +46,7 @@ const columns = [
     name: 'Nome',
   },
   {
-    name: 'Email',
+    name: 'E-mail',
   },
   {
     name: 'Papel do Usuário',
@@ -76,7 +76,7 @@ const UserList = ({ users, meta }: Props) => {
   const handleOnCloseUserDialog = () => setShowUserDialog(false)
 
   const onClickCreateUser = () => {
-    router.push(`usuarios/novo`)
+    router.push(Routes.MANAGEMENT_NEW_USER)
   }
 
   const handleGetUsers = async (page: number, formInfo?: FormInfo) => {
@@ -96,7 +96,7 @@ const UserList = ({ users, meta }: Props) => {
   }
 
   const onClickBack = () => {
-    router.push('/gerenciamento')
+    router.push(Routes.MANAGEMENT)
   }
 
   const onFail = (message: string) => {
@@ -121,7 +121,7 @@ const UserList = ({ users, meta }: Props) => {
   }
 
   const handleClickEdit = (id: string) => {
-    router.push(`usuarios/${id}`)
+    router.push({ pathname: Routes.MANAGEMENT_USER, query: { id } })
   }
 
   const rows = usersList?.map(user => [

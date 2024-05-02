@@ -1,19 +1,21 @@
 import React from 'react'
 import { useAuth } from '@context/AuthProvider'
 import { Role, RoleTranslation } from '@utils/enums'
-import { FormControl, InputLabel, MenuItem } from '@mui/material'
-import { SelectMui } from '@components'
+import { SelectMui, FormControl, MenuItem, InputLabel } from '@components'
 
 const SelectRole = () => {
   const { user, currentRole, updateCurrentRole } = useAuth()
   return (
     <FormControl>
-      <InputLabel id="currentRoleLabel">Papel</InputLabel>
+      <InputLabel variant="outlined" id="currentRoleLabel">
+        Papel do Usuário
+      </InputLabel>
       <SelectMui
+        sx={{ minWidth: '120px' }}
         labelId={'currentRoleLabel'}
         id={'currentRole'}
         name={'currentRole'}
-        label={'Papel'}
+        label={'Papel do Usuário'}
         value={currentRole || ''}
         onChange={async event => {
           if (event.target.value) {

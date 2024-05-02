@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-
 import {
   ActionIcon,
   Breadcrumbs,
@@ -19,7 +18,7 @@ import {
   showSavedToast,
   Tooltip,
 } from '@components'
-import { Role, Routes, USER_TOKEN_NAME } from '@utils/enums'
+import { Role, RoleTranslation, Routes, USER_TOKEN_NAME } from '@utils/enums'
 import { PageWrapper, Title } from '@styles/index.style'
 import { getAPIClient } from '@services/axios'
 import { parseCookies } from 'nookies'
@@ -36,29 +35,22 @@ interface Props {
   meta: PaginationType
 }
 
+const emailInitialState: Email = {
+  buttonText: '',
+  buttonURL: '',
+  content: '',
+  id: undefined,
+  userRole: Role.GRADUATE,
+  name: '',
+  title: '',
+  active: false,
+}
+
 const EmailConfig = ({ emails, meta }: Props) => {
   const [emailsList, setEmailsList] = useState<Email[]>(emails)
   const [pagination, setPagination] = useState<PaginationType>(meta)
-  const [previousEmail, setPreviousEmail] = useState<Email>({
-    buttonText: '',
-    buttonURL: '',
-    content: '',
-    id: '',
-    isGraduateEmail: false,
-    name: '',
-    title: '',
-    active: false,
-  })
-  const [currentEmail, setCurrentEmail] = useState<Email>({
-    buttonText: '',
-    buttonURL: '',
-    content: '',
-    id: '',
-    isGraduateEmail: false,
-    name: '',
-    title: '',
-    active: false,
-  })
+  const [previousEmail, setPreviousEmail] = useState<Email>(emailInitialState)
+  const [currentEmail, setCurrentEmail] = useState<Email>(emailInitialState)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isSendModalOpen, setIsSendModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -69,21 +61,21 @@ const EmailConfig = ({ emails, meta }: Props) => {
   const handleCloseSendModal = () => setIsSendModalOpen(false)
   const handleShowEdit = () => setIsEditModalOpen(true)
   const handleClickBack = () => {
-    router.push('/gerenciamento')
+    router.push(Routes.MANAGEMENT)
   }
 
   const cleanEmailFields = () => {
-    setCurrentEmail({
-      active: false,
-      buttonText: '',
-      buttonURL: '',
-      content: '',
-      isGraduateEmail: false,
-      name: '',
-      title: '',
-      id: undefined,
-    })
+    setCurrentEmail(emailInitialState)
+    setPreviousEmail(emailInitialState)
   }
+
+  useEffect(() => {
+    setEmailsList(emails)
+  }, [emails])
+
+  useEffect(() => {
+    setPagination(meta)
+  }, [meta])
 
   const handleChangePagination = async (page: number) => {
     try {
@@ -99,19 +91,19 @@ const EmailConfig = ({ emails, meta }: Props) => {
     try {
       await deleteEmail(id)
       showDeletedToast()
-      await router.replace(router.asPath)
+      router.reload()
     } catch (error) {
-      showErrorToast('Ocorreu um problema na deleção!')
+      showErrorToast('Ocorreu um problema na deleção.')
     }
   }
 
   const handleSaveEmail = async (email: Email) => {
     try {
-      await saveEmail(email)
+      await saveEmail(email.userRole !== Role.ADMIN ? email : { ...email, active: true })
       showSavedToast()
       setIsEditModalOpen(false)
       cleanEmailFields()
-      await router.replace(router.asPath)
+      router.replace(router.asPath)
     } catch (error) {
       showErrorToast('Ocorreu um problema ao salvar.')
     }
@@ -119,11 +111,11 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const handleUpdateEmail = async (email: Email) => {
     try {
-      await updateEmail(email)
+      await updateEmail(email.userRole !== Role.ADMIN ? email : { ...email, active: true })
       showSavedToast()
       setIsEditModalOpen(false)
       cleanEmailFields()
-      await router.replace(router.asPath)
+      router.replace(router.asPath)
     } catch (error) {
       showErrorToast('Ocorreu um problema ao atualizar email.')
     }
@@ -147,7 +139,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
 
   const columns = [
     { name: 'Nome' },
-    { name: 'Tipo do Email' },
+    { name: 'Tipo do E-mail' },
     { name: 'Assunto' },
     { name: 'Ações' },
   ]
@@ -158,7 +150,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
         body: email.name,
       },
       {
-        body: email.isGraduateEmail ? 'Egresso' : 'Orientador',
+        body: RoleTranslation[email.userRole],
       },
       {
         body: email.title,
@@ -167,7 +159,10 @@ const EmailConfig = ({ emails, meta }: Props) => {
         body: (
           <section>
             <Tooltip title="Enviar email">
-              <ActionIcon disabled={!email.active} onClick={() => handleOpenSendEmail(email)}>
+              <ActionIcon
+                disabled={email.userRole === Role.ADMIN}
+                onClick={() => handleOpenSendEmail(email)}
+              >
                 <SendRoundedIcon />
               </ActionIcon>
             </Tooltip>
@@ -197,12 +192,12 @@ const EmailConfig = ({ emails, meta }: Props) => {
             breadcrumbs={[
               { name: 'Listagem de Egressos', href: Routes.GRADUATES },
               { name: 'Gerenciamento', href: Routes.MANAGEMENT },
-              { name: 'Informações de Conteúdo de Emails' },
+              { name: 'Informações de Conteúdo de E-mails' },
             ]}
           />
         </Grid>
         <Grid item xs={12}>
-          <Title>Atualizar Informações de Conteúdo de Emails</Title>
+          <Title>Atualizar Informações de Conteúdo de E-mails</Title>
         </Grid>
         <Grid item xs={12}>
           <CustomTable columns={columns} rows={rows} />
@@ -261,7 +256,7 @@ const EmailConfig = ({ emails, meta }: Props) => {
       <SendEmailModal
         handleClose={handleCloseSendModal}
         isShowing={isSendModalOpen}
-        role={currentEmail.isGraduateEmail ? Role.GRADUATE : Role.PROFESSOR}
+        role={currentEmail.userRole}
         currentEmail={currentEmail}
       />
     </MainWrapper>

@@ -1,4 +1,5 @@
 import { PaginationType } from '@modules/Commons/types'
+import { Role } from '@utils/enums'
 
 export interface Email {
   id?: string
@@ -7,7 +8,7 @@ export interface Email {
   content: string
   buttonText: string
   buttonURL: string
-  isGraduateEmail: boolean
+  userRole: Role
   active: boolean
 }
 

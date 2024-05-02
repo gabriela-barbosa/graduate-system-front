@@ -221,7 +221,7 @@ export const AcademicInfo = ({ graduateInfo, cnpqLevels, institutionTypes, contr
                             value={value ?? 0}
                             label={'Tipo da Instituição'}
                             labelId={'labelPostDocType'}
-                            disabled={hasPostDoctorate !== 1 || institutionIdValue}
+                            disabled={hasPostDoctorate !== 1 || !!institutionIdValue}
                             error={!!error}
                           >
                             {institutionTypes.map(type => (

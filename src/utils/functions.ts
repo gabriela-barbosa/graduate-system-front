@@ -6,12 +6,9 @@ interface HomeUrlAccordingRoleProps {
   query?: { id: string }
 }
 
-export const getHomeUrlAccordingRole = (
-  currentRole: Role,
-  userId: string
-): HomeUrlAccordingRoleProps =>
+export const getHomeUrlAccordingRole = (currentRole: Role, id: string): HomeUrlAccordingRoleProps =>
   currentRole === Role.GRADUATE
-    ? { pathname: Routes.GRADUATE, query: { id: userId } }
+    ? { pathname: Routes.GRADUATE, query: { id } }
     : { pathname: Routes.GRADUATES }
 
 export const redirectAccordingRole = async (

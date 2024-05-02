@@ -11,9 +11,9 @@ export const PersonalInfo = () => {
   const getEmailErrorMessageByType = type => {
     switch (type) {
       case 'pattern':
-        return 'Insira um emails válido.'
+        return 'Insira um e-mails válido.'
       case 'required':
-        return 'Digite o emails.'
+        return 'Digite o e-mails.'
       default:
         return 'Campo inválido'
     }

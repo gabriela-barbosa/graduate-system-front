@@ -129,7 +129,7 @@ const UserDetail = ({ user, programs }: Props) => {
   ]
 
   const onClickBack = () => {
-    router.push('/gerenciamento/usuarios')
+    router.push(Routes.MANAGEMENT_USERS)
   }
 
   useEffect(() => {

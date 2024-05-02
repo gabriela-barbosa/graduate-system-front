@@ -1,10 +1,6 @@
 // @types.todo.ts
 import { Role } from '@utils/enums'
 
-// export interface User {
-//   emails: number
-// }
-
 export type Course = {
   id: string
   program: Program

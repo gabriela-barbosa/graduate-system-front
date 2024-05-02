@@ -4,13 +4,15 @@ import {
   Button,
   FormControl,
   FormControlLabel,
-  FormLabel,
+  FormGroup,
   Grid,
   InputMui as TextField,
-  Radio,
-  RadioGroup,
+  SelectMui,
+  Checkbox,
 } from '@components'
 import React from 'react'
+import { InputLabel, MenuItem } from '@mui/material'
+import { Role, RoleTranslation } from '@utils/enums'
 
 interface Props {
   handleClose: () => void
@@ -26,15 +28,20 @@ const EditModal = ({
   handleClose,
   isShowing,
   currentEmail,
+  previousEmail,
   handleUpdate,
   handleSave,
   setCurrentEmail,
 }: Props) => {
+  const roles = Object.keys(Role).filter(item => {
+    return isNaN(Number(item))
+  })
+
   return (
     <Modal show={isShowing} onHide={handleClose}>
       <Modal.Header closeButton>
         <DialogTitleTypography>
-          {currentEmail.id ? 'Editar' : 'Adicionar'} Email
+          {currentEmail.id ? 'Editar' : 'Adicionar'} E-mail
         </DialogTitleTypography>
       </Modal.Header>
       <Modal.Body>
@@ -46,7 +53,7 @@ const EditModal = ({
                 disabled={!!currentEmail.id}
                 required
                 name={'name'}
-                label={'Nome do email'}
+                label={'Nome do e-mail'}
                 onChange={({ target }) => setCurrentEmail({ ...currentEmail, name: target.value })}
               />
             </FormControl>
@@ -102,32 +109,55 @@ const EditModal = ({
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <FormControl>
-              <FormLabel id={'isGraduateEmailLabel'}> Destinatário do email:</FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="isGraduateEmailLabel"
-                name="isGraduateEmailLabel"
-                value={currentEmail.isGraduateEmail}
-                onChange={({ target }) =>
-                  setCurrentEmail({ ...currentEmail, isGraduateEmail: target.value === 'true' })
-                }
+            <FormControl fullWidth>
+              <InputLabel variant="outlined" id="userRoleLabel">
+                Papel dos usuários que vão receber o e-mail*
+              </InputLabel>
+              <SelectMui
+                labelId={'userRoleLabel'}
+                id={'userRole'}
+                name={'userRole'}
+                disabled={!!currentEmail.id}
+                label={'Papel dos usuários que vão receber o e-mail*'}
+                value={currentEmail.userRole || ''}
+                onChange={event => {
+                  if (event.target.value)
+                    setCurrentEmail(email => ({
+                      ...email,
+                      userRole: event.target.value,
+                    }))
+                }}
               >
-                <FormControlLabel
-                  disabled={!!currentEmail.id}
-                  value={true}
-                  control={<Radio />}
-                  label={'Egresso'}
-                />
-                <FormControlLabel
-                  disabled={!!currentEmail.id}
-                  value={false}
-                  control={<Radio />}
-                  label={'Orientador'}
-                />
-              </RadioGroup>
+                {roles.map(role => (
+                  <MenuItem key={role} value={role}>
+                    {RoleTranslation[role]}
+                  </MenuItem>
+                ))}
+              </SelectMui>
             </FormControl>
           </Grid>
+          {currentEmail.userRole === Role.ADMIN && (
+            <Grid item xs={12}>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name={'active'}
+                      disabled={previousEmail.active}
+                      checked={currentEmail.active}
+                      onChange={() =>
+                        setCurrentEmail(email => ({
+                          ...email,
+                          active: !currentEmail.active,
+                        }))
+                      }
+                    />
+                  }
+                  label="Email ativo?"
+                />
+              </FormGroup>
+            </Grid>
+          )}
         </Grid>
       </Modal.Body>
       <Modal.Footer>

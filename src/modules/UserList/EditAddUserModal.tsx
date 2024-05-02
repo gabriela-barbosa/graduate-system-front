@@ -59,7 +59,7 @@ const UserModal = ({ show, handleClose, currentUser, onSuccess, onFail }: Props)
                   defaultValue={currentUser.email}
                   required
                   name={'email'}
-                  label={'Email'}
+                  label={'E-mail'}
                 />
               </FormControl>
             </Grid>

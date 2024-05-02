@@ -68,12 +68,12 @@ const Home = () => {
   const handleOnClickForgotPassword = async () => {
     try {
       if (!email || email === '') {
-        showErrorToast('Digite o email para recuperar a senha ou fazer o primeiro acesso.')
+        showErrorToast('Digite o e-mail para recuperar a senha ou fazer o primeiro acesso.')
         return
       }
       await sendResetPasswordEmail(email)
       showSuccessToast(
-        'Foi enviado um email com um link para alteração/criação de senha. Verifique sua caixa de entrada.'
+        'Foi enviado um e-mail com um link para alteração/criação de senha. Verifique sua caixa de entrada.'
       )
     } catch (e) {
       showErrorToast(e.response.data)
