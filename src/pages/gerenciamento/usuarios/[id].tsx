@@ -138,56 +138,60 @@ const UserDetail = ({ user, programs }: Props) => {
 
   return (
     <MainWrapper>
-      <FormContainer formContext={formContext} onSuccess={handleSubmit}>
-        <PageWrapper container rowSpacing={4}>
-          <Grid item>
-            <Breadcrumbs breadcrumbs={breadcrumbs} />
-          </Grid>
-          <Grid item xs={12}>
-            <Title>{isNewUser ? 'Adicionar' : 'Editar'} Usuário</Title>
-          </Grid>
-          <Grid item xs={12}>
-            <UserInfoComponent control={control} />
-          </Grid>
-          {isUserGraduate && (
-            <Grid item xs={12}>
-              <CoursesInfoGraduate
-                control={control}
-                programs={programs}
-                historyCourses={user.graduate?.courses}
-              />
-            </Grid>
-          )}
-          {isUserAdvisor && (
-            <Grid item xs={12}>
-              <CoursesInfoAdvisor
-                control={control}
-                programs={programs}
-                historyCourses={user.advisor?.courses}
-              />
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            <Grid container columnSpacing={2}>
-              <Grid item>
-                <Button
-                  disabled={!isFormValid}
-                  type={'submit'}
-                  size={'large'}
-                  variant={'contained'}
-                >
-                  Salvar
-                </Button>
+      <PageWrapper container rowSpacing={3}>
+        <Grid item>
+          <Breadcrumbs breadcrumbs={breadcrumbs} />
+        </Grid>
+        <Grid item xs={12}>
+          <Title>{isNewUser ? 'Adicionar' : 'Editar'} Usuário</Title>
+        </Grid>
+        <Grid item>
+          <FormContainer formContext={formContext} onSuccess={handleSubmit}>
+            <Grid container rowSpacing={4}>
+              <Grid item xs={12}>
+                <UserInfoComponent control={control} />
               </Grid>
-              <Grid item>
-                <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
-                  Voltar
-                </Button>
+              {isUserGraduate && (
+                <Grid item xs={12}>
+                  <CoursesInfoGraduate
+                    control={control}
+                    programs={programs}
+                    historyCourses={user.graduate?.courses}
+                  />
+                </Grid>
+              )}
+              {isUserAdvisor && (
+                <Grid item xs={12}>
+                  <CoursesInfoAdvisor
+                    control={control}
+                    programs={programs}
+                    historyCourses={user.advisor?.courses}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={12} alignSelf={'center'}>
+                <Grid container justifyContent={'center'} columnSpacing={2}>
+                  <Grid item>
+                    <Button
+                      disabled={!isFormValid}
+                      type={'submit'}
+                      size={'large'}
+                      variant={'contained'}
+                    >
+                      Salvar
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button size={'large'} variant={'outlined'} onClick={onClickBack}>
+                      Voltar
+                    </Button>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </PageWrapper>
-      </FormContainer>
+          </FormContainer>
+        </Grid>
+      </PageWrapper>
     </MainWrapper>
   )
 }
