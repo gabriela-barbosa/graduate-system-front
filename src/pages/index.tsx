@@ -48,7 +48,6 @@ const Home = () => {
     try {
       await login(email, password)
     } catch (err) {
-      console.log('error', err)
       if (err.response?.status === 401) return showErrorToast('E-mail ou senha incorretos.')
       return showErrorToast('Ocorreu um erro ao fazer login. Tente novamente mais tarde.')
     }

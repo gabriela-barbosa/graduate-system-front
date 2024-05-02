@@ -169,7 +169,6 @@ export const InstitutionalLinkModal = ({
                 onChange={(_event, value, reason) => {
                   const newValue = value as unknown as InstitutionInfoDTO
                   const getInstitutionFieldsValueByReason = () => {
-                    console.warn('reason', reason)
                     if (reason === 'clear') {
                       return institutionalLinkDefaultState
                     }
@@ -181,13 +180,6 @@ export const InstitutionalLinkModal = ({
                   }
                   const { institutionName, institutionTypeId, institutionId } =
                     getInstitutionFieldsValueByReason()
-                  console.warn(
-                    'name, typeId, id',
-                    institutionName,
-                    institutionTypeId,
-                    institutionId
-                  )
-
                   setSelectedInstitution(newValue)
                   setInstitutionalLink(oldLink => ({
                     ...oldLink,

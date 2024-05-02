@@ -72,7 +72,6 @@ export const CourseModal = ({
   }
 
   const handleSave = () => {
-    console.warn('course', course, courses)
     setCourses([...(courses ?? []), course])
     onModalClose()
   }

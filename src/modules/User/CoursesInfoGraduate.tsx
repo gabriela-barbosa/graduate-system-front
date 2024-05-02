@@ -48,8 +48,6 @@ const CoursesInfoGraduate = ({ control, historyCourses = [], programs }: Props) 
     fieldState: { error },
   } = useController({ control, name: 'graduate.newCourses' })
 
-  console.warn('courses', courses, 'historyCourses', historyCourses)
-
   const rows = [
     ...(courses ?? []).map((course, index) => [
       {

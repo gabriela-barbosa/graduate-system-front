@@ -41,8 +41,6 @@ const UserInfo = ({ control }) => {
     field: { value: userRoles },
   } = useController({ control, name: 'user.roles' })
 
-  console.log(userRoles, roles)
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>

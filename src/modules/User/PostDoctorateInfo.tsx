@@ -27,7 +27,6 @@ const GraduateInfo = ({ control, institutionTypes }: Props) => {
     name: 'hasPostDoctorate',
   })
 
-  console.log('hasPos ', hasPostDoctorate)
   return (
     <Grid container rowSpacing={4} columnSpacing={4}>
       <Grid item xs={12}>
