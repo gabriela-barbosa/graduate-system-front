@@ -153,7 +153,7 @@ const EditModal = ({
                       }
                     />
                   }
-                  label="Email ativo?"
+                  label="Enviar automaticamente para administradores que aceitaram receber e-mails de atualização de histórico do egresso"
                 />
               </FormGroup>
             </Grid>
