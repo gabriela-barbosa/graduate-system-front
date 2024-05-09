@@ -72,7 +72,11 @@ const Home = () => {
       }
       await sendResetPasswordEmail(email)
       showSuccessToast(
-        'Foi enviado um e-mail com um link para alteração/criação de senha. Verifique sua caixa de entrada.'
+        <div>
+          {'Foi enviado um e-mail com um link para alteração/criação de senha.'}
+          <br />
+          {'Verifique sua caixa de entrada.'}
+        </div>
       )
     } catch (e) {
       showErrorToast(e.response.data)
