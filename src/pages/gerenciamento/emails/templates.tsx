@@ -213,7 +213,6 @@ const EmailConfig = ({ emails, meta }: Props) => {
   ]
 
   const onSend = async (form: FormInfo) => {
-    const userRole = form.userRole === 'null' ? undefined : form.userRole
     try {
       await handleChangePagination(1, form)
     } catch (e) {

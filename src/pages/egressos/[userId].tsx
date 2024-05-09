@@ -62,7 +62,6 @@ const GraduateUser = ({
             typeId: graduateInfo.postDoctorate?.institution?.typeId,
           },
         },
-        workHistories: [],
       }
     }, [graduateInfo]),
   })
@@ -88,7 +87,6 @@ const GraduateUser = ({
           typeId: graduateInfo.postDoctorate?.institution?.typeId,
         },
       },
-      workHistories: [],
     })
   }, [graduateInfo])
 
@@ -106,6 +104,7 @@ const GraduateUser = ({
       hasCurrentCNPQScholarship,
       hasPostDoctorate,
       institutionalLinks,
+      workHistories,
     } = data
 
     const body = {
@@ -123,7 +122,7 @@ const GraduateUser = ({
       hasPostDoctorate: transformNumberToValue(hasPostDoctorate),
       postDoctorate: hasPostDoctorate === 1 ? postDoctorate : null,
       successCase,
-      workHistories: institutionalLinks,
+      workHistories: [...institutionalLinks, ...workHistories],
     }
 
     try {
@@ -139,7 +138,7 @@ const GraduateUser = ({
       <div>
         {'Existem campos pendentes.'}
         <br />
-        {' Por favor, preencha-os para continuar.'}
+        {'Por favor, preencha-os para continuar.'}
       </div>
     )
   }
@@ -167,11 +166,7 @@ const GraduateUser = ({
                 <PersonalInfo />
               </Grid>
               <Grid item xs={12}>
-                <InstitutionalLinkInfo
-                  control={control}
-                  graduateInfo={graduateInfo}
-                  institutionTypes={institutionTypes}
-                />
+                <InstitutionalLinkInfo control={control} institutionTypes={institutionTypes} />
               </Grid>
               <Grid item xs={12}>
                 <AcademicInfo
@@ -197,7 +192,7 @@ const GraduateUser = ({
                   ) : null}
 
                   <Grid item>
-                    <Button size={'large'} variant="contained" type="submit">
+                    <Button size="large" variant="contained" type="submit">
                       Salvar
                     </Button>
                   </Grid>

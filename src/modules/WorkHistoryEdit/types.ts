@@ -22,9 +22,9 @@ type FormType = {
 
 interface InstitutionInfo {
   id?: string
-  typeId: string
-  typeName: string
-  name: string
+  typeId?: string
+  typeName?: string
+  name?: string
 }
 
 interface PostDoctorateInfo {
@@ -44,9 +44,10 @@ interface CNPQScholarshipInfo {
 interface WorkHistoryInfo {
   id: string
   institution: InstitutionInfo
-  startedAt: string
-  endedAt: string | null
+  startedAt?: string
+  endedAt?: string | null
   position?: string
+  modified?: boolean
 }
 
 enum Fields {

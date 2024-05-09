@@ -19,29 +19,97 @@ import {
   MenuItem,
   Divider,
   EditRoundedIcon,
+  Tooltip,
 } from '@components'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ErrorMessage, Fields, Label } from '@styles/index.style'
-import { GraduateWorkHistoriesInfo } from '@modules/WorkHistoryEdit/types'
+import { WorkHistoryInfo } from '@modules/WorkHistoryEdit/types'
 import { SelectItem } from '@utils/types'
 import dayjs from 'dayjs'
 import { Control, Controller, useController } from 'react-hook-form'
-import { InstitutionalLinkModal } from '@modules/WorkHistoryEdit/InstitutionalLinkModal'
+import {
+  InstitutionalLinkInfoType,
+  InstitutionalLinkModal,
+} from '@modules/WorkHistoryEdit/InstitutionalLinkModal'
 import { Role } from '@utils/enums'
 import { useAuth } from '@context/AuthProvider'
+import { HISTORY_STATUS } from '@modules/Egressos/types'
 
 interface Props {
-  graduateInfo: GraduateWorkHistoriesInfo
   institutionTypes: SelectItem[]
   control: Control<any>
 }
 
-export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control }: Props) => {
-  const { workHistories } = graduateInfo
+const rowsByStatus = (
+  items: (WorkHistoryInfo | InstitutionalLinkInfoType)[],
+  institutionTypes: SelectItem[],
+  handleEdit: (item: InstitutionalLinkInfoType | WorkHistoryInfo, index: number) => void,
+  handleDelete: (index: number) => void
+) => {
+  return items.map((item: InstitutionalLinkInfoType | WorkHistoryInfo, index: number) => {
+    const getStatus = () => {
+      if ('modified' in item && item.modified) return HISTORY_STATUS.UPDATED_PARTIALLY
+      if (item.id) return 'default'
+      return HISTORY_STATUS.UPDATED
+    }
+    const status = getStatus()
+
+    return [
+      { body: <Fields status={status}>{item.institution?.name ?? '-'}</Fields> },
+      {
+        body: (
+          <Fields status={status}>
+            {institutionTypes.find(type => type.id === item.institution?.typeId)?.label ?? '-'}
+          </Fields>
+        ),
+      },
+      { body: <Fields status={status}>{item.position ?? '-'}</Fields> },
+      {
+        body: (
+          <Fields status={status}>
+            {!item.startedAt || item.startedAt === 'null'
+              ? '-'
+              : dayjs(item.startedAt).format('DD/MM/YYYY')}
+          </Fields>
+        ),
+      },
+      {
+        body: (
+          <Fields status={status}>
+            {!item.endedAt || item.endedAt === 'null'
+              ? '-'
+              : dayjs(item.endedAt).format('DD/MM/YYYY')}
+          </Fields>
+        ),
+      },
+      {
+        body: (
+          <section>
+            <ActionIcon onClick={() => handleEdit(item, index)}>
+              <EditRoundedIcon />
+            </ActionIcon>
+            <Tooltip title="Só é possível excluir vínculos não salvos.">
+              <span>
+                <ActionIcon disabled={!!item.id} onClick={() => handleDelete(index)}>
+                  <DeleteForeverRoundedIcon />
+                </ActionIcon>
+              </span>
+            </Tooltip>
+          </section>
+        ),
+        width: '10%',
+      },
+    ]
+  })
+}
+
+export const InstitutionalLinkInfo = ({ institutionTypes, control }: Props) => {
   const { currentRole } = useAuth()
   const isCurrentUserGraduate = currentRole === Role.GRADUATE
 
   const [isAddWorkHistoryOpen, setIsAddWorkHistoryOpen] = useState<boolean>(false)
+  const [currentInstitutionalLink, setCurrentInstitutionalLink] =
+    useState<InstitutionalLinkInfoType>()
 
   const [currentInstitutionalLinksSelected, setCurrentInstitutionalLinksSelected] = useState<
     number[]
@@ -52,10 +120,14 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
   } = useController({ control, name: 'institutionalLinks' })
 
   const {
+    field: { onChange: setCurrentWorkHistories, value: currentWorkHistories },
+  } = useController({ control, name: 'workHistories' })
+
+  const {
     field: { onChange: setCurrentInstitutionalLinks },
   } = useController({ control, name: 'currentInstitutionalLinks' })
 
-  const currentInstitutionalLinksOptions = [...workHistories, ...institutionalLinks].filter(
+  const currentInstitutionalLinksOptions = [...currentWorkHistories, ...institutionalLinks].filter(
     link => !link.endedAt || link.endedAt === 'null'
   )
 
@@ -77,66 +149,32 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
     },
   })
 
+  const handleOpenEditInstitutionalLink = (
+    current: InstitutionalLinkInfoType | WorkHistoryInfo,
+    index: number
+  ) => {
+    setCurrentInstitutionalLink({
+      ...current,
+      startedAt: dayjs(current.startedAt),
+      endedAt: current.endedAt && current.endedAt !== 'null' ? dayjs(current.endedAt) : null,
+      index,
+    })
+    setIsAddWorkHistoryOpen(true)
+  }
+
+  const handleDeleteInstitutionalLink = (index: number) => {
+    setCurrentInstitutionalLinks([])
+    setCurrentInstitutionalLinksSelected([])
+    setInstitutionalLinks(institutionalLinks.filter((_item: never, i: number) => i !== index))
+  }
+
   const rows = [
-    ...institutionalLinks.map((link, index) => [
-      { body: <Fields status={'UPDATED'}>{link.institution.name}</Fields> },
-      {
-        body: (
-          <Fields status={'UPDATED'}>
-            {institutionTypes.find(type => type.id === link.institution.typeId)?.label}
-          </Fields>
-        ),
-      },
-      { body: <Fields status={'UPDATED'}>{link.position}</Fields> },
-      {
-        body: <Fields status={'UPDATED'}>{dayjs(link.startedAt).format('DD/MM/YYYY')}</Fields>,
-      },
-      {
-        body: (
-          <Fields status={'UPDATED'}>
-            {!link.endedAt ? '-' : dayjs(link.endedAt).format('DD/MM/YYYY')}
-          </Fields>
-        ),
-      },
-      {
-        body: (
-          <section>
-            <ActionIcon onClick={() => {}}>
-              <EditRoundedIcon />
-            </ActionIcon>
-            <ActionIcon
-              onClick={() => {
-                setCurrentInstitutionalLinks([])
-                setCurrentInstitutionalLinksSelected([])
-                setInstitutionalLinks(institutionalLinks.filter((item: any, i: any) => i !== index))
-              }}
-            >
-              <DeleteForeverRoundedIcon />
-            </ActionIcon>
-          </section>
-        ),
-        width: '10%',
-      },
-    ]),
-    ...workHistories.map(wh => [
-      { body: wh.institution.name },
-      { body: wh.institution.typeName },
-      { body: wh.position ?? '-' },
-      {
-        body:
-          !wh.startedAt || wh.startedAt === 'null' ? '-' : dayjs(wh.startedAt).format('DD/MM/YYYY'),
-      },
-      {
-        body: !wh.endedAt || wh.endedAt === 'null' ? '-' : dayjs(wh.endedAt).format('DD/MM/YYYY'),
-      },
-      {
-        body: (
-          <ActionIcon onClick={() => {}}>
-            <EditRoundedIcon />
-          </ActionIcon>
-        ),
-      },
-    ]),
+    ...rowsByStatus(
+      [...institutionalLinks, ...currentWorkHistories],
+      institutionTypes,
+      handleOpenEditInstitutionalLink,
+      handleDeleteInstitutionalLink
+    ),
   ]
 
   const columns = [
@@ -172,7 +210,7 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
       <Grid item xs={12}>
         <Divider textAlign="left">
           <Subtitle>
-            Informações sobre vínculos institucionais{' '}
+            Informações sobre vínculos institucionais
             <Button
               sx={{ marginLeft: '20px' }}
               size={'large'}
@@ -289,6 +327,10 @@ export const InstitutionalLinkInfo = ({ graduateInfo, institutionTypes, control 
               </ErrorMessage>
             )}
             <InstitutionalLinkModal
+              currentInstitutionalLink={currentInstitutionalLink}
+              setCurrentInstitutionalLink={setCurrentInstitutionalLink}
+              workHistories={currentWorkHistories}
+              setWorkHistories={setCurrentWorkHistories}
               institutionalLinks={institutionalLinks}
               setInstitutionalLinks={setInstitutionalLinks}
               institutionTypes={institutionTypes}

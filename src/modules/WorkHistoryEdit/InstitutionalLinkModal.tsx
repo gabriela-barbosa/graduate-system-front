@@ -1,5 +1,5 @@
 import { FormControl, Grid, InputLabel, MenuItem, Tooltip } from '@mui/material'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   Autocomplete,
   Button,
@@ -17,27 +17,38 @@ import { Dayjs } from 'dayjs'
 import { useAuth } from '@context/AuthProvider'
 import { Role } from '@utils/enums'
 import { getInstitutionAutocomplete } from '@modules/WorkHistoryEdit/api'
-import { InstitutionInfoDTO } from '@modules/WorkHistoryEdit/types'
+import { InstitutionInfoDTO, WorkHistoryInfo } from '@modules/WorkHistoryEdit/types'
 
 interface Props {
-  institutionalLinks: any[]
-  setInstitutionalLinks: any
+  currentInstitutionalLink?: InstitutionalLinkInfoType
+  setCurrentInstitutionalLink: (value: InstitutionalLinkInfoType) => void
+  workHistories: WorkHistoryInfo[]
+  setWorkHistories: (value: WorkHistoryInfo[]) => void
+  institutionalLinks: InstitutionalLinkInfoType[]
+  setInstitutionalLinks: (value: InstitutionalLinkInfoType[]) => void
   institutionTypes: SelectItem[]
   isAddWorkHistoryOpen: boolean
   setIsAddWorkHistoryOpen: (value: boolean) => void
 }
 
-interface InstitutionalLinkInfoType {
+export interface InstitutionalLinkInfoType {
   id?: string | null
+  index?: number
   position?: string | null
-  institutionId?: string | null
-  institutionTypeId?: string | null
-  institutionName?: string | null
+  institution?: {
+    id?: string | null
+    typeId?: string | null
+    name?: string | null
+  }
   startedAt?: Dayjs | null
   endedAt?: Dayjs | null
 }
 
 export const InstitutionalLinkModal = ({
+  workHistories,
+  setWorkHistories,
+  currentInstitutionalLink,
+  setCurrentInstitutionalLink,
   institutionalLinks,
   institutionTypes,
   setInstitutionalLinks,
@@ -51,51 +62,86 @@ export const InstitutionalLinkModal = ({
   const institutionalLinkDefaultState: InstitutionalLinkInfoType = {
     id: null,
     position: null,
-    institutionId: null,
-    institutionTypeId: null,
-    institutionName: null,
+    institution: {
+      id: null,
+      typeId: null,
+      name: null,
+    },
     startedAt: null,
     endedAt: null,
   }
-  const [institutionalLink, setInstitutionalLink] = useState<InstitutionalLinkInfoType>({
-    ...institutionalLinkDefaultState,
-  })
+
+  const [institutionalLink, setInstitutionalLink] = useState<InstitutionalLinkInfoType>(
+    currentInstitutionalLink ?? institutionalLinkDefaultState
+  )
+
+  useEffect(() => {
+    setInstitutionalLink(currentInstitutionalLink ?? institutionalLinkDefaultState)
+  }, [currentInstitutionalLink])
+
   const [selectedInstitution, setSelectedInstitution] = useState<InstitutionInfoDTO | null>(null)
 
-  const { institutionId, institutionName } = institutionalLink
+  const { institution } = institutionalLink ?? {}
+  const { name: institutionName, id: institutionId, typeId: institutionTypeId } = institution ?? {}
 
   const [options, setOptions] = useState<InstitutionInfoDTO[]>([])
 
   const onModalClose = () => {
     setSelectedInstitution(null)
+    setCurrentInstitutionalLink(institutionalLinkDefaultState)
     setIsAddWorkHistoryOpen(false)
     setInstitutionalLink(institutionalLinkDefaultState)
   }
 
   const handleSave = () => {
-    const { id, position, institutionName, institutionTypeId, endedAt, startedAt } =
-      institutionalLink
-
-    const newInstitutionalLink = {
-      id,
-      position,
-      endedAt,
-      startedAt,
-      institution: { typeId: institutionTypeId, name: institutionName },
+    if (institutionalLink && institutionalLink.index !== undefined) {
+      if (institutionalLink.index < institutionalLinks.length) {
+        setInstitutionalLinks(
+          institutionalLinks.map((link, index) => {
+            if (index === institutionalLink.index) {
+              return institutionalLink
+            }
+            return link
+          })
+        )
+        return
+      }
+      const indexHistory = institutionalLink.index - institutionalLinks.length
+      setWorkHistories(
+        workHistories.map((history, index) => {
+          if (index === indexHistory) {
+            return {
+              ...history,
+              institution: {
+                id: institutionalLink.institution?.id ?? undefined,
+                name: institutionalLink.institution?.name ?? undefined,
+                typeId: institutionalLink.institution?.typeId ?? undefined,
+              },
+              position: institutionalLink.position ?? undefined,
+              startedAt: institutionalLink.startedAt?.toISOString(),
+              endedAt: institutionalLink.endedAt
+                ? institutionalLink.endedAt.toISOString()
+                : undefined,
+              modified: true,
+            }
+          }
+          return history
+        })
+      )
+    } else {
+      setInstitutionalLinks([...institutionalLinks, institutionalLink])
     }
-    setInstitutionalLinks([...institutionalLinks, newInstitutionalLink])
-    // setInstitutionalLinks(links => [...links, institutionalLink])
     onModalClose()
   }
 
   const checkIfInstitutionalLinkInfoIsValid = !!(
-    institutionalLink.institutionTypeId &&
-    institutionalLink.institutionName &&
+    institutionalLink.institution?.typeId &&
+    institutionalLink.institution?.name &&
     institutionalLink.startedAt &&
     (isCurrentUserGraduate ? institutionalLink.position : true)
   )
 
-  const getData = async searchTerm => {
+  const getData = async (searchTerm: string) => {
     try {
       const data = await getInstitutionAutocomplete(searchTerm)
       setOptions(data)
@@ -105,9 +151,16 @@ export const InstitutionalLinkModal = ({
   }
 
   const setInstitutionName = (institutionName?: string) => {
-    setInstitutionalLink({
-      ...institutionalLink,
-      institutionName,
+    setInstitutionalLink(oldInstitutionalLink => {
+      const oldInstitution = oldInstitutionalLink.institution
+
+      return {
+        ...institutionalLink,
+        institution: {
+          ...oldInstitution,
+          name: institutionName,
+        },
+      }
     })
   }
 
@@ -124,6 +177,10 @@ export const InstitutionalLinkModal = ({
       setOptions([])
     }
   }
+
+  useEffect(() => {
+    setInstitutionalLink(currentInstitutionalLink ?? institutionalLinkDefaultState)
+  }, [currentInstitutionalLink])
 
   return (
     <Modal show={isAddWorkHistoryOpen} onHide={onModalClose}>
@@ -170,22 +227,25 @@ export const InstitutionalLinkModal = ({
                   const newValue = value as unknown as InstitutionInfoDTO
                   const getInstitutionFieldsValueByReason = () => {
                     if (reason === 'clear') {
-                      return institutionalLinkDefaultState
+                      return institutionalLinkDefaultState.institution
                     }
+
+                    const {
+                      id,
+                      name,
+                      type: { id: typeId },
+                    } = newValue
                     return {
-                      institutionName: newValue?.name,
-                      institutionTypeId: newValue?.type.id,
-                      institutionId: newValue?.id,
+                      id,
+                      name,
+                      typeId,
                     }
                   }
-                  const { institutionName, institutionTypeId, institutionId } =
-                    getInstitutionFieldsValueByReason()
+
                   setSelectedInstitution(newValue)
                   setInstitutionalLink(oldLink => ({
                     ...oldLink,
-                    institutionId,
-                    institutionName,
-                    institutionTypeId,
+                    institution: getInstitutionFieldsValueByReason(),
                   }))
                 }}
               />
@@ -200,13 +260,18 @@ export const InstitutionalLinkModal = ({
                 name={'institutionType'}
                 label={'Tipo de Instituição*'}
                 disabled={institutionId}
-                value={institutionalLink.institutionTypeId || ''}
-                onChange={event => {
-                  if (event.target.value)
+                value={institutionTypeId || ''}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (event.target.value) {
+                    const institution = institutionalLink.institution
                     setInstitutionalLink({
                       ...institutionalLink,
-                      institutionTypeId: event.target.value as string,
+                      institution: {
+                        ...institution,
+                        typeId: event.target.value as string,
+                      },
                     })
+                  }
                 }}
               >
                 {institutionTypes.map(institutionItem => (

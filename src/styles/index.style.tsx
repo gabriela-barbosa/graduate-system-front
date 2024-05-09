@@ -83,6 +83,7 @@ const statusColor = {
   [HISTORY_STATUS.PENDING]: '#e11818',
   [HISTORY_STATUS.UPDATED]: '#5BAFC9',
   [HISTORY_STATUS.UPDATED_PARTIALLY]: '#DCB552',
+  default: theme.palette.primary.main,
 }
 
 export const Fields = styled.p`
@@ -91,8 +92,7 @@ export const Fields = styled.p`
   font-size: 16px;
   line-height: 24px;
 
-  color: ${({ status }: { status?: string }) =>
-    status ? statusColor[status] : theme.palette.primary.main};
+  color: ${({ status }: { status?: string }) => statusColor[status ?? 'default']};
 `
 
 interface TableCellProps {
