@@ -63,9 +63,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const { [USER_TOKEN_NAME]: token } = parseCookies()
-
-    const includesRoutes = publicRoutes.includes(path)
-    if (!includesRoutes && (token || token === '')) {
+    if (token || token === '') {
       handleGetUser()
     }
   }, [])
@@ -73,6 +71,12 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const { [USER_TOKEN_NAME]: token } = parseCookies()
     if (!publicRoutes.includes(path) && !user && !token) router.push(Routes.LOGIN)
+  }, [user])
+
+  useEffect(() => {
+    if (publicRoutes.includes(path) && user && user.currentRole) {
+      redirectAccordingRole(user.currentRole, user.id, router)
+    }
   }, [user])
 
   async function handleLogin(email: string, password: string) {

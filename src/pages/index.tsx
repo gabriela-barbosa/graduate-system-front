@@ -112,6 +112,7 @@ const Home = () => {
                       type={'email'}
                       label={'Email'}
                       name={'email'}
+                      autoComplete="username"
                       onChange={e => setEmail(e.target.value)}
                       required
                     />
@@ -122,7 +123,8 @@ const Home = () => {
                     <Password
                       parseError={() => 'Digite a senha.'}
                       margin={'dense'}
-                      name={'password'}
+                      name="password"
+                      autoComplete="current-password"
                       label={'Senha'}
                       required
                     />

@@ -41,6 +41,7 @@ const GraduateUser = ({
 }: Props) => {
   const router = useRouter()
   const { currentRole } = useAuth()
+  const isNotGraduate = currentRole !== Role.GRADUATE
   const formContext = useForm({
     defaultValues: useMemo(() => {
       return {
@@ -128,8 +129,11 @@ const GraduateUser = ({
     try {
       await saveWorkHistory(graduateId, body)
       showSavedToast()
+      if (isNotGraduate) {
+        await router.push(Routes.GRADUATES)
+      }
     } catch (err) {
-      showErrorToast('Ocorreu algum erro.')
+      showErrorToast('Ocorreu algum erro ao salvar. Tente novamente.')
     }
   }
 
@@ -146,7 +150,7 @@ const GraduateUser = ({
   return (
     <MainWrapper themeName={Theme.white}>
       <PageWrapper container spacing={3}>
-        {currentRole !== Role.GRADUATE && (
+        {isNotGraduate && (
           <Grid item>
             <Breadcrumbs
               breadcrumbs={[
